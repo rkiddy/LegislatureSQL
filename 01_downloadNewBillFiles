@@ -1,0 +1,202 @@
+#!/usr/bin/perl
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-n") { $noninteractive = 1; }
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+    if ($ARGV[$idx] eq "-v") { $verbose = 1; }
+    if ($ARGV[$idx] eq "-q") { $quiet = 1; }
+}
+
+if (! defined($session)) { $session = "11-12"; }
+
+if ( ! -d "leginfo.public.ca.gov/pub" ) { print "Please go to a directory where you have a 'leginfo.public.ca.gov' directory to store files.\n"; exit(1); }
+
+if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/asm" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/asm"; print `$cmd`; }
+if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/sen" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/sen"; print `$cmd`; }
+
+$cmd = "(  echo \"cd pub/".$session."/bill/asm\" ; ".
+          "echo \"ls \*\" ; ".
+          "echo \"cd ../sen\" ; ".
+          "echo \"ls \*\" ; ".
+          "echo \"quit\" ) | ftp -v leginfo.public.ca.gov";
+@lines = `$cmd`;
+chomp(@lines);
+
+$fetchable = `date '+logs/fetchable_XXXXX_%Y%m%d_%H%M%S.txt'`;
+$fetchable =~ s/XXXXX/$session/;
+
+chomp($fetchable);
+# print "fetchable: \"".$fetchable."\"\n";
+
+open R, ">".$fetchable;
+
+chdir "leginfo.public.ca.gov";
+
+print "\n";
+
+foreach (@lines) {
+    $line = $_;
+
+    # correct this one-off data problem, since the LC will not remove the file.
+    #
+    if ($session eq "11-12" && $line =~ /ab_540_bill_20090806_chaptered.html/) { print "ERROR: \"".$line."\"\n"; $line = ""; }
+    if ($session eq "11-12" && $line =~ /Copy_Of_/) { print "ERROR: \"".$line."\"\n"; $line = ""; }
+
+    # Not an error, but also not needed.
+    #
+    if ($line =~ /scratch/) { $line = ""; }
+
+    if ($line ne "") {
+
+        if ($line =~ /:$/) { $dir = $`; }
+        if ($line =~ /html$/) { 
+
+             # print R $line."\n";
+
+             @parts = split ' ', $line;
+             $size = $parts[4];
+             $file = pop @parts;
+
+             if ($dir =~ /^ab_/) {
+                 $fullRemoteFile = "pub/".$session."/bill/asm/".$dir."/".$file;
+                 $dirs{"pub/".$session."/bill/asm/".$dir} = 1;
+             } else {
+                 $fullRemoteFile = "pub/".$session."/bill/sen/".$dir."/".$file;
+                 $dirs{"pub/".$session."/bill/sen/".$dir} = 1;
+             }
+             $fullRemoteFile =~ s/^\.\///;
+
+             $remote{$fullRemoteFile} = $size;
+             print R $fullRemoteFile."\n";
+        }
+    }
+}
+
+close R;
+
+$allDirsCount = scalar(keys %dirs);
+
+foreach (keys %dirs) {
+    $dir = $_;
+    if (-d $dir) {
+        delete($dirs{$dir});
+    }
+}
+
+print "\nFound directories # ".$allDirsCount.", need to create ".scalar(keys %dirs)."\n\n";
+
+foreach (keys %dirs) {
+    $dir = $_;
+    $cmd = "mkdir -p ".$_."\n";
+    print `$cmd`;
+}
+
+open R, "../".$fetchable;
+
+$filesToFetch = 0;
+$filesFound = 0;
+
+$lastDir = "";
+
+while (<R>) {
+    chomp;
+    $file = $_;
+    if ( -f $file) {
+        # print "YES ".$file."\n";
+        $filesFound++;
+    } else {
+        # print $file."\n";
+        $dir = substr($file, 0, 32);
+        $fileName = substr($file, 32);
+        if ($lastDir eq "") {
+            push @ftp, "cd ".$dir."\n";
+            push @ftp, "lcd ".$dir."\n";
+            push @ftp, "get ".$fileName."\n";
+            $fetching{$fileName} = 1;
+            $fullFetching{$dir."/".$fileName} = 1;
+        } else {
+            if ($dir ne $lastDir) {
+                push @ftp, "cd ../../../../..\n";
+                push @ftp, "lcd ../../../../..\n";
+                push @ftp, "cd ".$dir."\n";
+                push @ftp, "lcd ".$dir."\n";
+                push @ftp, "get ".$fileName."\n";
+                $fetching{$fileName} = 1;
+                $fullFetching{$dir."/".$fileName} = 1;
+            } else {
+                push @ftp, "get ".$fileName."\n";
+                $fetching{$fileName} = 1;
+                $fullFetching{$dir."/".$fileName} = 1;
+            }
+        }
+        $lastDir = $dir;
+        $filesToFetch++;
+    }
+}
+
+close R;
+
+print "\nFound files # ".$filesFound.", files to fetch: ".$filesToFetch."\n\n";
+
+if (defined($verbose)) {
+    print "\n";
+    foreach (keys %fullFetching) { print $_."\n"; }
+    print "\n";
+}
+
+open R, ">../".$fetchable;
+foreach (sort keys %fetching) { print R $_."\n"; }
+close R;
+
+if ($filesToFetch > 0) {
+
+    open FTP, "| ftp leginfo.public.ca.gov";
+
+    foreach (@ftp) {
+        print FTP $_;
+        if (-f "../STOP") { close FTP; exit(0); }
+    }
+
+    close FTP;
+}
+
+$cmd = "find pub/".$session."/bill -name \*status\*.html | sort";
+@statuses = `$cmd`;
+chomp(@statuses);
+
+# pub/11-12/bill/sen/sb_1551-1600/sb_1570_bill_20120227_status.html
+# pub/11-12/bill/sen/sb_1551-1600/sb_1570_bill_20120509_status.html
+# pub/11-12/bill/sen/sb_1551-1600/sb_1571_bill_20120227_status.html
+# pub/11-12/bill/sen/sb_1551-1600/sb_1571_bill_20120924_status.html
+# pub/11-12/bill/sen/sb_1551-1600/sb_1572_bill_20120918_status.html
+# pub/11-12/bill/sen/sb_1551-1600/sb_1573_bill_20120227_status.html
+# pub/11-12/bill/sen/sb_1551-1600/sb_1573_bill_20120322_status.html
+# pub/11-12/bill/sen/sb_1551-1600/sb_1574_bill_20120710_status.html
+
+$deleted = 0;
+
+foreach (@statuses) {
+    $status = $_;
+
+    @parts = split '/', $status;
+
+    $fileName = pop @parts;
+    $dir = pop @parts;
+    if ($fileName =~ /_bill_/) {
+        $billNum = $dir."/".$`;
+
+        if (defined($billStatus{$billNum})) {
+            print "deleting \"".$billStatus{$billNum}."\"\n";
+            unlink $billStatus{$billNum};
+            $deleted++;
+        }
+        $billStatus{$billNum} = $status;
+    }
+}
+
+print "\nDeleted status files # ".$deleted."\n\n";
+
+chdir "..";
+
+exit(0);
+

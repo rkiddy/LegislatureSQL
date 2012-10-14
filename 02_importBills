@@ -1,0 +1,319 @@
+#!/usr/bin/perl
+
+#
+# Until a better method to document this arises, here is the table create statement:
+#
+# CREATE TABLE `bills` (
+#   `bill_num` varchar(12) NOT NULL DEFAULT '',
+#   `session_yrs` char(5) DEFAULT NULL,
+#   `status_file` varchar(64) DEFAULT NULL,
+#   `authors` varchar(2048) DEFAULT NULL,
+#   `comm_action` varchar(1024) DEFAULT NULL,
+#   `comm_action_date` char(10) DEFAULT NULL,
+#   `comm_location` varchar(128) DEFAULT NULL,
+#   `comm_vote_summary` varchar(128) DEFAULT NULL,
+#   `file_location` varchar(128) DEFAULT NULL,
+#   `file_date` char(10) DEFAULT NULL,
+#   `hearing_date` char(10) DEFAULT NULL,
+#   `house_location` char(3) DEFAULT NULL,
+#   `item` varchar(128) DEFAULT NULL,
+#   `last_amended_date` char(10) DEFAULT NULL,
+#   `last_hist_act_date` char(10) DEFAULT NULL,
+#   `last_hist_action` varchar(512) DEFAULT NULL,
+#   `measure` varchar(32) DEFAULT NULL,
+#   `title` varchar(10240) DEFAULT NULL,
+#   `topic` varchar(1024) DEFAULT NULL,
+#   `type_of_bill` varchar(128) DEFAULT NULL,
+#   PRIMARY KEY (`bill_num`)
+# )
+#
+# Thank you for your support.
+#
+
+open F, "~/.leg_sql_options.txt";
+while (<F>) {
+    chomp;
+    ($key, value) = split ' ', $_;
+    $options{$key} = $value;
+}
+close F;
+
+if (defined($ARGV[0]) && defined($ARV[1]) && ($ARGV[0] eq "-s")) {
+    $session = $ARGV[1];
+} else {
+    $session = "11-12";
+}
+
+$mysql = "mysql -u ray --password=".$options{"pwd"}." --skip-column-names ".$options{"db"}."\n";
+
+sub doCmdResults {
+    my @results = `$_[0]`;
+    chomp(@results);
+    return @results;
+}
+
+sub doSqlResults {
+    $cmd = "echo \"".$_[0]."\" | ".$mysql;
+    my @results = `$cmd`;
+    chomp(@results);
+    return @results;
+}
+
+sub doCmdResult {
+    my $result = `$_[0]`;
+    chomp($esult);
+    return $result;
+}
+
+sub doSqlResult {
+    my $cmd = "echo \"".$_[0]."\" | ".$mysql;
+    my $result = `$cmd`;
+    chomp($result);
+    return $result;
+}
+
+sub nextKey {
+    my $next = $_[0] + 1;
+    $next = "0".$next;
+    while (length($next) < 5) { $next = "0".$next; }
+    return $next;
+}
+
+#
+# The download script has downloaded new files from the leginfo.public.ca.gov site. If there was a new status file, the download script deleted
+# the old status file.
+#
+
+@statusFiles = &doCmdResults("find leginfo.public.ca.gov/pub/".$session."/bill -name \*status.html");
+print "\nFound status files # ".scalar(@statusFiles)."\n";
+
+@statusInDB = &doSqlResults("select bill_num, status_file from bills where session_yrs = '".$session."';");
+print "\nFound status files in db # ".scalar(@statusInDB)."\n";
+
+foreach (@statusFiles) {
+    $statusFile = $_;
+
+    @parts = split '/', $statusFile;
+
+    $fileName = pop @parts;
+    push @parts, $fileName;
+
+    shift @parts;
+    shift @parts;
+
+    ($house, $num, $x) = split '_', $fileName;
+
+    $statusFromFiles{$house."_".$num} = join '/', @parts;
+}
+
+foreach (@statusInDB) {
+
+    ($billNum, $statusFile) = split '\t', $_;
+    $statusFromDB{$billNum} = $statusFile;
+}
+
+foreach (keys %statusFromFiles) {
+    $billNum = $_;
+
+    if (defined($statusFromDB{$billNum})) {
+        if ($statusFromFiles{$billNum} ne $statusFromDB{$billNum}) {
+            #print "    bill: ".$billNum."\n".
+            #      "         file: \"".$statusFromFiles{$billNum}."\"\n".
+            #      "           DB: \"".$statusFromDB{$billNum}."\"\n";
+            $nextStatus{$statusFromFiles{$billNum}} = $billNum;
+        }
+    } else {
+        #print "    bill: ".$billNum."\n      from file: ".$statusFromFiles{$billNum}." -> NEW\n";
+        $nextStatus{$statusFromFiles{$billNum}} = $billNum;
+    }
+}
+
+print "\nFound status info to be updated # ".scalar(keys %nextStatus)."\n";
+
+foreach (keys %nextStatus) {
+
+    $statusFile = $_;
+
+    push @sql, "update bills set status_file = '".$statusFile."', ".
+               "authors = NULL, ".
+               "comm_action = NULL, ".
+               "comm_action_date = NULL, ".
+               "comm_location = NULL, ".
+               "comm_vote_summary = NULL, ".
+               "file_location = NULL, ".
+               "file_date = NULL, ".
+               "hearing_date = NULL, ".
+               "house_location = NULL, ".
+               "item = NULL, ".
+               "last_amended_date = NULL, ".
+               "last_hist_act_date = NULL, ".
+               "last_hist_action = NULL, ".
+               "measure = NULL, ".
+               "title = NULL, ".
+               "topic = NULL, ".
+               "type_of_bill = NULL ".
+               "where bill_num = '".$nextStatus{$statusFile}."';\n";
+
+    open F, "leginfo.public.ca.gov/pub/".$statusFile;
+    @lines  = <F>;
+    chomp(@lines);
+    close F;
+
+    $idx = 0;
+
+    #
+    # Read in each line of the status file and put it into a numbered-key dictionary.
+    #
+    undef %lines;
+
+    foreach (@lines) {
+        $line = $_;
+
+        $idxStr = "0".$idx; while (length($idxStr) < 5) { $idxStr = "0".$idxStr; }
+
+        $lines{$idxStr} = $line;
+        $idx++;
+    }
+
+    #
+    # Remove the lines at the start that try to be HTML and meta tags. They are not helpful.
+    #
+    undef $foundPre;
+    undef @deletable;
+
+    foreach (sort keys %lines) {
+
+        $key = $_;
+
+        if (! defined($foundPre)) { push @deletable, $key; }
+
+        if ($lines{$key} =~ /CURRENT BILL STATUS/) { $foundPre = 1; }
+    }
+
+    foreach (@deletable) { delete $lines{$_}; }
+
+    foreach (keys %lines) { if ($lines{$_} eq "<br>") { delete $lines{$_}; }}
+    foreach (keys %lines) { if ($lines{$_} =~ /html>$/) { delete $lines{$_}; }}
+
+    # print "leginfo.public.ca.gov/pub/".$statusFile."\n\n";
+
+    # foreach (sort keys %lines) { print "lines{".$_."} = \"".$lines{$_}."\"\n"; }
+
+    #
+    # Can do the recognition now.
+    #
+    undef %billInfo;
+
+    foreach (sort keys %lines) {
+
+        $key = $_;
+
+        if (defined($lines{$key})) {
+
+            if ($lines{$key} =~ /^MEASURE\s*:/) {
+                $billInfo{"measure"} = $';
+            }
+
+            if ($lines{$key} =~ /^AUTHOR\(S\)\s*:/) {
+                $billInfo{"authors"} = $';
+                $nextKey = &nextKey($key);
+                while ($lines{$nextKey} =~ /^\s/) { $billInfo{"authors"} .= " ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
+            }
+
+            if ($lines{$key} =~ /^COMM. LOCATION\s*:/) {
+                $billInfo{"comm_location"} = $';
+            }
+
+            if ($lines{$key} =~ /^COMM. ACTION DATE\s*:/) {
+                $billInfo{"comm_action_date"} = $';
+            }
+
+            if ($lines{$key} =~ /^COMM. ACTION\s*:/) {
+                $billInfo{"comm_action"} = $';
+                $nextKey = &nextKey($key);
+                while ($lines{$nextKey} =~ /^\s/) { $billInfo{"comm_action"} .= " ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
+            }
+
+            if ($lines{$key} =~ /^FILE\s*:/) {
+                $billInfo{"file_location"} = $';
+            }
+
+            if ($lines{$key} =~ /^FILE DATE\s*:/) {
+                $billInfo{"file_date"} = $';
+            }
+
+            if ($lines{$key} =~ /^HEARING_DATE\s*:/) {
+                $billInfo{"hearing_date"} = $';
+            }
+
+            if ($lines{$key} =~ /^HOUSE LOCATION\s*:/) {
+                $billInfo{"house_location"} = $';
+            }
+
+            if ($lines{$key} =~ /^ITEM\s*:/) {
+                $billInfo{"item"} = $';
+            }
+
+            if ($lines{$key} =~ /^\+LAST AMENDED DATE\s*:/) {
+                $billInfo{"last_amended_date"} = $';
+            }
+
+            if ($lines{$key} =~ /^LAST HIST. ACT. DATE:/) {
+                $billInfo{"last_hist_act_date"} = $';
+            }
+
+            if ($lines{$key} =~ /^LAST HIST. ACTION\s*:/) {
+                $billInfo{"last_hist_action"} = $';
+                $nextKey = &nextKey($key);
+                while ($lines{$nextKey} =~ /^\s/) { $billInfo{"last_hist_action"} .= " ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
+            }
+
+            if ($lines{$key} =~ /^TITLE\s*:/) {
+                $billInfo{"title"} = $';
+                $nextKey = &nextKey($key);
+                while ($lines{$nextKey} =~ /^\s/) { $billInfo{"title"} .= " ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
+            }
+
+            if ($lines{$key} =~ /^TOPIC\s*:/) {
+                $billInfo{"topic"} = $';
+                $nextKey = &nextKey($key);
+                while ($lines{$nextKey} =~ /^\s/) { $billInfo{"topic"} .= " ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
+            }
+
+            if ($lines{$key} =~ /^TYPE OF BILL\s*:/) {
+                $billInfo{"type_of_bill"} = $';
+                $nextKey = &nextKey($key);
+                while ($lines{$nextKey} =~ /^\s/) { $billInfo{"type_of_bill"} .= ", ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
+            }
+        }
+    }
+
+    foreach (keys %billInfo) { $billInfo{$_} =~ s/^\s*//; }
+
+    $billInfo{"type_of_bill"} =~ s/,\s*/,/g;
+    $billInfo{"type_of_bill"} =~ s/^,//g;
+
+    # print "\nBILL_INFO:\n";
+
+    # foreach (sort keys %billInfo) { print "bill{".$_."} = \"".$billInfo{$_}."\"\n"; }
+
+    undef @updates;
+
+    foreach (sort keys %billInfo) {
+        $column = $_;
+        $value = $billInfo{$column};
+        $value =~ s/'/''/g;
+        push @updates, $column." = '".$value."'";
+    }
+
+    push @sql, "update bills set ".(join ', ', @updates)." where bill_num = '".$nextStatus{$statusFile}."';\n";
+    # print "\n";
+}
+
+open M, "| ".$mysql; foreach (@sql) { print M $_; } close M;
+
+# foreach (@sql) { print $_; }
+
+print "\n";
+
+exit(0);
