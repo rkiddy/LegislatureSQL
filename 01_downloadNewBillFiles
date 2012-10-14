@@ -1,7 +1,28 @@
 #!/usr/bin/perl
 
+#
+# This script will download new html files (html only, not pdf) from the leginfo.public.ca.gov server.
+#
+# To get an automatic login, one should have this in a ~/.netrc file:
+#
+# machine leginfo.public.ca.gov
+# login anonymous
+# password <your email address>
+#
+# Go to 'man 1 ftp' and there will be a section which documents the .netrc file.
+#
+# This script creates needed directories, but it would not hurt to create the top-level directory
+# for a session. For example:
+#
+#     % mkdir -p leginfo.public.ca.gov/pub/11-12/bill/asm
+#     % mkdir -p leginfo.public.ca.gov/pub/11-12/bill/sen
+#     % mkdir -p leginfo.public.ca.gov/pub/13-14/bill/asm
+#     % mkdir -p leginfo.public.ca.gov/pub/13-14/bill/sen
+#
+# That should be all you need to do.
+#
+
 for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
-    if ($ARGV[$idx] eq "-n") { $noninteractive = 1; }
     if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
     if ($ARGV[$idx] eq "-v") { $verbose = 1; }
     if ($ARGV[$idx] eq "-q") { $quiet = 1; }
