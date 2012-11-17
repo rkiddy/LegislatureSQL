@@ -16,7 +16,7 @@ may be more complete than the data that the OpenStates processing comes up with.
 
 For now, I am not worrying about how documented this is. Mostly I want to not lose this code again.
 
-Note: The script rely on a file in your home directory, named .leg_sql_options.txt, which contains:
+Note: The script relies on a file in your home directory, named .leg_sql_options.txt, which contains:
 
     db <name of your MySQL database>
     user <username for your MySQL user>
