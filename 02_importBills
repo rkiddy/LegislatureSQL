@@ -1,75 +1,15 @@
 #!/usr/bin/perl
 
-#
-# Until a better method to document this arises, here is the table create statement:
-#
-# CREATE TABLE `bills` (
-#   `bill_num` varchar(12) NOT NULL DEFAULT '',
-#   `session_yrs` char(5) DEFAULT NULL,
-#   `status_file` varchar(64) DEFAULT NULL,
-#   `authors` varchar(2048) DEFAULT NULL,
-#   `comm_action` varchar(1024) DEFAULT NULL,
-#   `comm_action_date` char(10) DEFAULT NULL,
-#   `comm_location` varchar(128) DEFAULT NULL,
-#   `comm_vote_summary` varchar(128) DEFAULT NULL,
-#   `file_location` varchar(128) DEFAULT NULL,
-#   `file_date` char(10) DEFAULT NULL,
-#   `hearing_date` char(10) DEFAULT NULL,
-#   `house_location` char(3) DEFAULT NULL,
-#   `item` varchar(128) DEFAULT NULL,
-#   `last_amended_date` char(10) DEFAULT NULL,
-#   `last_hist_act_date` char(10) DEFAULT NULL,
-#   `last_hist_action` varchar(512) DEFAULT NULL,
-#   `measure` varchar(32) DEFAULT NULL,
-#   `title` varchar(10240) DEFAULT NULL,
-#   `topic` varchar(1024) DEFAULT NULL,
-#   `type_of_bill` varchar(128) DEFAULT NULL,
-#   PRIMARY KEY (`bill_num`)
-# )
-#
-# Thank you for your support.
-#
+# TODO - I am not yet adding the status_date value to the bills table. -rrk 2012/11/17
 
-open F, "~/.leg_sql_options.txt";
-while (<F>) {
-    chomp;
-    ($key, value) = split ' ', $_;
-    $options{$key} = $value;
-}
-close F;
+require "cmds.pl";
+
+%options = &readOptions;
 
 if (defined($ARGV[0]) && defined($ARV[1]) && ($ARGV[0] eq "-s")) {
     $session = $ARGV[1];
 } else {
     $session = "11-12";
-}
-
-$mysql = "mysql -u ray --password=".$options{"pwd"}." --skip-column-names ".$options{"db"}."\n";
-
-sub doCmdResults {
-    my @results = `$_[0]`;
-    chomp(@results);
-    return @results;
-}
-
-sub doSqlResults {
-    $cmd = "echo \"".$_[0]."\" | ".$mysql;
-    my @results = `$cmd`;
-    chomp(@results);
-    return @results;
-}
-
-sub doCmdResult {
-    my $result = `$_[0]`;
-    chomp($esult);
-    return $result;
-}
-
-sub doSqlResult {
-    my $cmd = "echo \"".$_[0]."\" | ".$mysql;
-    my $result = `$cmd`;
-    chomp($result);
-    return $result;
 }
 
 sub nextKey {
@@ -79,15 +19,25 @@ sub nextKey {
     return $next;
 }
 
+sub fixDate {
+    my $orig = $_[0];
+    # 06/25/2012
+    my $y = substr($orig,6,4);
+    my $m = substr($orig,0,2);
+    my $d = substr($orig,3,2);
+    return $y."-".$m."-".$d;
+}
+
 #
-# The download script has downloaded new files from the leginfo.public.ca.gov site. If there was a new status file, the download script deleted
-# the old status file.
+# The download script has downloaded new files from the leginfo.public.ca.gov site. If there was a new status file,
+# the download script deleted the old status file.
 #
 
 @statusFiles = &doCmdResults("find leginfo.public.ca.gov/pub/".$session."/bill -name \*status.html");
 print "\nFound status files # ".scalar(@statusFiles)."\n";
 
 @statusInDB = &doSqlResults("select bill_num, status_file from bills where session_yrs = '".$session."';");
+
 print "\nFound status files in db # ".scalar(@statusInDB)."\n";
 
 foreach (@statusFiles) {
@@ -112,21 +62,35 @@ foreach (@statusInDB) {
     $statusFromDB{$billNum} = $statusFile;
 }
 
+$maxPk = &doSqlResult("select max(pk) from bills;");
+
+if ($maxPk eq "NULL") { $maxPk = 0; }
+
 foreach (keys %statusFromFiles) {
     $billNum = $_;
 
     if (defined($statusFromDB{$billNum})) {
+
         if ($statusFromFiles{$billNum} ne $statusFromDB{$billNum}) {
-            #print "    bill: ".$billNum."\n".
-            #      "         file: \"".$statusFromFiles{$billNum}."\"\n".
-            #      "           DB: \"".$statusFromDB{$billNum}."\"\n";
+
             $nextStatus{$statusFromFiles{$billNum}} = $billNum;
         }
     } else {
-        #print "    bill: ".$billNum."\n      from file: ".$statusFromFiles{$billNum}." -> NEW\n";
+
+        $maxPk++;
+        push @sql, "insert into bills (pk, bill_num, session_yrs) values (".$maxPk.", '".$billNum."', '".$session."');\n";
+
         $nextStatus{$statusFromFiles{$billNum}} = $billNum;
     }
 }
+
+print "\nFound new bills to be created # ".scalar(@sql)."\n";
+
+open M, "| ".&mysql;
+foreach (@sql) { print M $_; }
+close M;
+
+@sql = ();
 
 print "\nFound status info to be updated # ".scalar(keys %nextStatus)."\n";
 
@@ -148,11 +112,12 @@ foreach (keys %nextStatus) {
                "last_amended_date = NULL, ".
                "last_hist_act_date = NULL, ".
                "last_hist_action = NULL, ".
+               "status_date = NULL, ".
                "measure = NULL, ".
                "title = NULL, ".
                "topic = NULL, ".
                "type_of_bill = NULL ".
-               "where bill_num = '".$nextStatus{$statusFile}."';\n";
+               "where bill_num = '".$nextStatus{$statusFile}."' and session_yrs = '".$session."';\n";
 
     open F, "leginfo.public.ca.gov/pub/".$statusFile;
     @lines  = <F>;
@@ -200,7 +165,7 @@ foreach (keys %nextStatus) {
     # foreach (sort keys %lines) { print "lines{".$_."} = \"".$lines{$_}."\"\n"; }
 
     #
-    # Can do the recognition now.
+    # Can do the recognition now and finish updating the bills table.
     #
     undef %billInfo;
 
@@ -225,7 +190,8 @@ foreach (keys %nextStatus) {
             }
 
             if ($lines{$key} =~ /^COMM. ACTION DATE\s*:/) {
-                $billInfo{"comm_action_date"} = $';
+                $billInfo{"comm_action_date"};
+                #$d = $'; $billInfo{"comm_action_date"} = substr($d,6,4)."-".substr($d,0,2)."-".substr($d,3,2);
             }
 
             if ($lines{$key} =~ /^COMM. ACTION\s*:/) {
@@ -240,10 +206,12 @@ foreach (keys %nextStatus) {
 
             if ($lines{$key} =~ /^FILE DATE\s*:/) {
                 $billInfo{"file_date"} = $';
+                # $d = $'; $billInfo{"file_date"} = substr($d,6,4)."-".substr($d,0,2)."-".substr($d,3,2);
             }
 
             if ($lines{$key} =~ /^HEARING_DATE\s*:/) {
                 $billInfo{"hearing_date"} = $';
+                # $d = $'; $billInfo{"hearing_date"} = substr($d,6,4)."-".substr($d,0,2)."-".substr($d,3,2);
             }
 
             if ($lines{$key} =~ /^HOUSE LOCATION\s*:/) {
@@ -256,10 +224,12 @@ foreach (keys %nextStatus) {
 
             if ($lines{$key} =~ /^\+LAST AMENDED DATE\s*:/) {
                 $billInfo{"last_amended_date"} = $';
+                # $d = $'; $billInfo{"last_amended_date"} = substr($d,6,4)."-".substr($d,0,2)."-".substr($d,3,2);
             }
 
             if ($lines{$key} =~ /^LAST HIST. ACT. DATE:/) {
                 $billInfo{"last_hist_act_date"} = $';
+                # $d = $'; $billInfo{"last_hist_act_date"} = substr($d,6,4)."-".substr($d,0,2)."-".substr($d,3,2);
             }
 
             if ($lines{$key} =~ /^LAST HIST. ACTION\s*:/) {
@@ -288,10 +258,16 @@ foreach (keys %nextStatus) {
         }
     }
 
-    foreach (keys %billInfo) { $billInfo{$_} =~ s/^\s*//; }
+    foreach (keys %billInfo) { $billInfo{$_} =~ s/^\s*//; $billInfo{$_} =~ s/\s*$//; $billInfo{$_} =~ s/\s\s*/ /g; }
 
     $billInfo{"type_of_bill"} =~ s/,\s*/,/g;
     $billInfo{"type_of_bill"} =~ s/^,//g;
+
+    if (defined($billInfo{"comm_action_date"})) { $billInfo{"comm_action_date"} = &fixDate($billInfo{"comm_action_date"}); }
+    if (defined($billInfo{"file_date"})) { $billInfo{"file_date"} = &fixDate($billInfo{"file_date"}); }
+    if (defined($billInfo{"hearing_date"})) { $billInfo{"hearing_date"} = &fixDate($billInfo{"hearing_date"}); }
+    if (defined($billInfo{"last_amended_date"})) { $billInfo{"last_amended_date"} = &fixDate($billInfo{"last_amended_date"}); }
+    if (defined($billInfo{"last_hist_act_date"})) { $billInfo{"last_hist_act_date"} = &fixDate($billInfo{"last_hist_act_date"}); }
 
     # print "\nBILL_INFO:\n";
 
@@ -310,9 +286,44 @@ foreach (keys %nextStatus) {
     # print "\n";
 }
 
-open M, "| ".$mysql; foreach (@sql) { print M $_; } close M;
+open M, "| ".&mysql;
+foreach (@sql) { print M $_; }
+close M;
 
-# foreach (@sql) { print $_; }
+@sql = ();
+
+#
+# Update the bill_types table and the joins to the bills.
+#
+
+&doSqlResult("delete from bill_type_joins;");
+
+@typesInFiles = &doSqlResults("select pk, type_of_bill from bills;");
+
+foreach (@typesInFiles) {
+
+    ($billPk, $billTypes_list) = split '\t', $_;
+
+    @billTypes = split ',', $billTypes_list;
+
+    foreach (@billTypes) {
+        $billType = $_;
+        if ($billType eq "NULL") {
+            print "\nbill_type is NULL for status of bill \"".$billNum."\"\n";
+        } else {
+            push @sql, "insert into bill_type_joins (bill_pk, bill_type_pk) ".
+                       "values ('".$billPk."', (select pk from bill_types where name = '".$_."'));\n";
+        }
+    }
+}
+
+open M, "| ".&mysql;
+foreach (@sql) { print M $_; }
+close M;
+
+print "\nCreate bill_type joins # ".scalar(@sql)."\n";
+
+@sql = ();
 
 print "\n";
 

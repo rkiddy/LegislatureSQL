@@ -22,15 +22,21 @@
 # That should be all you need to do.
 #
 
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
 for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
     if ($ARGV[$idx] eq "-v") { $verbose = 1; }
     if ($ARGV[$idx] eq "-q") { $quiet = 1; }
 }
 
-if (! defined($session)) { $session = "11-12"; }
-
-if ( ! -d "leginfo.public.ca.gov/pub" ) { print "Please go to a directory where you have a 'leginfo.public.ca.gov' directory to store files.\n"; exit(1); }
+if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/asm" || ! -d "leginfo.public.ca.gov/pub/".$session."/bill/sen") {
+    print "Please go to a directory where you have a 'leginfo.public.ca.gov' directory to store files.\n"; exit(1);
+}
 
 if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/asm" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/asm"; print `$cmd`; }
 if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/sen" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/sen"; print `$cmd`; }
@@ -62,6 +68,7 @@ foreach (@lines) {
     #
     if ($session eq "11-12" && $line =~ /ab_540_bill_20090806_chaptered.html/) { print "ERROR: \"".$line."\"\n"; $line = ""; }
     if ($session eq "11-12" && $line =~ /Copy_Of_/) { print "ERROR: \"".$line."\"\n"; $line = ""; }
+
 
     # Not an error, but also not needed.
     #
@@ -122,7 +129,10 @@ $lastDir = "";
 while (<R>) {
     chomp;
     $file = $_;
-    if ( -f $file) {
+
+    # Do not know why I have to protect against this, but I get ".html" and "_asm_floor.html", but only in 99-00.
+    #
+    if ( -f $file || $file =~ /\/\.html/ || $file =~ /\/_/) {
         # print "YES ".$file."\n";
         $filesFound++;
     } else {
@@ -219,5 +229,66 @@ print "\nDeleted status files # ".$deleted."\n\n";
 
 chdir "..";
 
+$report = $fetchable;
+$report =~ s/\.txt/\.html/;
+
+$cmd = "/usr/bin/wc -l logs/*.txt";
+
+@counts = `$cmd`;
+chomp(@counts);
+
+print "\n";
+
+foreach (@counts) {
+    $count = $_;
+
+    $count =~ s/  */ /g;
+    $count =~ s/^ //;
+    $count =~ s/ $//;
+
+    if ($count !~ /total$/) {
+
+        @parts = split '_', $count;
+        $time = pop @parts;
+        $date = pop @parts;
+        $session = pop @parts;
+
+        $time =~ s/\.txt//;
+
+        push @datedCounts, $session." ".$date." ".$time." ".$count;
+    }
+}
+
+$lastSession = "";
+
+open F, ">".$report;
+
+print F "<html><head><title>Downloads</title></head>\n";
+print F "<body>\n";
+
+print F "<table border=\"1\">\n";
+print F "<tr>\n";
+
+foreach (sort @datedCounts) {
+
+    ($session, $date, $time, $count, $file) = split ' ', $_;
+
+    if (! defined($lastSession)) {
+        print F "   <td>".$session."</td>\n   <td>\n";
+    } else {
+        if ($session ne $lastSession) { print F "</td>\n<tr>\n   <td>".$session."</td>\n   <td>\n"; $lastSession = $session; }
+    }
+    
+    print F $file.", # ".$count."<br/>\n";
+}
+print F "   </td>\n<tr>\n</body></html>";
+
+close F;
+
+$cmd = "open ".$report;
+print `$cmd`;
+
+
+print "\n";
 exit(0);
 

@@ -1,0 +1,80 @@
+#!/usr/bin/perl
+
+# TODO the table create commands can first determine if a table exists. Since I am not dropping tables, this is ok for now.
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$table{"bills"} = <<SQL
+
+CREATE TABLE `bills` (
+  `pk` int(11) NOT NULL DEFAULT 0,
+  `bill_num` varchar(12) DEFAULT NULL,
+  `session_yrs` char(5) DEFAULT NULL,
+  `status_file` varchar(64) DEFAULT NULL,
+  `authors` varchar(2048) DEFAULT NULL,
+  `comm_action` varchar(1024) DEFAULT NULL,
+  `comm_action_date` char(10) DEFAULT NULL,
+  `comm_location` varchar(128) DEFAULT NULL,
+  `comm_vote_summary` varchar(128) DEFAULT NULL,
+  `file_location` varchar(128) DEFAULT NULL,
+  `file_date` char(10) DEFAULT NULL,
+  `hearing_date` char(10) DEFAULT NULL,
+  `house_location` char(3) DEFAULT NULL,
+  `item` varchar(128) DEFAULT NULL,
+  `last_amended_date` char(10) DEFAULT NULL,
+  `last_hist_act_date` char(10) DEFAULT NULL,
+  `last_hist_action` varchar(512) DEFAULT NULL,
+  `status_date` char(10) DEFAULT NULL,
+  `measure` varchar(32) DEFAULT NULL,
+  `title` varchar(10240) DEFAULT NULL,
+  `topic` varchar(1024) DEFAULT NULL,
+  `type_of_bill` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+$table{"bill_types"} = <<SQL
+
+CREATE TABLE `bill_types` (
+  `pk` int(11) NOT NULL DEFAULT 0,
+  `name` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+$table{"bill_type_joins"} = <<SQL
+
+CREATE TABLE `bill_type_joins` (
+  `bill_pk` int(11) NOT NULL DEFAULT 0,
+  `bill_type_pk` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`bill_pk`,`bill_type_pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+$table{"code_sections"} = <<SQL
+
+CREATE TABLE `code_sections` (
+  `pk` int(11) NOT NULL DEFAULT 0,
+  `name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+$table{"code_section_joins"} = <<SQL
+
+CREATE TABLE `code_section_joins` (
+  `bill_pk` int(11) NOT NULL DEFAULT 0,
+  `section_pk` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`bill_pk`,`section_pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+open M, "| ".&mysql;
+foreach (keys %tables) {
+    print M $tables{$_};
+}
+close M;
+
+exit(0);

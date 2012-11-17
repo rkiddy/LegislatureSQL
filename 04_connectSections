@@ -1,0 +1,72 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+}
+
+%sections = (
+    "Business and Professions Code" => "1",
+    "Civil Code" => "2",
+    "Code of Civil Procedure" => "3",
+    "Commercial Code" => "4",
+    "Corporations Code" => "5",
+    "Education Code" => "6",
+    "Elections Code" => "7",
+    "Evidence Code" => "8",
+    "Family Code" => "9",
+    "Financial Code" => "10",
+    "Fish and Game Code" => "11",
+    "Food and Agricultural Code" => "12",
+    "Government Code" => "13",
+    "Harbors and Navigation Code" => "14",
+    "Health and Safety Code" => "15",
+    "Insurance Code" => "16",
+    "Labor Code" => "17",
+    "Military and Veterans Code" => "18",
+    "Penal Code" => "19",
+    "Probate Code" => "20",
+    "Public Contract Code" => "21",
+    "Public Resources Code" => "22",
+    "Public Utilities Code" => "23",
+    "Revenue and Taxation Code" => "24",
+    "Streets and Highways Code" => "25",
+    "Unemployment Insurance Code" => "26",
+    "Vehicle Code" => "27",
+    "Water Code" => "28",
+    "Welfare and Institutions Code" => "29" );
+
+foreach (keys %sections) {
+
+    $name = $_;
+    $pk = $sections{$name};
+
+    &doSqlResult("insert ignore into code_sections values (".$pk.",'".$name."');");
+}
+
+&doSqlResult("delete from code_section_joins;");
+
+foreach (keys %sections) {
+
+    $name = $_;
+    $pk = $sections{$name};
+
+    @billsPks = &doSqlResults("select pk from bills where title like '%".$name."%';");
+
+    foreach (@billsPks) {
+        $billPk = $_;
+        push @sql, "insert into code_section_joins (bill_pk, section_pk) values (".$billPk.", ".$pk.");\n";
+    }
+}
+
+print "\nCreating section joins # ".scalar(@sql)."\n";
+
+open M, "| ".$mysql; foreach (@sql) { print M $_; } close M;
+
+print "\n";
+
+exit(0);
+

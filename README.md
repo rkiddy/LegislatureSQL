@@ -16,17 +16,33 @@ may be more complete than the data that the OpenStates processing comes up with.
 
 For now, I am not worrying about how documented this is. Mostly I want to not lose this code again.
 
--rrk 2012/10/13
+Note: The script rely on a file in your home directory, named .leg_sql_options.txt, which contains:
+
+    db <name of your MySQL database>
+    user <username for your MySQL user>
+    pwd <password for your MySQL user>
+    session <default session, eg 11-12 or 13-14>
+
+-rrk 2012/11/17
 
 Contents:
 ---------
+
+    00_createTables - creates the tables used here.
 
     01_downloadNewBillFiles - downloads the html files (not pdf) from the leginfo site.
 
     02_importBills - puts bill information from the status files into a table.
 
+    03_importVersions - put entries for the various bill versions into the database.
+
+    04_connectSections - connect the bills to the sections of CA law that they affect.
+
+    cmds.pl - helper subroutines.
+
 Still To Do:
 ------------
 
-Lots of interesting things.
+00_createTables.sql:# TODO the table create commands can first determine if a table exists. Since I am not dropping tables, this is ok for now.
+02_importBills:# TODO - I am not yet adding the status_date value to the bills table. -rrk 2012/11/17
 
