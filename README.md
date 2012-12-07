@@ -38,11 +38,12 @@ Contents:
 
     04_connectSections - connect the bills to the sections of CA law that they affect.
 
+    05_updateStatusDate - from the latest status file.
+
     cmds.pl - helper subroutines.
 
 Still To Do:
 ------------
 
 00_createTables.sql:# TODO the table create commands can first determine if a table exists. Since I am not dropping tables, this is ok for now.
-02_importBills:# TODO - I am not yet adding the status_date value to the bills table. -rrk 2012/11/17
 
