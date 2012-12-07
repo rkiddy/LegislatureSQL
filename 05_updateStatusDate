@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+# TODO - this script needs to use the env defined session id and not its own hard-coded value.
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+}
+
+@statusFiles = &doCmdResults("find leginfo.public.ca.gov/pub/".$session."/bill -name \*_status.html");
+chomp(@statusFiles);
+
+foreach (@statusFiles) {
+
+    @parts = split '/', $_;
+
+    $leaf = pop @parts;
+
+    @parts = split '_', $leaf;
+
+    $first = $parts[0];
+    $second = $parts[1];
+    $third = $parts[scalar(@parts)-2];
+
+    push @sql, "update bills set status_date = '".substr($third,0,4)."-".substr($third,4,2)."-".substr($third,6,2)."' ".
+               "where bill_num = '".$first."_".$second."' and session_yrs = '".$session."';\n";
+}
+
+open M, "| ".&mysql;
+
+foreach (@sql) { print M $_; }
+
+close M;
+
+exit(0);
+
