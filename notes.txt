@@ -1,0 +1,29 @@
+
+See: leginfo.public.ca.gov/pub/11-12/bill/sen/sb_0451-0500/sb_488_bill_20121002_status.html
+
+I have file_location, file_date and item as attributes of a bill, but here is a bill that is in two file locations.
+
+From the status file:
+
+    LAST HIST. ACT. DATE:  09/30/2012
+    LAST HIST. ACTION   :  Chaptered by Secretary of State.  Chapter 865, Statutes
+            of 2012.
+    FILE    :  SEN CONFERENCE REPORTS AT DESK
+    FILE DATE       :  08/31/2012
+    ITEM    :       3
+    
+    FILE    :  ASM CONFERENCE REPORT ADOPTED IN ASSEM
+    FILE DATE       :  08/31/2012
+    ITEM    :  C-  1
+    
+    COMM. LOCATION  :  ASM APPROPRIATIONS
+    COMM. ACTION DATE   :  08/17/2011
+    COMM. ACTION    :  Do pass.
+    COMM. VOTE SUMMARY  :  Ayes:   09       Noes: 04        PASS
+
+How to handle this? Should file_location-item-file_date be in its own table? Need a to-many relationship from bills.
+
+------------------------------------------------------------------------------------------------------------------------
+
+I am now receiving data from the 13-14 session and it seems to be going fine.
+
