@@ -41,13 +41,20 @@ if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/asm" || ! -d "leginfo.pub
 if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/asm" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/asm"; print `$cmd`; }
 if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/sen" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/sen"; print `$cmd`; }
 
-$cmd = "(  echo \"cd pub/".$session."/bill/asm\" ; ".
-          "echo \"ls \*\" ; ".
-          "echo \"cd ../sen\" ; ".
-          "echo \"ls \*\" ; ".
-          "echo \"quit\" ) | ftp -v leginfo.public.ca.gov";
+$cmd = "( echo \"cd pub/".$session."/bill/asm\" ; echo \"ls \*\" ; echo \"quit\" ) | ftp -v leginfo.public.ca.gov ; ".
+       "( echo \"cd pub/".$session."/bill/sen\" ; echo \"ls \*\" ; echo \"quit\" ) | ftp -v leginfo.public.ca.gov";
 @lines = `$cmd`;
 chomp(@lines);
+
+# This _REALLY_ should not be necessary.
+#
+# The fact that there is only one directory under the sen directory at this times means, I guess, that the 'ls -R' command
+# does not list the directory in the same way that it does if more than one directory is found. Is there a way to get the
+# ftp server to be consistent? -rrk 2012/12/07
+#
+$found = 0; foreach (@lines) { $line = $_; if (($line =~ / sb_/) && ($found == 0)) { push @next,"sb_0001-0050:"; $found = 1; } push @next, $line; }
+
+@lines = @next;
 
 $fetchable = `date '+logs/fetchable_XXXXX_%Y%m%d_%H%M%S.txt'`;
 $fetchable =~ s/XXXXX/$session/;
@@ -285,9 +292,11 @@ print F "   </td>\n<tr>\n</body></html>";
 
 close F;
 
-$cmd = "open ".$report;
+$cmd = "open ".$report."\n";
 print `$cmd`;
 
+$cmd = "/bin/rm ".$report."\n";
+print `$cmd`;
 
 print "\n";
 exit(0);
