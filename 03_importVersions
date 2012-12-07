@@ -10,6 +10,14 @@ for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
 }
 
+@billInfos = &doSqlResults("select pk, bill_num from bills where session_yrs = '".$session."';");
+chomp(@billInfos);
+
+foreach (@billInfos) {
+    ($pk, $billNum) = split '\t', $_;
+    $billInfo{$billNum} = $pk;
+}
+
 @versionsInFiles = &doCmdResults("find leginfo.public.ca.gov/pub/".$session."/bill -name \*_bill_\* | grep -v status | grep -v history\n");
 
 @versionsInDB = &doSqlResults("select version_file from bill_versions;");
@@ -47,19 +55,26 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
 
             $billNum = $house."_".$num;
 
-            # print "file: \"".$file."\"\n";
-            # print "dateStr: \"".$dateStr."\"\n";
-            # print "versionType: \"".$versionType."\"\n\n";
+            if (!defined($billInfo{$billNum})) {
+                print "ERROR with billNum: ".$billNum."\n";
+            } else {
 
-            $maxPk++;
+                $billPk = $billInfo{$billNum};
 
-            push @sql, "insert into bill_versions (pk, bill_num, version_file, version_date, version_type) ".
-                       "values (".$maxPk.", '".$billNum."', '".$file."', '".$dateStr."', '".$versionType."');\n";
+                # print "file: \"".$file."\"\n";
+                # print "dateStr: \"".$dateStr."\"\n";
+                # print "versionType: \"".$versionType."\"\n\n";
+
+                $maxPk++;
+
+                push @sql, "insert into bill_versions (pk, bill_pk, version_file, version_date, version_type) ".
+                           "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."');\n";
+            }
         }
     }
 }
 
-open M, "| ".$mysql; foreach (@sql) { print M $_; } close M;
+open M, "| ".&mysql; foreach (@sql) { print M $_; } close M;
 
 print "\nBill versions added # ".scalar(@sql)."\n";
 
