@@ -8,6 +8,7 @@ $session = $options{"session"};
 
 for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+    if ($ARGV[$idx] eq "-v") { $verbose = 1; }
 }
 
 @billInfos = &doSqlResults("select pk, bill_num from bills where session_yrs = '".$session."';");
@@ -20,7 +21,7 @@ foreach (@billInfos) {
 
 @versionsInFiles = &doCmdResults("find leginfo.public.ca.gov/pub/".$session."/bill -name \*_bill_\* | grep -v status | grep -v history\n");
 
-@versionsInDB = &doSqlResults("select version_file from bill_versions;");
+@versionsInDB = &doSqlResults("select v1.version_file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;");
 
 print "\nFound bill versions in files # ".scalar(@versionsInFiles)." and bill versions in DB # ".scalar(@versionsInDB)."\n";
 
@@ -38,7 +39,11 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
 
         $file = $_;
 
+        if (defined($verbose)) { print "NOT YET, file: \"".$file."\"\n"; }
+
         if (($file !~ /status.html$/) && ($file !~ /history.html$/) && (! defined($versionsInDB{$file}))) {
+
+            if (defined($verbose)) { print "IN CHECK, file: \"".$file."\"\n"; }
 
             @parts = split '_', $file;
 
