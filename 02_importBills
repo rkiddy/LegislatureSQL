@@ -6,8 +6,8 @@ require "cmds.pl";
 
 $session = $options{"session"};
 
-if (defined($ARGV[0]) && defined($ARV[1]) && ($ARGV[0] eq "-s")) {
-    $session = $ARGV[1];
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
 }
 
 sub nextKey {
@@ -305,6 +305,27 @@ close M;
 
 @typesInFiles = &doSqlResults("select pk, type_of_bill from bills;");
 
+$maxPk = &doSqlResult("select max(pk) from bill_types;");
+if ($maxPk eq "NULL") { $maxPk = 0; }
+
+# Make sure we have something for every bill type.
+#
+foreach (@typesInFiles) {
+    ($billPk, $billTypes_list) = split '\t', $_;
+    @billTypes = split ',', $billTypes_list;
+    foreach (@billTypes) {
+        $types{$_} = 1;
+    }
+}
+
+foreach (sort keys %types) {
+    $type = $_;
+    $pk = &doSqlResult("select pk from bill_types where name = '".$type."';");
+    if ($pk eq "") { $maxPk++; &doSqlResults("insert into bill_types (pk, name) values (".$maxPk.", '".$type."');"); }
+}
+
+# Link the bill types to the bills.
+#
 foreach (@typesInFiles) {
 
     ($billPk, $billTypes_list) = split '\t', $_;
@@ -316,8 +337,7 @@ foreach (@typesInFiles) {
         if ($billType eq "NULL") {
             print "\nbill_type is NULL for status of bill \"".$billNum."\"\n";
         } else {
-            push @sql, "insert into bill_type_joins (bill_pk, bill_type_pk) ".
-                       "values ('".$billPk."', (select pk from bill_types where name = '".$_."'));\n";
+            push @sql, "insert into bill_type_joins (bill_pk, bill_type_pk) values (".$billPk.", (select pk from bill_types where name = '".$billType."'));\n";
         }
     }
 }
