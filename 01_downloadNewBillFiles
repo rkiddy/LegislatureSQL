@@ -234,6 +234,33 @@ foreach (@statuses) {
 
 print "\nDeleted status files # ".$deleted."\n\n";
 
+$cmd = "find pub/".$session."/bill -name \*history\*.html | sort";
+@historys = `$cmd`;
+chomp(@historys);
+
+$deleted = 0;
+
+foreach (@historys) {
+    $history = $_;
+
+    @parts = split '/', $history;
+
+    $fileName = pop @parts;
+    $dir = pop @parts;
+    if ($fileName =~ /_bill_/) {
+        $billNum = $dir."/".$`;
+
+        if (defined($billhistory{$billNum})) {
+            print "deleting \"".$billhistory{$billNum}."\"\n";
+            unlink $billhistory{$billNum};
+            $deleted++;
+        }
+        $billhistory{$billNum} = $history;
+    }
+}
+
+print "\nDeleted history files # ".$deleted."\n\n";
+
 chdir "..";
 
 $report = $fetchable;
@@ -291,9 +318,6 @@ foreach (sort @datedCounts) {
 print F "   </td>\n<tr>\n</body></html>";
 
 close F;
-
-$cmd = "open ".$report."\n";
-print `$cmd`;
 
 $cmd = "/bin/rm ".$report."\n";
 print `$cmd`;
