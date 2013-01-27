@@ -1,0 +1,16 @@
+#!/bin/sh
+
+./01_downloadNewBillFiles $*
+
+./02_importBills $*
+
+./03_importVersions $*
+
+./04_connectSections $*
+
+./05_updateStatusDate $*
+
+./06_thisBillWoulds $*
+
+./99_testData $*
+
