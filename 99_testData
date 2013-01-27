@@ -1,0 +1,115 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+}
+ 
+print "\nTESTING\n";
+
+print "\nsession = \"".$session."\"\n\n";
+
+# Files
+
+undef %billFiles;
+undef %billRecords;
+
+$cmd = "find leginfo.public.ca.gov/pub/".$session."/bill/*/* -type f | ".
+       "grep '_bill_' | awk 'BEGIN{FS=\"/\"}{print \$NF}' | awk 'BEGIN{FS=\"_\"}{print \$1\"_\"\$2}' | ".
+       "sort | uniq";
+# print "cmd: ".$cmd."\n";
+@files = `$cmd`;
+chomp(@files);
+
+foreach (@files) { $billFiles{$_} = 1; }
+
+$sql = "select bill_num from bills where session_yrs = '".$session."';";
+@bills = &doSqlResults($sql);
+
+print "billFiles # ".scalar(keys %billFiles)."\n";
+print "bills # ".scalar(@bills)."\n";
+
+foreach (@bills) { $billRecords{$_} = 1; }
+
+foreach (keys %billFiles) { delete $billRecords{$_}; }
+foreach (@bills) { delete $billFiles{$_}; }
+
+print "non-matching bills from files # ".scalar(keys %billFiles)."\n";
+print "non-matching bills from db # ".scalar(keys %billRecords)."\n";
+
+if (scalar(keys %billFiles) > 0) {
+  print "\nNon-Matching Bills from Files:\n\n";
+  foreach (keys %billFiles) { print "    ".$_."\n"; }
+}
+print "\n";
+
+if (scalar(keys %versions) > 0) {
+  print "\nNon-Matching Bills from DB:\n\n";
+  foreach (keys %billRecords) { print "    ".$_."\n"; }
+}
+print "\n";
+
+# Versions
+
+undef %files;
+undef %versions;
+
+$cmd = "/usr/bin/find leginfo.public.ca.gov/pub/".$session."/bill/*/* -type f | ".
+       "grep '_bill_' | grep -v '_history.html' | grep -v '_status.html'\n";
+# print "cmd: ".$cmd."\n";
+@files = `$cmd`;
+chomp(@files);
+
+$sql = "select v1.version_file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;";
+
+@versions = &doSqlResults($sql);
+
+print "files # ".scalar(@files)."\n";
+print "versions # ".scalar(@versions)."\n";
+
+foreach (@files) { s/\.gz$//; $files{$_} = 1; }
+foreach (@versions) { $versions{$_} = 1; }
+
+foreach (@files) { delete $versions{$_}; }
+foreach (@versions) { delete $files{$_}; }
+
+print "non-matching files # ".scalar(keys %files)."\n";
+print "non-matching versions # ".scalar(keys %versions)."\n";
+
+if (scalar(keys %files) > 0) {
+  print "\nNon-Matching Files:\n\n";
+  foreach (keys %files) { print "    ".$_."\n"; }
+}
+print "\n";
+
+if (scalar(keys %versions) > 0) {
+  print "\nNon-Matching Versions:\n\n";
+  foreach (keys %versions) { print "    ".$_."\n"; }
+}
+print "\n";
+
+$sql = "select v1.pk from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;";
+
+@versionPks = &doSqlResults($sql);
+
+$missing = 0;
+
+foreach (@versionPks) {
+     $versionPk = $_;
+     $sentences = &doSqlResult("select count(*) from bill_woulds where version_pk = ".$versionPk.";");
+     if ($sentences == 0) {
+         $file = &doSqlResult("select version_file from bill_versions where pk = ".$versionPk.";");
+         print "Sentences # 0 from bill version: \"".$file."\"\n";
+         $missing++;
+     }
+}
+
+if ($missing == 0) { print "Missing sentences # 0.\n"; }
+
+print "\n";
+exit(0);
