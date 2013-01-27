@@ -1,0 +1,18 @@
+{
+    EOModelVersion = "2.1"; 
+    adaptorName = JDBC; 
+    connectionDictionary = {URL = ""; password = ""; username = ""; }; 
+    entities = (
+        {className = "org.ganymede.leginfo.eo.Bill"; name = Bill; }, 
+        {className = "org.ganymede.leginfo.eo.BillType"; name = BillType; }, 
+        {className = "com.webobjects.eocontrol.EOGenericRecord"; name = BillTypeJoin; }, 
+        {className = "org.ganymede.leginfo.eo.BillVersion"; name = BillVersion; }, 
+        {className = "org.ganymede.leginfo.eo.BillWould"; name = BillWould; }, 
+        {className = "org.ganymede.leginfo.eo.CodeSection"; name = CodeSection; }, 
+        {
+            className = "com.webobjects.eocontrol.EOGenericRecord"; 
+            name = CodeSectionJoin; 
+        }
+    ); 
+    userInfo = {"_EntityModeler" = {reverseEngineered = Y; }; }; 
+}

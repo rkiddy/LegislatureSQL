@@ -1,0 +1,36 @@
+{
+    attributes = (
+        {
+            columnName = name; 
+            externalType = varchar; 
+            name = name; 
+            valueClassName = NSString; 
+            width = 32; 
+        }, 
+        {
+            columnName = pk; 
+            externalType = INT; 
+            name = pk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }
+    ); 
+    attributesUsedForLocking = (name, pk); 
+    className = "org.ganymede.leginfo.eo.BillType"; 
+    classProperties = (bills, name); 
+    externalName = "bill_types"; 
+    fetchSpecificationDictionary = {}; 
+    name = BillType; 
+    primaryKeyAttributes = (pk); 
+    relationships = (
+        {definition = "billTypeJoins.bill"; name = bills; }, 
+        {
+            destination = BillTypeJoin; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = billTypePk; sourceAttribute = pk; }); 
+            name = billTypeJoins; 
+            propagatesPrimaryKey = Y; 
+        }
+    ); 
+}

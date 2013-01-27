@@ -1,0 +1,42 @@
+{
+    attributes = (
+        {
+            columnName = "bill_pk"; 
+            externalType = INT; 
+            name = billPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = "bill_type_pk"; 
+            externalType = INT; 
+            name = billTypePk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }
+    ); 
+    attributesUsedForLocking = (billPk, billTypePk); 
+    className = "com.webobjects.eocontrol.EOGenericRecord"; 
+    externalName = "bill_type_joins"; 
+    fetchSpecificationDictionary = {}; 
+    name = BillTypeJoin; 
+    primaryKeyAttributes = (billPk, billTypePk); 
+    relationships = (
+        {
+            destination = Bill; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = pk; sourceAttribute = billPk; }); 
+            name = bill; 
+        }, 
+        {
+            destination = BillType; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = pk; sourceAttribute = billTypePk; }); 
+            name = billType; 
+        }
+    ); 
+}

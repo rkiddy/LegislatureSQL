@@ -1,0 +1,232 @@
+{
+    attributes = (
+        {
+            allowsNull = Y; 
+            columnName = authors; 
+            externalType = varchar; 
+            name = authors; 
+            valueClassName = NSString; 
+            width = 2048; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "bill_num"; 
+            externalType = varchar; 
+            name = billNum; 
+            valueClassName = NSString; 
+            width = 12; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "comm_action"; 
+            externalType = varchar; 
+            name = commAction; 
+            valueClassName = NSString; 
+            width = 1024; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "comm_action_date"; 
+            externalType = CHAR; 
+            name = commActionDate; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "comm_location"; 
+            externalType = varchar; 
+            name = commLocation; 
+            valueClassName = NSString; 
+            width = 128; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "comm_vote_summary"; 
+            externalType = varchar; 
+            name = commVoteSummary; 
+            valueClassName = NSString; 
+            width = 128; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "file_date"; 
+            externalType = CHAR; 
+            name = fileDate; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "file_location"; 
+            externalType = varchar; 
+            name = fileLocation; 
+            valueClassName = NSString; 
+            width = 128; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "hearing_date"; 
+            externalType = CHAR; 
+            name = hearingDate; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "house_location"; 
+            externalType = CHAR; 
+            name = houseLocation; 
+            valueClassName = NSString; 
+            width = 3; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = item; 
+            externalType = varchar; 
+            name = item; 
+            valueClassName = NSString; 
+            width = 128; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "last_amended_date"; 
+            externalType = CHAR; 
+            name = lastAmendedDate; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "last_hist_act_date"; 
+            externalType = CHAR; 
+            name = lastHistActDate; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "last_hist_action"; 
+            externalType = varchar; 
+            name = lastHistAction; 
+            valueClassName = NSString; 
+            width = 512; 
+        }, 
+        {
+            columnName = measure; 
+            externalType = varchar; 
+            name = measure; 
+            valueClassName = NSString; 
+            width = 32; 
+        }, 
+        {
+            columnName = pk; 
+            externalType = INT; 
+            name = pk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = "session_yrs"; 
+            externalType = CHAR; 
+            name = sessionYrs; 
+            valueClassName = NSString; 
+            width = 5; 
+        }, 
+        {
+            columnName = "status_date"; 
+            externalType = char; 
+            name = statusDate; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            columnName = "status_file"; 
+            externalType = varchar; 
+            name = statusFile; 
+            valueClassName = NSString; 
+            width = 64; 
+        }, 
+        {
+            columnName = title; 
+            externalType = varchar; 
+            name = title; 
+            valueClassName = NSString; 
+            width = 10240; 
+        }, 
+        {
+            columnName = topic; 
+            externalType = varchar; 
+            name = topic; 
+            valueClassName = NSString; 
+            width = 1024; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "type_of_bill"; 
+            externalType = varchar; 
+            name = typeOfBill; 
+            valueClassName = NSString; 
+            width = 128; 
+        }
+    ); 
+    attributesUsedForLocking = (billNum, pk, sessionYrs, statusDate, statusFile); 
+    className = "org.ganymede.leginfo.eo.Bill"; 
+    classProperties = (
+        authors, 
+        billNum, 
+        billTypes, 
+        codeSections, 
+        commAction, 
+        commActionDate, 
+        commLocation, 
+        commVoteSummary, 
+        fileDate, 
+        fileLocation, 
+        hearingDate, 
+        houseLocation, 
+        item, 
+        lastAmendedDate, 
+        lastHistActDate, 
+        lastHistAction, 
+        measure, 
+        sessionYrs, 
+        statusDate, 
+        statusFile, 
+        title, 
+        topic, 
+        typeOfBill, 
+        versions
+    ); 
+    externalName = bills; 
+    fetchSpecificationDictionary = {}; 
+    name = Bill; 
+    primaryKeyAttributes = (pk); 
+    relationships = (
+        {
+            destination = BillTypeJoin; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = billPk; sourceAttribute = pk; }); 
+            name = billTypeJoins; 
+            propagatesPrimaryKey = Y; 
+        }, 
+        {definition = "billTypeJoins.billType"; name = billTypes; }, 
+        {
+            destination = CodeSectionJoin; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = billPk; sourceAttribute = pk; }); 
+            name = codeSectionJoins; 
+        }, 
+        {definition = "codeSectionJoins.codeSection"; name = codeSections; }, 
+        {
+            destination = BillVersion; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = billPk; sourceAttribute = pk; }); 
+            name = versions; 
+        }
+    ); 
+    restrictingQualifier = "sessionYrs = \"13-14\""; 
+}

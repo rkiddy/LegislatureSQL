@@ -1,0 +1,63 @@
+{
+    attributes = (
+        {
+            columnName = "bill_pk"; 
+            externalType = int; 
+            name = billPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = pk; 
+            externalType = INT; 
+            name = pk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = "version_date"; 
+            externalType = CHAR; 
+            name = versionDate; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            columnName = "version_file"; 
+            externalType = varchar; 
+            name = versionFile; 
+            valueClassName = NSString; 
+            width = 128; 
+        }, 
+        {
+            columnName = "version_type"; 
+            externalType = varchar; 
+            name = versionType; 
+            valueClassName = NSString; 
+            width = 32; 
+        }
+    ); 
+    attributesUsedForLocking = (billPk, pk); 
+    className = "org.ganymede.leginfo.eo.BillVersion"; 
+    classProperties = (bill, billWoulds, versionDate, versionFile, versionType); 
+    externalName = "bill_versions"; 
+    fetchSpecificationDictionary = {}; 
+    name = BillVersion; 
+    primaryKeyAttributes = (pk); 
+    relationships = (
+        {
+            destination = Bill; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = pk; sourceAttribute = billPk; }); 
+            name = bill; 
+        }, 
+        {
+            destination = BillWould; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = versionPk; sourceAttribute = pk; }); 
+            name = billWoulds; 
+        }
+    ); 
+}

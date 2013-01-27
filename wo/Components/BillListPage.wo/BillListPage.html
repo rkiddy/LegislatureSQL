@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+	<title>CA Legislature WO</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+</head>
+<body>
+
+<p><wo:link pageName="Main">Back to Main</wo:link><p>
+
+<table border="1">
+<tr>
+	<th>Measure</th>
+	<th>Info</th>
+</tr>
+<wo:loop list="$bills" item="$bill">
+<tr>
+	<td nowrap rowspan="6"><wo:str value="$bill.measure" /></td>
+	<td>Short Title</td>
+	<td><wo:str value="$bill.shortTitle" /></td>
+</tr>
+<tr>
+	<td>Topic</td>
+	<td><wo:str value="$bill.topic" /></td>
+</tr>
+<tr>
+	<td>Authors</td>
+	<td><wo:str value="$bill.authors" /></td>
+</tr>
+<tr>
+	<td>Versions</td>
+	<td>
+		<wo:loop list="$bill.versions" item="$billVersion">
+		<wo:str value="$billVersion.versionDate//VALID" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" billVersion="$billVersion"><wo:str value="$billVersion.versionType//VALID" /></wo:ERXDataHyperlink><br/>
+		</wo:loop>
+	</td>
+</tr>
+<tr>
+	<td>LastHistAction</td>
+	<td><wo:str value="$bill.lastHistAction" /></td>
+</tr>
+<tr>
+	<td>Section(s)</td>
+	<td><wo:str value="$bill.codeSections.name//VALID" /></td>
+</tr>
+<tr><td colspan="3">&nbsp;</td></tr>
+</wo:loop>
+</table>
+
+</body></html>
