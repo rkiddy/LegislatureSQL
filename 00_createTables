@@ -9,29 +9,32 @@ require "cmds.pl";
 $table{"bills"} = <<SQL
 
 CREATE TABLE `bills` (
-  `pk` int(11) NOT NULL DEFAULT 0,
+  `pk` int(11) NOT NULL DEFAULT '0',
   `bill_num` varchar(12) DEFAULT NULL,
-  `session_yrs` char(5) DEFAULT NULL,
-  `status_file` varchar(64) DEFAULT NULL,
+  `session_yrs` char(5) CHARACTER SET latin1 DEFAULT NULL,
+  `status_file` varchar(64) CHARACTER SET latin1 DEFAULT NULL,
+  `history_file` varchar(64) DEFAULT NULL,
   `authors` varchar(2048) DEFAULT NULL,
-  `comm_action` varchar(1024) DEFAULT NULL,
-  `comm_action_date` char(10) DEFAULT NULL,
-  `comm_location` varchar(128) DEFAULT NULL,
-  `comm_vote_summary` varchar(128) DEFAULT NULL,
-  `file_location` varchar(128) DEFAULT NULL,
-  `file_date` char(10) DEFAULT NULL,
-  `hearing_date` char(10) DEFAULT NULL,
-  `house_location` char(3) DEFAULT NULL,
-  `item` varchar(128) DEFAULT NULL,
-  `last_amended_date` char(10) DEFAULT NULL,
-  `last_hist_act_date` char(10) DEFAULT NULL,
-  `last_hist_action` varchar(512) DEFAULT NULL,
+  `comm_action` varchar(1024) CHARACTER SET latin1 DEFAULT NULL,
+  `comm_action_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
+  `comm_location` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
+  `comm_vote_summary` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
+  `file_location` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
+  `file_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
+  `hearing_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
+  `house_location` char(3) CHARACTER SET latin1 DEFAULT NULL,
+  `item` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
+  `last_amended_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
+  `last_hist_act_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
+  `last_hist_action` varchar(512) CHARACTER SET latin1 DEFAULT NULL,
   `status_date` char(10) DEFAULT NULL,
-  `measure` varchar(32) DEFAULT NULL,
-  `title` varchar(10240) DEFAULT NULL,
-  `topic` varchar(1024) DEFAULT NULL,
-  `type_of_bill` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`pk`)
+  `measure` varchar(32) CHARACTER SET latin1 DEFAULT NULL,
+  `title` varchar(10240) CHARACTER SET latin1 DEFAULT NULL,
+  `topic` varchar(1024) CHARACTER SET latin1 DEFAULT NULL,
+  `type_of_bill` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
+  PRIMARY KEY (`pk`),
+  UNIQUE KEY `bill_num_2` (`bill_num`,`session_yrs`),
+  KEY `bill_num` (`bill_num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
@@ -68,6 +71,16 @@ CREATE TABLE `code_section_joins` (
   `bill_pk` int(11) NOT NULL DEFAULT 0,
   `section_pk` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`bill_pk`,`section_pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+$table{"bill_woulds") = <<SQL
+
+CREATE TABLE `bill_woulds` (
+  `pk` int(11) NOT NULL,
+  `version_pk` int(11) DEFAULT NULL,
+  `sentence` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
