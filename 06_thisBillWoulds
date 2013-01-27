@@ -1,0 +1,102 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+    if ($ARGV[$idx] eq "-v") { $verbose = 1; }
+}
+
+@versions = &doSqlResults("select v1.pk, v1.version_file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;");
+chomp(@versions);
+
+foreach (@versions) {
+    ($pk, $file) = split '\t', $_;
+    $version{$pk} = $file;
+    $file{$file} = $pk;
+}
+
+print "\nFound bill versions # ".scalar(@versions)."\n";
+
+@sentences = &doSqlResults("select pk, version_pk from bill_woulds;");
+chomp(@sentences);
+
+foreach (@sentences) {
+    ($pk, $versionPk) = split '\t', $_;
+    $sentences{$versionPk} = $pk;
+}
+
+print "\nFound sentences # ".scalar(@sentences)."\n";
+
+foreach (keys %version) {
+    $versionPk = $_;
+    if (! defined($sentences{$versionPk})) {
+        push @needed, $version{$versionPk};
+    }
+}
+
+print "\nNeeded # ".scalar(@needed)."\n";
+
+$maxPk = &doSqlResult("select max(pk) from bill_woulds;");
+if (($maxPk eq "") || ($maxPk eq "NULL")) { $maxPk = 0; }
+
+$pk = $maxPk + 1;
+
+foreach (@needed) {
+    $file = $_;
+
+    $versionPk = $file{$file};
+
+    open F, $file;
+    @lines = <F>;
+    chomp(@lines);
+
+    for ($idx = 0; $idx < scalar(@lines); $idx++) {
+        if ($lines[$idx] eq "") { $lines[$idx] = "."; }
+        if ($lines[$idx] =~ /be it$/) { $lines[$idx] .= "."; }
+        if ($lines[$idx] =~ /be it further$/) { $lines[$idx] .= "."; }
+    }
+
+    $allLines = join ' ', @lines;
+
+    $allLines =~ s/<em>//g;
+    $allLines =~ s/<\/em>//g;
+
+    $allLines =~ s/  */ /g;
+
+    @lines = split '\.', $allLines;
+
+    for ($idx = 0; $idx < scalar(@lines); $idx++) { $lines[$idx] =~ s/^ *//; $lines[$idx] .= "."; }
+
+    # if ($file =~ /sr_8_bill_20130109_introduced.html/) { for ($idx = 0; $idx < scalar(@lines); $idx++) { print "[".$idx."] = \"".$lines[$idx]."\"\n"; }}
+
+    foreach (@lines) {
+        $line = $_;
+
+        $line =~ s/'/''/g;
+
+        if (($line =~ /^This bill would/) ||
+            ($line =~ /^This measure would/) ||
+            ($line =~ /^With specified exceptions, this bill would/) ||
+            ($line =~ /^This measure states/) ||
+            ($line =~ /^This bill states/) ||
+            ($line =~ /^Resolved/)) {
+            push @sql, "insert into bill_woulds (pk, version_pk, sentence) values (".$pk.",".$versionPk.",'".$line."');\n";
+            $pk++;
+        }
+    }
+}
+
+print "\nSentences to add # ".scalar(@sql)."\n";
+
+open M, "| ".&mysql;
+foreach (@sql) { print M $_; }
+close M;
+
+print "\n";
+exit(0);
+
