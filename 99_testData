@@ -14,7 +14,7 @@ print "\nTESTING\n";
 
 print "\nsession = \"".$session."\"\n\n";
 
-# Files
+print "Files:\n\n";
 
 undef %billFiles;
 undef %billRecords;
@@ -52,9 +52,8 @@ if (scalar(keys %versions) > 0) {
   print "\nNon-Matching Bills from DB:\n\n";
   foreach (keys %billRecords) { print "    ".$_."\n"; }
 }
-print "\n";
 
-# Versions
+print "Versions:\n\n";
 
 undef %files;
 undef %versions;
@@ -91,7 +90,8 @@ if (scalar(keys %versions) > 0) {
   print "\nNon-Matching Versions:\n\n";
   foreach (keys %versions) { print "    ".$_."\n"; }
 }
-print "\n";
+
+print "Sentences:\n\n";
 
 $sql = "select v1.pk from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;";
 
@@ -112,4 +112,13 @@ foreach (@versionPks) {
 if ($missing == 0) { print "Missing sentences # 0.\n"; }
 
 print "\n";
+
+print "Status/History Files:\n\n";
+
+print "Bad status # ".&doSqlResult("select count(*) from bills where session_yrs = '".$session."' and status_file not like '%html';")."\n";
+
+print "Bad history # ".&doSqlResult("select count(*) from bills where session_yrs = '".$session."' and history_file not like '%html';")."\n";
+
+print "\n\n";
+
 exit(0);
