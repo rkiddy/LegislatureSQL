@@ -102,7 +102,7 @@ foreach (keys %nextStatus) {
     $historyFile = `$cmd`;
     chomp($historyFile);
 
-    $historyFile =~ s/leginfo.public.ca.gov\/bill//;
+    $historyFile =~ s/leginfo.public.ca.gov\/pub//;
 
     push @sql, "update bills set status_file = '".$statusFile."', ".
                "history_file = '".$historyFile."', ".
