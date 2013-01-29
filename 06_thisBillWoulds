@@ -79,7 +79,7 @@ foreach (@needed) {
 
         $line =~ s/'/''/g;
 
-        if (($line =~ /^This bill would/) ||
+        if (($line =~ /^This bill/ && $line =~ /would/) ||
             ($line =~ /^This measure would/) ||
             ($line =~ /^With specified exceptions, this bill would/) ||
             ($line =~ /^This measure states/) ||
