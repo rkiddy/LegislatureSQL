@@ -21,7 +21,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
   public static final ERXKey<String> VERSION_TYPE = new ERXKey<String>("versionType");
   // Relationship Keys
   public static final ERXKey<org.ganymede.leginfo.eo.Bill> BILL = new ERXKey<org.ganymede.leginfo.eo.Bill>("bill");
-  public static final ERXKey<org.ganymede.leginfo.eo.BillWould> BILL_WOULDS = new ERXKey<org.ganymede.leginfo.eo.BillWould>("billWoulds");
+  public static final ERXKey<org.ganymede.leginfo.eo.BillWould> WOULDS = new ERXKey<org.ganymede.leginfo.eo.BillWould>("woulds");
 
   // Attributes
   public static final String VERSION_DATE_KEY = VERSION_DATE.key();
@@ -29,7 +29,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
   public static final String VERSION_TYPE_KEY = VERSION_TYPE.key();
   // Relationships
   public static final String BILL_KEY = BILL.key();
-  public static final String BILL_WOULDS_KEY = BILL_WOULDS.key();
+  public static final String WOULDS_KEY = WOULDS.key();
 
   private static Logger LOG = Logger.getLogger(_BillVersion.class);
 
@@ -99,19 +99,19 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     }
   }
   
-  public NSArray<org.ganymede.leginfo.eo.BillWould> billWoulds() {
-    return (NSArray<org.ganymede.leginfo.eo.BillWould>)storedValueForKey(_BillVersion.BILL_WOULDS_KEY);
+  public NSArray<org.ganymede.leginfo.eo.BillWould> woulds() {
+    return (NSArray<org.ganymede.leginfo.eo.BillWould>)storedValueForKey(_BillVersion.WOULDS_KEY);
   }
 
-  public NSArray<org.ganymede.leginfo.eo.BillWould> billWoulds(EOQualifier qualifier) {
-    return billWoulds(qualifier, null, false);
+  public NSArray<org.ganymede.leginfo.eo.BillWould> woulds(EOQualifier qualifier) {
+    return woulds(qualifier, null, false);
   }
 
-  public NSArray<org.ganymede.leginfo.eo.BillWould> billWoulds(EOQualifier qualifier, boolean fetch) {
-    return billWoulds(qualifier, null, fetch);
+  public NSArray<org.ganymede.leginfo.eo.BillWould> woulds(EOQualifier qualifier, boolean fetch) {
+    return woulds(qualifier, null, fetch);
   }
 
-  public NSArray<org.ganymede.leginfo.eo.BillWould> billWoulds(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings, boolean fetch) {
+  public NSArray<org.ganymede.leginfo.eo.BillWould> woulds(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings, boolean fetch) {
     NSArray<org.ganymede.leginfo.eo.BillWould> results;
     if (fetch) {
       EOQualifier fullQualifier;
@@ -130,7 +130,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       results = org.ganymede.leginfo.eo.BillWould.fetchBillWoulds(editingContext(), fullQualifier, sortOrderings);
     }
     else {
-      results = billWoulds();
+      results = woulds();
       if (qualifier != null) {
         results = (NSArray<org.ganymede.leginfo.eo.BillWould>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
       }
@@ -141,55 +141,55 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     return results;
   }
   
-  public void addToBillWoulds(org.ganymede.leginfo.eo.BillWould object) {
-    includeObjectIntoPropertyWithKey(object, _BillVersion.BILL_WOULDS_KEY);
+  public void addToWoulds(org.ganymede.leginfo.eo.BillWould object) {
+    includeObjectIntoPropertyWithKey(object, _BillVersion.WOULDS_KEY);
   }
 
-  public void removeFromBillWoulds(org.ganymede.leginfo.eo.BillWould object) {
-    excludeObjectFromPropertyWithKey(object, _BillVersion.BILL_WOULDS_KEY);
+  public void removeFromWoulds(org.ganymede.leginfo.eo.BillWould object) {
+    excludeObjectFromPropertyWithKey(object, _BillVersion.WOULDS_KEY);
   }
 
-  public void addToBillWouldsRelationship(org.ganymede.leginfo.eo.BillWould object) {
+  public void addToWouldsRelationship(org.ganymede.leginfo.eo.BillWould object) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-      _BillVersion.LOG.debug("adding " + object + " to billWoulds relationship");
+      _BillVersion.LOG.debug("adding " + object + " to woulds relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToBillWoulds(object);
+    	addToWoulds(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.BILL_WOULDS_KEY);
+    	addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.WOULDS_KEY);
     }
   }
 
-  public void removeFromBillWouldsRelationship(org.ganymede.leginfo.eo.BillWould object) {
+  public void removeFromWouldsRelationship(org.ganymede.leginfo.eo.BillWould object) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-      _BillVersion.LOG.debug("removing " + object + " from billWoulds relationship");
+      _BillVersion.LOG.debug("removing " + object + " from woulds relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromBillWoulds(object);
+    	removeFromWoulds(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.BILL_WOULDS_KEY);
+    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.WOULDS_KEY);
     }
   }
 
-  public org.ganymede.leginfo.eo.BillWould createBillWouldsRelationship() {
+  public org.ganymede.leginfo.eo.BillWould createWouldsRelationship() {
     EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName( org.ganymede.leginfo.eo.BillWould.ENTITY_NAME );
     EOEnterpriseObject eo = eoClassDesc.createInstanceWithEditingContext(editingContext(), null);
     editingContext().insertObject(eo);
-    addObjectToBothSidesOfRelationshipWithKey(eo, _BillVersion.BILL_WOULDS_KEY);
+    addObjectToBothSidesOfRelationshipWithKey(eo, _BillVersion.WOULDS_KEY);
     return (org.ganymede.leginfo.eo.BillWould) eo;
   }
 
-  public void deleteBillWouldsRelationship(org.ganymede.leginfo.eo.BillWould object) {
-    removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.BILL_WOULDS_KEY);
+  public void deleteWouldsRelationship(org.ganymede.leginfo.eo.BillWould object) {
+    removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.WOULDS_KEY);
     editingContext().deleteObject(object);
   }
 
-  public void deleteAllBillWouldsRelationships() {
-    Enumeration<org.ganymede.leginfo.eo.BillWould> objects = billWoulds().immutableClone().objectEnumerator();
+  public void deleteAllWouldsRelationships() {
+    Enumeration<org.ganymede.leginfo.eo.BillWould> objects = woulds().immutableClone().objectEnumerator();
     while (objects.hasMoreElements()) {
-      deleteBillWouldsRelationship(objects.nextElement());
+      deleteWouldsRelationship(objects.nextElement());
     }
   }
 

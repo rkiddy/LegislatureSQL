@@ -31,8 +31,16 @@
 	<td>Versions</td>
 	<td>
 		<wo:loop list="$bill.versions" item="$billVersion">
-		<wo:str value="$billVersion.versionDate//VALID" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" billVersion="$billVersion"><wo:str value="$billVersion.versionType//VALID" /></wo:ERXDataHyperlink><br/>
-		</wo:loop>
+		<table border="1">
+		<tr><td>
+			<wo:str value="$billVersion.versionDate" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" billVersion="$billVersion"><wo:str value="$billVersion.versionType" /></wo:ERXDataHyperlink><br/>
+		</td></tr>
+		<tr><td>
+			<wo:loop list="$billVersion.woulds" item="$would">
+			<wo:str value="$would.sentence" /><br/>
+			</wo:loop>
+		</td></tr>
+		</table></wo:loop>
 	</td>
 </tr>
 <tr>

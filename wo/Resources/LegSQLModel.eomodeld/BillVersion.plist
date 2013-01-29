@@ -38,7 +38,7 @@
     ); 
     attributesUsedForLocking = (billPk, pk); 
     className = "org.ganymede.leginfo.eo.BillVersion"; 
-    classProperties = (bill, billWoulds, versionDate, versionFile, versionType); 
+    classProperties = (bill, versionDate, versionFile, versionType, woulds); 
     externalName = "bill_versions"; 
     fetchSpecificationDictionary = {}; 
     name = BillVersion; 
@@ -57,7 +57,7 @@
             isToMany = Y; 
             joinSemantic = EOInnerJoin; 
             joins = ({destinationAttribute = versionPk; sourceAttribute = pk; }); 
-            name = billWoulds; 
+            name = woulds; 
         }
     ); 
 }
