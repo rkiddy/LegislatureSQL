@@ -26,7 +26,7 @@ $cmd = "find leginfo.public.ca.gov/pub/".$session."/bill/*/* -type f | ".
 @files = `$cmd`;
 chomp(@files);
 
-foreach (@files) { $billFiles{$_} = 1; }
+foreach (@files) { s/leginfo.public.ca.gov\/pub\///; $billFiles{$_} = 1; }
 
 $sql = "select bill_num from bills where session_yrs = '".$session."';";
 @bills = &doSqlResults($sql);
@@ -64,14 +64,14 @@ $cmd = "/usr/bin/find leginfo.public.ca.gov/pub/".$session."/bill/*/* -type f | 
 @files = `$cmd`;
 chomp(@files);
 
-$sql = "select v1.version_file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;";
+$sql = "select v1.file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;";
 
 @versions = &doSqlResults($sql);
 
 print "files # ".scalar(@files)."\n";
 print "versions # ".scalar(@versions)."\n";
 
-foreach (@files) { s/\.gz$//; $files{$_} = 1; }
+foreach (@files) { s/\.gz$//; s/leginfo.public.ca.gov\/pub\///; $files{$_} = 1; }
 foreach (@versions) { $versions{$_} = 1; }
 
 foreach (@files) { delete $versions{$_}; }
@@ -103,7 +103,7 @@ foreach (@versionPks) {
      $versionPk = $_;
      $sentences = &doSqlResult("select count(*) from bill_woulds where version_pk = ".$versionPk.";");
      if ($sentences == 0) {
-         $file = &doSqlResult("select version_file from bill_versions where pk = ".$versionPk.";");
+         $file = &doSqlResult("select file from bill_versions where pk = ".$versionPk.";");
          print "Sentences # 0 from bill version: \"".$file."\"\n";
          $missing++;
      }

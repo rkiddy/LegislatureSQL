@@ -11,7 +11,7 @@ for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-v") { $verbose = 1; }
 }
 
-@versions = &doSqlResults("select v1.pk, v1.version_file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;");
+@versions = &doSqlResults("select v1.pk, v1.file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;");
 chomp(@versions);
 
 foreach (@versions) {
@@ -51,7 +51,7 @@ foreach (@needed) {
 
     $versionPk = $file{$file};
 
-    open F, $file;
+    open F, "leginfo.public.ca.gov/pub/".$file;
     @lines = <F>;
     chomp(@lines);
 
