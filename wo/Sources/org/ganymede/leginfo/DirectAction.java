@@ -8,12 +8,12 @@ import er.extensions.appserver.ERXDirectAction;
 import org.ganymede.leginfo.ui.Main;
 
 public class DirectAction extends ERXDirectAction {
-	public DirectAction(WORequest request) {
-		super(request);
-	}
+    public DirectAction(WORequest request) {
+        super(request);
+    }
 
-	@Override
-	public WOActionResults defaultAction() {
-		return pageWithName(Main.class.getName());
-	}
+    @Override
+    public WOActionResults defaultAction() {
+        return pageWithName(Main.class.getName());
+    }
 }

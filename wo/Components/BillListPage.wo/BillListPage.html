@@ -15,7 +15,10 @@
 </tr>
 <wo:loop list="$bills" item="$bill">
 <tr>
-	<td nowrap rowspan="6"><wo:str value="$bill.measure" /></td>
+	<td nowrap rowspan="6">
+		<wo:str value="$bill.measure" /><br/>
+		(<wo:ERXDataHyperlink pageName="BillVersionPage" filename="$bill.statusFile">S</wo:ERXDataHyperlink>)&nbsp;(<wo:ERXDataHyperlink pageName="BillVersionPage" filename="$bill.historyFile//VALID">H</wo:ERXDataHyperlink>)
+	</td>
 	<td>Short Title</td>
 	<td><wo:str value="$bill.shortTitle" /></td>
 </tr>
@@ -33,7 +36,7 @@
 		<wo:loop list="$bill.versions" item="$billVersion">
 		<table border="1">
 		<tr><td>
-			<wo:str value="$billVersion.versionDate" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" billVersion="$billVersion"><wo:str value="$billVersion.versionType" /></wo:ERXDataHyperlink><br/>
+			<wo:str value="$billVersion.issueDate" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" filename="$billVersion.file" ><wo:str value="$billVersion.kind" /></wo:ERXDataHyperlink><br/>
 		</td></tr>
 		<tr><td>
 			<wo:loop list="$billVersion.woulds" item="$would">

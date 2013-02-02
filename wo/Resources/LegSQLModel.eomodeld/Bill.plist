@@ -73,6 +73,13 @@
             width = 10; 
         }, 
         {
+            columnName = "history_file"; 
+            externalType = varchar; 
+            name = historyFile; 
+            valueClassName = NSString; 
+            width = 64; 
+        }, 
+        {
             allowsNull = Y; 
             columnName = "house_location"; 
             externalType = CHAR; 
@@ -170,7 +177,7 @@
             width = 128; 
         }
     ); 
-    attributesUsedForLocking = (billNum, pk, sessionYrs, statusDate, statusFile); 
+    attributesUsedForLocking = (billNum, historyFile, pk, sessionYrs, statusDate, statusFile); 
     className = "org.ganymede.leginfo.eo.Bill"; 
     classProperties = (
         authors, 
@@ -184,6 +191,7 @@
         fileDate, 
         fileLocation, 
         hearingDate, 
+        historyFile, 
         houseLocation, 
         item, 
         lastAmendedDate, 

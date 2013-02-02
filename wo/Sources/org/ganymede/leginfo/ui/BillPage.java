@@ -6,7 +6,7 @@ import er.extensions.components.ERXComponent;
 
 public class BillPage extends ERXComponent {
 
-	public BillPage(WOContext context) {
-		super(context);
-	}
+    public BillPage(WOContext context) {
+        super(context);
+    }
 }

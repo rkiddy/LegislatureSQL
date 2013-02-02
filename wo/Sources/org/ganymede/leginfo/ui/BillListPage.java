@@ -11,14 +11,14 @@ import er.extensions.components.ERXComponent;
 
 public class BillListPage extends ERXComponent {
 
-	public BillListPage(WOContext context) {
-		super(context);
-	}
+    public BillListPage(WOContext context) {
+        super(context);
+    }
 
-	public Bill bill;
-	public NSArray<Bill> bills;
+    public Bill bill;
+    public NSArray<Bill> bills;
 
-	public BillVersion billVersion;
+    public BillVersion billVersion;
 
-	public BillWould would;
+    public BillWould would;
 }
