@@ -38,6 +38,19 @@ CREATE TABLE `bills` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
+$table{"bill_versions"} = <<SQL
+
+CREATE TABLE `bill_versions` (
+  `pk` int(11) NOT NULL,
+  `bill_pk` int(11) DEFAULT NULL,
+  `file` varchar(128) DEFAULT NULL,
+  `issue_date` char(10) DEFAULT NULL,
+  `kind` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`pk`),
+  UNIQUE KEY `file` (`file`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
 $table{"bill_types"} = <<SQL
 
 CREATE TABLE `bill_types` (
