@@ -47,11 +47,11 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
 
         $file = $_;
 
+        $file =~ s/^leginfo.public.ca.gov\/pub\///;
+
         if (defined($verbose)) { print "NOT YET, file: \"".$file."\"\n"; }
 
         if ( ! defined($versionsInDB{$file})) {
-
-            $file =~ s/leginfo.public.ca.gov\/pub\///;
 
             if (defined($verbose)) { print "IN CHECK, file: \"".$file."\"\n"; }
 
