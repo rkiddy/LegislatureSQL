@@ -323,5 +323,10 @@ $cmd = "/bin/rm ".$report."\n";
 print `$cmd`;
 
 print "\n";
+
+open C, ">.count";
+print C $filesToFetch."\n";
+close C;
+
 exit(0);
 

@@ -2,15 +2,20 @@
 
 ./01_downloadNewBillFiles $*
 
-./02_importBills $*
+count=`cat .count` ; /bin/rm -f .count
 
-./03_importVersions $*
+if [ "$count" != "0" ]; then
 
-./04_connectSections $*
+    ./02_importBills $*
 
-./05_updateStatusDate $*
+    ./03_importVersions $*
 
-./06_thisBillWoulds $*
+    ./04_connectSections $*
+
+    ./05_updateStatusDate $*
+
+    ./06_thisBillWoulds $*
+fi
 
 ./99_testData $*
 
