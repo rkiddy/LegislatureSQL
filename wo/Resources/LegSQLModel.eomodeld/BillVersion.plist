@@ -15,9 +15,9 @@
             width = 128; 
         }, 
         {
-            columnName = "issue_date"; 
+            columnName = "file_date"; 
             externalType = CHAR; 
-            name = issueDate; 
+            name = fileDate; 
             valueClassName = NSString; 
             width = 10; 
         }, 
@@ -38,7 +38,7 @@
     ); 
     attributesUsedForLocking = (billPk, pk); 
     className = "org.ganymede.leginfo.eo.BillVersion"; 
-    classProperties = (bill, file, issueDate, kind, woulds); 
+    classProperties = (bill, file, fileDate, kind, woulds); 
     externalName = "bill_versions"; 
     fetchSpecificationDictionary = {}; 
     name = BillVersion; 

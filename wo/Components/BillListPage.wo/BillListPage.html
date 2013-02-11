@@ -36,7 +36,7 @@
 		<wo:loop list="$bill.versions" item="$billVersion">
 		<table border="1">
 		<tr><td>
-			<wo:str value="$billVersion.issueDate" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" filename="$billVersion.file" ><wo:str value="$billVersion.kind" /></wo:ERXDataHyperlink><br/>
+			<wo:str value="$billVersion.fileDate" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" filename="$billVersion.file" ><wo:str value="$billVersion.kind" /></wo:ERXDataHyperlink><br/>
 		</td></tr>
 		<tr><td>
 			<wo:loop list="$billVersion.woulds" item="$would">

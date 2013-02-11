@@ -17,7 +17,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   // Attribute Keys
   public static final ERXKey<String> FILE = new ERXKey<String>("file");
-  public static final ERXKey<String> ISSUE_DATE = new ERXKey<String>("issueDate");
+  public static final ERXKey<String> FILE_DATE = new ERXKey<String>("fileDate");
   public static final ERXKey<String> KIND = new ERXKey<String>("kind");
   // Relationship Keys
   public static final ERXKey<org.ganymede.leginfo.eo.Bill> BILL = new ERXKey<org.ganymede.leginfo.eo.Bill>("bill");
@@ -25,7 +25,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   // Attributes
   public static final String FILE_KEY = FILE.key();
-  public static final String ISSUE_DATE_KEY = ISSUE_DATE.key();
+  public static final String FILE_DATE_KEY = FILE_DATE.key();
   public static final String KIND_KEY = KIND.key();
   // Relationships
   public static final String BILL_KEY = BILL.key();
@@ -52,15 +52,15 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     takeStoredValueForKey(value, _BillVersion.FILE_KEY);
   }
 
-  public String issueDate() {
-    return (String) storedValueForKey(_BillVersion.ISSUE_DATE_KEY);
+  public String fileDate() {
+    return (String) storedValueForKey(_BillVersion.FILE_DATE_KEY);
   }
 
-  public void setIssueDate(String value) {
+  public void setFileDate(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-        _BillVersion.LOG.debug( "updating issueDate from " + issueDate() + " to " + value);
+        _BillVersion.LOG.debug( "updating fileDate from " + fileDate() + " to " + value);
     }
-    takeStoredValueForKey(value, _BillVersion.ISSUE_DATE_KEY);
+    takeStoredValueForKey(value, _BillVersion.FILE_DATE_KEY);
   }
 
   public String kind() {
@@ -195,12 +195,12 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
 
   public static BillVersion createBillVersion(EOEditingContext editingContext, String file
-, String issueDate
+, String fileDate
 , String kind
 , org.ganymede.leginfo.eo.Bill bill) {
     BillVersion eo = (BillVersion) EOUtilities.createAndInsertInstance(editingContext, _BillVersion.ENTITY_NAME);
         eo.setFile(file);
-        eo.setIssueDate(issueDate);
+        eo.setFileDate(fileDate);
         eo.setKind(kind);
     eo.setBillRelationship(bill);
     return eo;
