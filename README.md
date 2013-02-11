@@ -47,3 +47,19 @@ Still To Do:
 
 00_createTables.sql:# TODO the table create commands can first determine if a table exists. Since I am not dropping tables, this is ok for now.
 
+I have file_location and file_date columns in the bill. This is not correct. Actually, each chamber has a file, which is its own thing. Bills are put
+in the file and they get a number. I need to keep track of the date something was added to the file and its number in the file. But it probably
+makes sense that the file would be its own entity. I just need to work out what it looks like.
+
+The author and authorings stuff needs to be done.
+
+I have some information associated with the bill that needs to come out of it. This may be painful, because the status and history file make it look as
+though some of this is associated with the bill and not the file. For example, the title, topic and list of authors. An author is not an author of a
+bill. An author is an author of a version of the bill. So, the topic, title and authors are not modifiable attributes of the bill. They are invariant
+attributes of the bill version. But, for ease of access, I will need to link the bill to its latest version explicitly and I may need a reverse marker
+on the bill version.
+
+I have started this process, but there are issues. For example, the meta-data fro the bill_version contains the title but it only contains the first
+45 characters of it. They hand-wave on the rest. This is wrong, but o well. If I want to keep the title in the bill_version, I will have to either get
+it out of the status file, which only lasts while that version is latest (very bad), or I will have to get it out of the bill text (ugly). O well.
+
