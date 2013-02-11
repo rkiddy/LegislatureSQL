@@ -49,15 +49,13 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
 
         $file =~ s/^leginfo.public.ca.gov\/pub\///;
 
-        if (defined($verbose)) { print "NOT YET, file: \"".$file."\"\n"; }
+        # if (defined($verbose)) { print "\nNOT YET, file: \"".$file."\"\n"; }
 
         if ( ! defined($versionsInDB{$file})) {
 
-            if (defined($verbose)) { print "IN CHECK, file: \"".$file."\"\n"; }
+            if (defined($verbose)) { print "\nIN CHECK, file: \"".$file."\"\n"; }
 
             @parts = split '_', $file;
-
-            $dateStr = substr($parts[4],0,4)."-".substr($parts[4],4,2)."-".substr($parts[4],6,2);
 
             splice @parts, 0, 5;
 
@@ -76,14 +74,39 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
 
                 $billPk = $billInfo{$billNum};
 
-                # print "file: \"".$file."\"\n";
-                # print "dateStr: \"".$dateStr."\"\n";
-                # print "versionType: \"".$versionType."\"\n\n";
+                $cmd = "/usr/bin/tidy -bare -wrap 0 leginfo.public.ca.gov/pub/".$file." 2>/dev/null\n";
+                @lines = `$cmd`;
+                chomp(@lines);
+
+                foreach (@lines) {
+                    $line = $_;
+
+                    if ($line =~ /<meta name=\"FILEDATE\" content=\"([0-9]{8})\">/) { $dateStr = substr($1,0,4)."-".substr($1,4,2)."-".substr($1,6,2); }
+                    if ($line =~ /<meta name=\"TOPIC\" content=\"(.*)\">/) { $topic = $1; }
+                    if ($line =~ /<meta name=\"AUTHOR\" content=\"(.*)\">/) { $authors = $1; }
+                    if ($line =~ /<meta name=\"COAUTHOR\" content=\"(.*)\">/) { $coauthors = $1; }
+                }
+
+                if (defined($verbose)) {
+                    print "\n";
+                    print "    file: \"".$file."\"\n";
+                    print "    dateStr: \"".$dateStr."\"\n";
+                    print "    versionType: \"".$versionType."\"\n";
+                    print "    lines # ".scalar(@lines)."\n";
+                    print "    topic: \"".$topic."\"\n";
+                    print "    authors: \"".$authors."\"\n";
+                    print "    coauthors: \"".$coauthors."\"\n";
+                }
 
                 $maxPk++;
 
-                push @sql, "insert into bill_versions (pk, bill_pk, file, issue_date, kind) ".
-                           "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."');\n";
+                $topic =~ s/'/''/g; $topic =~ s/^\s*//; $topic =~ s/\s*$//;
+                $authors =~ s/'/''/g; $authors =~ s/^\s*//; $authors =~ s/\s*$//;
+                $coauthors =~ s/'/''/g; $coauthors =~ s/^\s*//; $coauthors =~ s/\s*$//;
+
+                push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, topic, authors, coauthors) ". 
+                           "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."', ".
+                                  "'".$topic."', '".$authors."', '".$coauthors."');\n";
             }
         }
     }
