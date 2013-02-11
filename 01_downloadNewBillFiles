@@ -1,27 +1,5 @@
 #!/usr/bin/perl
 
-#
-# This script will download new html files (html only, not pdf) from the leginfo.public.ca.gov server.
-#
-# To get an automatic login, one should have this in a ~/.netrc file:
-#
-# machine leginfo.public.ca.gov
-# login anonymous
-# password <your email address>
-#
-# Go to 'man 1 ftp' and there will be a section which documents the .netrc file.
-#
-# This script creates needed directories, but it would not hurt to create the top-level directory
-# for a session. For example:
-#
-#     % mkdir -p leginfo.public.ca.gov/pub/11-12/bill/asm
-#     % mkdir -p leginfo.public.ca.gov/pub/11-12/bill/sen
-#     % mkdir -p leginfo.public.ca.gov/pub/13-14/bill/asm
-#     % mkdir -p leginfo.public.ca.gov/pub/13-14/bill/sen
-#
-# That should be all you need to do.
-#
-
 require "cmds.pl";
 
 %options = &readOptions;
@@ -34,171 +12,111 @@ for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-q") { $quiet = 1; }
 }
 
-if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/asm" || ! -d "leginfo.public.ca.gov/pub/".$session."/bill/sen") {
-    print "Please go to a directory where you have a 'leginfo.public.ca.gov' directory to store files.\n"; exit(1);
-}
+$lynx = "/opt/local/bin/lynx -listonly -dump";
 
-if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/asm" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/asm"; print `$cmd`; }
-if ( ! -d "leginfo.public.ca.gov/pub/".$session."/bill/sen" ) { $cmd = "mkdir -p leginfo.public.ca.gov/pub/".$session."/bill/sen"; print `$cmd`; }
-
-$cmd = "( echo \"cd pub/".$session."/bill/asm\" ; echo \"ls \*\" ; echo \"quit\" ) | ftp -v leginfo.public.ca.gov ; ".
-       "( echo \"cd pub/".$session."/bill/sen\" ; echo \"ls \*\" ; echo \"quit\" ) | ftp -v leginfo.public.ca.gov";
+# Locate the remote directory list for this session.
+#
+$cmd = $lynx." ftp://leginfo.public.ca.gov/pub/".$session."/bill/asm ; ".
+       $lynx." ftp://leginfo.public.ca.gov/pub/".$session."/bill/sen\n";
 @lines = `$cmd`;
 chomp(@lines);
 
-# This _REALLY_ should not be necessary.
+foreach (@lines) {
+    $line = $_;
+    if ($line =~ /0$/) {
+        @p = split ' ', $line;
+        $line = pop @p;
+        push @remoteDirs, $line;
+    }
+}
+
+# print "\nREMOTE DIRS:\n".(join "\n", @remoteDirs)."\n\n";
+
+# Get the local directory list for this session.
 #
-# The fact that there is only one directory under the sen directory at this times means, I guess, that the 'ls -R' command
-# does not list the directory in the same way that it does if more than one directory is found. Is there a way to get the
-# ftp server to be consistent? -rrk 2012/12/07
+$cmd = "/usr/bin/find leginfo.public.ca.gov/pub/".$session."/bill -type d";
+@lines = `$cmd`;
+chomp(@lines);
+
+foreach (@lines) { $localDir{$_} = 1; }
+
+# Check for missing directories;
 #
-$found = 0; foreach (@lines) { $line = $_; if (($line =~ / sb_/) && ($found == 0)) { push @next,"sb_0001-0050:"; $found = 1; } push @next, $line; }
+foreach (@remoteDirs) {
+    $remote = $_;
+    $remote =~ s/ftp:\/\///;
+    if (! defined($localDir{$remote})) { $cmd = "mkdir -p ".$remote."\n"; print `$cmd`; }
+}
 
-@lines = @next;
+foreach (@remoteDirs) {
+    $cmd = $lynx." ".$_."\n";
+    push @files, `$cmd`;
+}
 
-$fetchable = `date '+logs/fetchable_XXXXX_%Y%m%d_%H%M%S.txt'`;
-$fetchable =~ s/XXXXX/$session/;
+chomp(@files);
 
-chomp($fetchable);
-# print "fetchable: \"".$fetchable."\"\n";
+foreach (@files) { if (/\.html$/) { @p = split ' ', $_; push @html, pop @p; } }
 
-open R, ">".$fetchable;
+undef @files;
 
-chdir "leginfo.public.ca.gov";
+print "\nFound remote files # ".scalar(@html)."\n";
+
+foreach (@html) {
+    $html = $_;
+
+    $file = $html;
+    $file =~ s/^ftp:\/\///;
+    $gzFile = $file.".gz";
+
+    if ( ! -f $file && ! -f $gzFile) {
+        push @files, $file;
+    }
+}
+
+print "\nNeed to fetch files # ".(scalar(@files))."\n";
 
 print "\n";
 
-foreach (@lines) {
-    $line = $_;
-
-    # correct this one-off data problem, since the LC will not remove the file.
-    #
-    if ($session eq "11-12" && $line =~ /ab_540_bill_20090806_chaptered.html/) { print "ERROR: \"".$line."\"\n"; $line = ""; }
-    if ($session eq "11-12" && $line =~ /Copy_Of_/) { print "ERROR: \"".$line."\"\n"; $line = ""; }
-
-
-    # Not an error, but also not needed.
-    #
-    if ($line =~ /scratch/) { $line = ""; }
-
-    if ($line ne "") {
-
-        if ($line =~ /:$/) { $dir = $`; }
-        if ($line =~ /html$/) { 
-
-             # print R $line."\n";
-
-             @parts = split ' ', $line;
-             $size = $parts[4];
-             $file = pop @parts;
-
-             if ($dir =~ /^ab_/) {
-                 $fullRemoteFile = "pub/".$session."/bill/asm/".$dir."/".$file;
-                 $dirs{"pub/".$session."/bill/asm/".$dir} = 1;
-             } else {
-                 $fullRemoteFile = "pub/".$session."/bill/sen/".$dir."/".$file;
-                 $dirs{"pub/".$session."/bill/sen/".$dir} = 1;
-             }
-             $fullRemoteFile =~ s/^\.\///;
-
-             $remote{$fullRemoteFile} = $size;
-             print R $fullRemoteFile."\n";
-        }
-    }
+foreach (@files) {
+    print $_."\n";
 }
 
-close R;
+print "Done.\n\n";
 
-$allDirsCount = scalar(keys %dirs);
+open C, ">.count";
+print C scalar(@files)."\n";
+close C;
 
-foreach (keys %dirs) {
-    $dir = $_;
-    if (-d $dir) {
-        delete($dirs{$dir});
-    }
-}
+undef @ftp;
 
-print "\nFound directories # ".$allDirsCount.", need to create ".scalar(keys %dirs)."\n\n";
-
-foreach (keys %dirs) {
-    $dir = $_;
-    $cmd = "mkdir -p ".$_."\n";
-    print `$cmd`;
-}
-
-open R, "../".$fetchable;
-
-$filesToFetch = 0;
-$filesFound = 0;
-
-$lastDir = "";
-
-while (<R>) {
-    chomp;
+foreach (@files) {
     $file = $_;
 
-    # Do not know why I have to protect against this, but I get ".html" and "_asm_floor.html", but only in 99-00.
-    #
-    if ( -f $file || $file =~ /\/\.html/ || $file =~ /\/_/) {
-        # print "YES ".$file."\n";
-        $filesFound++;
-    } else {
-        # print $file."\n";
-        $dir = substr($file, 0, 32);
-        $fileName = substr($file, 32);
-        if ($lastDir eq "") {
-            push @ftp, "cd ".$dir."\n";
-            push @ftp, "lcd ".$dir."\n";
-            push @ftp, "get ".$fileName."\n";
-            $fetching{$fileName} = 1;
-            $fullFetching{$dir."/".$fileName} = 1;
-        } else {
-            if ($dir ne $lastDir) {
-                push @ftp, "cd ../../../../..\n";
-                push @ftp, "lcd ../../../../..\n";
-                push @ftp, "cd ".$dir."\n";
-                push @ftp, "lcd ".$dir."\n";
-                push @ftp, "get ".$fileName."\n";
-                $fetching{$fileName} = 1;
-                $fullFetching{$dir."/".$fileName} = 1;
-            } else {
-                push @ftp, "get ".$fileName."\n";
-                $fetching{$fileName} = 1;
-                $fullFetching{$dir."/".$fileName} = 1;
-            }
-        }
-        $lastDir = $dir;
-        $filesToFetch++;
-    }
+    @p = split '/', $file;
+
+    shift @p; shift @p;
+
+    $fileName = pop @p;
+
+    $dir = join '/', @p;
+
+    push @ftp, "cd ".$dir;
+    push @ftp, "lcd ".$dir;
+    push @ftp, "get ".$fileName;
+    push @ftp, "cd ../../../..";
+    push @ftp, "lcd ../../../..";
 }
 
-close R;
+if (scalar(@ftp) > 0) {
 
-print "\nFound files # ".$filesFound.", files to fetch: ".$filesToFetch."\n\n";
-
-if (defined($verbose)) {
-    print "\n";
-    foreach (keys %fullFetching) { print $_."\n"; }
-    print "\n";
-}
-
-open R, ">../".$fetchable;
-foreach (sort keys %fetching) { print R $_."\n"; }
-close R;
-
-if ($filesToFetch > 0) {
-
-    open FTP, "| ftp leginfo.public.ca.gov";
-
-    foreach (@ftp) {
-        print FTP $_;
-        if (-f "../STOP") { close FTP; exit(0); }
-    }
-
+    open FTP, "| /usr/bin/ftp leginfo.public.ca.gov";
+    print FTP "cd pub\n";
+    print FTP "lcd leginfo.public.ca.gov/pub\n";
+    foreach (@ftp) { print FTP $_."\n"; }
     close FTP;
 }
 
-$cmd = "find pub/".$session."/bill -name \*status\*.html | sort";
+$cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*status\*.html | sort";
 @statuses = `$cmd`;
 chomp(@statuses);
 
@@ -231,102 +149,35 @@ foreach (@statuses) {
         $billStatus{$billNum} = $status;
     }
 }
-
+ 
 print "\nDeleted status files # ".$deleted."\n\n";
 
-$cmd = "find pub/".$session."/bill -name \*history\*.html | sort";
+$cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*history\*.html | sort";
 @historys = `$cmd`;
 chomp(@historys);
-
+ 
 $deleted = 0;
-
+ 
 foreach (@historys) {
     $history = $_;
-
+ 
     @parts = split '/', $history;
-
+ 
     $fileName = pop @parts;
     $dir = pop @parts;
     if ($fileName =~ /_bill_/) {
         $billNum = $dir."/".$`;
-
+ 
         if (defined($billhistory{$billNum})) {
             print "deleting \"".$billhistory{$billNum}."\"\n";
             unlink $billhistory{$billNum};
             $deleted++;
         }
         $billhistory{$billNum} = $history;
-    }
-}
-
+     }
+ }
+ 
 print "\nDeleted history files # ".$deleted."\n\n";
-
-chdir "..";
-
-$report = $fetchable;
-$report =~ s/\.txt/\.html/;
-
-$cmd = "/usr/bin/wc -l logs/*.txt";
-
-@counts = `$cmd`;
-chomp(@counts);
-
-print "\n";
-
-foreach (@counts) {
-    $count = $_;
-
-    $count =~ s/  */ /g;
-    $count =~ s/^ //;
-    $count =~ s/ $//;
-
-    if ($count !~ /total$/) {
-
-        @parts = split '_', $count;
-        $time = pop @parts;
-        $date = pop @parts;
-        $session = pop @parts;
-
-        $time =~ s/\.txt//;
-
-        push @datedCounts, $session." ".$date." ".$time." ".$count;
-    }
-}
-
-$lastSession = "";
-
-open F, ">".$report;
-
-print F "<html><head><title>Downloads</title></head>\n";
-print F "<body>\n";
-
-print F "<table border=\"1\">\n";
-print F "<tr>\n";
-
-foreach (sort @datedCounts) {
-
-    ($session, $date, $time, $count, $file) = split ' ', $_;
-
-    if (! defined($lastSession)) {
-        print F "   <td>".$session."</td>\n   <td>\n";
-    } else {
-        if ($session ne $lastSession) { print F "</td>\n<tr>\n   <td>".$session."</td>\n   <td>\n"; $lastSession = $session; }
-    }
-    
-    print F $file.", # ".$count."<br/>\n";
-}
-print F "   </td>\n<tr>\n</body></html>";
-
-close F;
-
-$cmd = "/bin/rm ".$report."\n";
-print `$cmd`;
-
-print "\n";
-
-open C, ">.count";
-print C $filesToFetch."\n";
-close C;
 
 exit(0);
 
