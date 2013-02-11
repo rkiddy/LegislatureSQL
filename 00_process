@@ -2,7 +2,7 @@
 
 ./01_downloadNewBillFiles $*
 
-count=`cat .count` ; /bin/rm -f .count
+count=`cat .count`
 
 if [ "$count" != "0" ]; then
 
@@ -16,6 +16,8 @@ if [ "$count" != "0" ]; then
 
     ./06_thisBillWoulds $*
 fi
+
+/bin/rm -f .count
 
 ./99_testData $*
 
