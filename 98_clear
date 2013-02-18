@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+
+# Note: Not tested yet.
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+}
+
+
+@billPks = &doSqlResults("select pk from bills where session_yrs = '".$session."';");
+
+$billsPks = join ',', @billPks;
+
+@versionPks = &doSqlResults("select pk from bill_versions where bill_pk in (".$billPks.");");
+
+$versionPks = join ',', @versionPks;
+
+&doSqlResult("delete from bill_authorings where bill_version_pk in (".$versionPks.");");
+
+&doSqlResult("delete from bill_type_joins where bill_pk in (".$billPks.");");
+
+&doSqlResult("delete from bill_woulds where bill_version_pk in (".$versionPks.");");
+
+&doSqlResult("delete from code_section_joins where bill_pk in (".$billPks.");");
+
+&doSqlResult("delete from file_items where bill_pk in (".$billPks.");");
+
+exit(0);
+
