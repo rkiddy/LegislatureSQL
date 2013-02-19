@@ -121,7 +121,6 @@ foreach (keys %nextStatus) {
                "last_hist_action = NULL, ".
                "status_date = NULL, ".
                "measure = NULL, ".
-               "title = NULL, ".
                "topic = NULL, ".
                "type_of_bill = NULL ".
                "where bill_num = '".$billNum."' and session_yrs = '".$session."';\n";
@@ -245,12 +244,6 @@ foreach (keys %nextStatus) {
                 $billInfo{"last_hist_action"} = $';
                 $nextKey = &nextKey($key);
                 while ($lines{$nextKey} =~ /^\s/) { $billInfo{"last_hist_action"} .= " ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
-            }
-
-            if ($lines{$key} =~ /^TITLE\s*:/) {
-                $billInfo{"title"} = $';
-                $nextKey = &nextKey($key);
-                while ($lines{$nextKey} =~ /^\s/) { $billInfo{"title"} .= " ".$'; delete $lines{$nextKey}; $nextKey = &nextKey($nextKey); }
             }
 
             if ($lines{$key} =~ /^TOPIC\s*:/) {
