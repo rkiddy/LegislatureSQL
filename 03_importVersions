@@ -11,6 +11,9 @@ for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-v") { $verbose = 1; }
 }
 
+%month = ( "JANUARY" => 1, "FEBRUARY" => 2, "MARCH" => 3, "APRIL" => 4, "MAY" => 5, "JUNE" => 6,
+           "JULY" => 7, "AUGUST" => 8, "SEPTEMBER" => 9, "OCTOBER" => 10, "NOVEMBER" => 11, "DECEMBER" => 12 );
+
 @billInfos = &doSqlResults("select pk, bill_num from bills where session_yrs = '".$session."';");
 chomp(@billInfos);
 
@@ -87,6 +90,22 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                     if ($line =~ /<meta name=\"COAUTHOR\" content=\"(.*)\">/) { $coauthors = $1; }
                 }
 
+                undef $title;
+
+                foreach (@lines) {
+                    $line = $_;
+                    if ($line =~ /LEGISLATIVE COUNSEL'S DIGEST/) { $in = "no"; }
+                    if ($in eq "yes") { $line =~ s/^\s*//; $line =~ s/\s*$//; $title .= " ".$line; }
+                    if ($line =~ /^\s\s*([A-Z][A-Z]*) [0-9][0-9]*, [0-9]{4}\s*$/) { if (defined($month{$1})) { $in = "yes"; } }
+                }
+
+                $maxPk++;
+
+                $topic =~ s/'/''/g; $topic =~ s/^\s*//; $topic =~ s/\s*$//;
+                $title =~ s/'/''/g; $title =~ s/^\s*//; $title =~ s/\s*$//;
+                $authors =~ s/'/''/g; $authors =~ s/^\s*//; $authors =~ s/\s*$//;
+                $coauthors =~ s/'/''/g; $coauthors =~ s/^\s*//; $coauthors =~ s/\s*$//;
+
                 if (defined($verbose)) {
                     print "\n";
                     print "    file: \"".$file."\"\n";
@@ -94,19 +113,14 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                     print "    versionType: \"".$versionType."\"\n";
                     print "    lines # ".scalar(@lines)."\n";
                     print "    topic: \"".$topic."\"\n";
+                    print "    title: \"".$title."\"\n";
                     print "    authors: \"".$authors."\"\n";
                     print "    coauthors: \"".$coauthors."\"\n";
                 }
 
-                $maxPk++;
-
-                $topic =~ s/'/''/g; $topic =~ s/^\s*//; $topic =~ s/\s*$//;
-                $authors =~ s/'/''/g; $authors =~ s/^\s*//; $authors =~ s/\s*$//;
-                $coauthors =~ s/'/''/g; $coauthors =~ s/^\s*//; $coauthors =~ s/\s*$//;
-
-                push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, topic, authors, coauthors) ". 
+                push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, topic, title, authors, coauthors) ". 
                            "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."', ".
-                                  "'".$topic."', '".$authors."', '".$coauthors."');\n";
+                                  "'".$topic."', '".$title."', '".$authors."', '".$coauthors."');\n";
             }
         }
     }
