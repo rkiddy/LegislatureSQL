@@ -56,11 +56,11 @@ foreach (keys %sections) {
     $name = $_;
     $pk = $sections{$name};
 
-    @billsPks = &doSqlResults("select pk from bills where title like '%".$name."%';");
+    @billVersionPks = &doSqlResults("select pk from bill_versions where title like '%".$name."%';");
 
-    foreach (@billsPks) {
+    foreach (@billVersionPks) {
         $billPk = $_;
-        push @sql, "insert into code_section_joins (bill_pk, section_pk) values (".$billPk.", ".$pk.");\n";
+        push @sql, "insert into code_section_joins (bill_version_pk, section_pk) values (".$billPk.", ".$pk.");\n";
     }
 }
 
