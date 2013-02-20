@@ -29,7 +29,6 @@ CREATE TABLE `bills` (
   `last_hist_action` varchar(512) CHARACTER SET latin1 DEFAULT NULL,
   `status_date` char(10) DEFAULT NULL,
   `measure` varchar(32) CHARACTER SET latin1 DEFAULT NULL,
-  `title` varchar(10240) CHARACTER SET latin1 DEFAULT NULL,
   `topic` varchar(1024) CHARACTER SET latin1 DEFAULT NULL,
   `type_of_bill` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`pk`),
@@ -46,6 +45,7 @@ CREATE TABLE `bill_versions` (
   `file` varchar(128) DEFAULT NULL,
   `issue_date` char(10) DEFAULT NULL,
   `kind` varchar(32) DEFAULT NULL,
+  `title` varchar(10240) DEFAULT NULL,
   PRIMARY KEY (`pk`),
   UNIQUE KEY `file` (`file`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -81,7 +81,7 @@ SQL
 $table{"code_section_joins"} = <<SQL
 
 CREATE TABLE `code_section_joins` (
-  `bill_pk` int(11) NOT NULL DEFAULT 0,
+  `bill_version_pk` int(11) NOT NULL DEFAULT 0,
   `section_pk` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`bill_pk`,`section_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
