@@ -116,10 +116,6 @@ if (scalar(@ftp) > 0) {
     close FTP;
 }
 
-$cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*status\*.html | sort";
-@statuses = `$cmd`;
-chomp(@statuses);
-
 # pub/11-12/bill/sen/sb_1551-1600/sb_1570_bill_20120227_status.html
 # pub/11-12/bill/sen/sb_1551-1600/sb_1570_bill_20120509_status.html
 # pub/11-12/bill/sen/sb_1551-1600/sb_1571_bill_20120227_status.html
@@ -129,55 +125,108 @@ chomp(@statuses);
 # pub/11-12/bill/sen/sb_1551-1600/sb_1573_bill_20120322_status.html
 # pub/11-12/bill/sen/sb_1551-1600/sb_1574_bill_20120710_status.html
 
-$deleted = 0;
+print "\n";
 
-foreach (@statuses) {
-    $status = $_;
+$done = "n";
 
-    @parts = split '/', $status;
+while ($done ne "y") {
 
-    $fileName = pop @parts;
-    $dir = pop @parts;
-    if ($fileName =~ /_bill_/) {
-        $billNum = $dir."/".$`;
+    $cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*status.html | sort";
+    @statuses = `$cmd`;
+    chomp(@statuses);
 
-        if (defined($billStatus{$billNum})) {
-            print "deleting \"".$billStatus{$billNum}."\"\n";
-            unlink $billStatus{$billNum};
-            $deleted++;
-        }
-        $billStatus{$billNum} = $status;
+    $done = "y";
+
+    $deleted = 0;
+
+    undef %status;
+
+    foreach (@statuses) {
+        $statusFile = $_;
+
+        @p = split '/', $statusFile;
+        $fileName = pop @p;
+        @p = split '_', $fileName;
+        $billNum = $p[0]."_".$p[1];
+        # print "statusFile \"".$statusFile."\" -> \"".$billNum."\"\n";
+
+        $idx = 0;
+        while (defined($status{$billNum}[$idx])) { $idx++; }
+
+        $status{$billNum}[$idx] = $statusFile;
     }
-}
- 
-print "\nDeleted status files # ".$deleted."\n\n";
 
-$cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*history\*.html | sort";
-@historys = `$cmd`;
-chomp(@historys);
- 
-$deleted = 0;
- 
-foreach (@historys) {
-    $history = $_;
- 
-    @parts = split '/', $history;
- 
-    $fileName = pop @parts;
-    $dir = pop @parts;
-    if ($fileName =~ /_bill_/) {
-        $billNum = $dir."/".$`;
- 
-        if (defined($billhistory{$billNum})) {
-            print "deleting \"".$billhistory{$billNum}."\"\n";
-            unlink $billhistory{$billNum};
-            $deleted++;
+    foreach (sort keys %status) {
+        $billNum = $_;
+        $idx = 0;
+        while (defined($status{$billNum}[$idx])) {
+            #print "status{".$billNum."}[".$idx."] = \"".$status{$billNum}[$idx]."\"\n";
+            $idx++;
         }
-        $billhistory{$billNum} = $history;
-     }
- }
- 
-print "\nDeleted history files # ".$deleted."\n\n";
+
+        if (defined($status{$billNum}[1])) {
+            # print "deleting status{".$billNum."}[0] = \"".$status{$billNum}[0]."\"\n";
+            unlink ($status{$billNum}[0]);
+            $deleted++;
+            $done = "n";
+        }
+    }
+
+    print "deleted status file # ".$deleted." ";
+    if ($done eq "y") { print "Done."; } else { print "Not Done."; }
+    print "\n";
+}
+
+$done = "n";
+
+while ($done ne "y") {
+
+    $cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*history.html | sort";
+    @historys = `$cmd`;
+    chomp(@historys);
+
+    $done = "y";
+
+    $deleted = 0;
+
+    undef %history;
+
+    foreach (@historys) {
+        $historyFile = $_;
+
+        @p = split '/', $historyFile;
+        $fileName = pop @p;
+        @p = split '_', $fileName;
+        $billNum = $p[0]."_".$p[1];
+        # print "historyFile \"".$historyFile."\" -> \"".$billNum."\"\n";
+
+        $idx = 0;
+        while (defined($history{$billNum}[$idx])) { $idx++; }
+
+        $history{$billNum}[$idx] = $historyFile;
+    }
+
+    foreach (sort keys %history) {
+        $billNum = $_;
+        $idx = 0;
+        while (defined($history{$billNum}[$idx])) {
+            #print "history{".$billNum."}[".$idx."] = \"".$history{$billNum}[$idx]."\"\n";
+            $idx++;
+        }
+
+        if (defined($history{$billNum}[1])) {
+            print "deleting history{".$billNum."}[0] = \"".$history{$billNum}[0]."\"\n";
+            unlink ($history{$billNum}[0]);
+            $deleted++;
+            $done = "n";
+        }
+    }
+
+    print "deleted history file # ".$deleted." ";
+    if ($done eq "y") { print "Done."; } else { print "Not Done."; }
+    print "\n";
+}
+
+print "\n";
 
 exit(0);
-
