@@ -215,7 +215,7 @@ while ($done ne "y") {
         }
 
         if (defined($history{$billNum}[1])) {
-            print "deleting history{".$billNum."}[0] = \"".$history{$billNum}[0]."\"\n";
+            # print "deleting history{".$billNum."}[0] = \"".$history{$billNum}[0]."\"\n";
             unlink ($history{$billNum}[0]);
             $deleted++;
             $done = "n";
