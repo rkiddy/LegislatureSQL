@@ -31,6 +31,7 @@ CREATE TABLE `bills` (
   `measure` varchar(32) CHARACTER SET latin1 DEFAULT NULL,
   `topic` varchar(1024) CHARACTER SET latin1 DEFAULT NULL,
   `type_of_bill` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
+  'last_version_pk` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`pk`),
   UNIQUE KEY `bill_num_2` (`bill_num`,`session_yrs`),
   KEY `bill_num` (`bill_num`)

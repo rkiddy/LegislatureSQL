@@ -22,7 +22,7 @@ foreach (@billInfos) {
     $billInfo{$billNum} = $pk;
 }
 
-$cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*_bill_\* | grep -v status | grep -v history\n";
+$cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*_bill_\* | grep -v status | grep -v history | sort\n";
 
 if (defined($verbose)) { print $cmd; }
 
@@ -121,6 +121,7 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                 push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, topic, title, authors, coauthors) ". 
                            "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."', ".
                                   "'".$topic."', '".$title."', '".$authors."', '".$coauthors."');\n";
+                push @sql, "update bills set last_version_pk = ".$maxPk." where pk = ".$billPk.";\n";
             }
         }
     }
