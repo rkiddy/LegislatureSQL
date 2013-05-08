@@ -1,23 +1,20 @@
 #!/bin/sh
 
-./01_downloadNewBillFiles $*
-
-count=`cat .count`
-
-if [ "$count" != "0" ]; then
-
-    ./02_importBills $*
-
-    ./03_importVersions $*
-
-    ./04_connectSections $*
-
-    ./05_updateStatusDate $*
-
-    ./06_thisBillWoulds $*
+if [ "$1" != "-x" ]; then
+    ./01_downloadNewBillFiles $*
 fi
 
-/bin/rm -f .count
+./02_removeExtras $*
+
+./03_importBills $*
+
+./04_importVersions $*
+
+./05_connectSections $*
+
+./07_updateStatusDate $*
+
+./07_thisBillWoulds $*
 
 ./99_testData $*
 

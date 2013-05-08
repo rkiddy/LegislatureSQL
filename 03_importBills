@@ -228,10 +228,9 @@ foreach (keys %nextStatus) {
                 $billInfo{"item"} = $';
             }
 
-            if ($lines{$key} =~ /^\+LAST AMENDED DATE\s*:\s*/) {
-                $billInfo{"last_amended_date"} = $';
-                #$d = $'; @p = split '/', $d; $billInfo{"last_amended_date"} = $p[2]."-".$p[0]."-".$p[1];
-            }
+            # Ignored here, but read from the latest version file.
+            #
+            # if ($lines{$key} =~ /^\+LAST AMENDED DATE\s*:\s*/) { }
 
             # last_hist_act_date:   07/06/2011
 

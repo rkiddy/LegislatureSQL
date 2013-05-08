@@ -24,7 +24,7 @@ foreach (@billInfos) {
 
 $cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -name \*_bill_\* | grep -v status | grep -v history | sort\n";
 
-if (defined($verbose)) { print $cmd; }
+if (defined($verbose)) { print "\n".$cmd; }
 
 @versionsInFiles = &doCmdResults($cmd);
 
@@ -85,7 +85,6 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                     $line = $_;
 
                     if ($line =~ /<meta name=\"FILEDATE\" content=\"([0-9]{8})\">/) { $dateStr = substr($1,0,4)."-".substr($1,4,2)."-".substr($1,6,2); }
-                    if ($line =~ /<meta name=\"TOPIC\" content=\"(.*)\">/) { $topic = $1; }
                     if ($line =~ /<meta name=\"AUTHOR\" content=\"(.*)\">/) { $authors = $1; }
                     if ($line =~ /<meta name=\"COAUTHOR\" content=\"(.*)\">/) { $coauthors = $1; }
                 }
@@ -101,10 +100,12 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
 
                 $maxPk++;
 
-                $topic =~ s/'/''/g; $topic =~ s/^\s*//; $topic =~ s/\s*$//;
                 $title =~ s/'/''/g; $title =~ s/^\s*//; $title =~ s/\s*$//;
                 $authors =~ s/'/''/g; $authors =~ s/^\s*//; $authors =~ s/\s*$//;
                 $coauthors =~ s/'/''/g; $coauthors =~ s/^\s*//; $coauthors =~ s/\s*$//;
+
+                &authorship();
+                &coauthorship();
 
                 if (defined($verbose)) {
                     print "\n";
@@ -112,16 +113,15 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                     print "    dateStr: \"".$dateStr."\"\n";
                     print "    versionType: \"".$versionType."\"\n";
                     print "    lines # ".scalar(@lines)."\n";
-                    print "    topic: \"".$topic."\"\n";
                     print "    title: \"".$title."\"\n";
                     print "    authors: \"".$authors."\"\n";
                     print "    coauthors: \"".$coauthors."\"\n";
                 }
 
-                push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, topic, title, authors, coauthors) ". 
+                push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, title, authors, coauthors) ". 
                            "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."', ".
-                                  "'".$topic."', '".$title."', '".$authors."', '".$coauthors."');\n";
-                push @sql, "update bills set last_version_pk = ".$maxPk." where pk = ".$billPk.";\n";
+                                  "'".$title."', '".$authors."', '".$coauthors."');\n";
+                push @sql, "update bills set last_version_pk = ".$maxPk.", last_amended_date = '".$dateStr."' where pk = ".$billPk.";\n";
             }
         }
     }
@@ -134,5 +134,35 @@ print "\nBill versions added # ".scalar(@sql)."\n";
 @sql = ();
 
 print "\n";
+
+sub authorship {
+    if (defined($verbose)) {
+        print "authorship: \"".$authors."\"\n";
+        $auths = $authors;
+
+        $auths =~ s/\&.*?;//g;
+        $auths =~ s/  */ /g;
+
+        $auths =~ s/Assembly Members/ASM/g;
+        $auths =~ s/Assembly Member/ASM/g;
+
+        print "auths: \"".$auths."\"\n";
+    }
+}
+
+sub coauthorship {
+    if (defined($verbose)) {
+        print "coauthorship: \"".$coauthors."\"\n";
+        $coauths = $coauthors;
+
+        $coauths =~ s/\&.*?;//g;
+        $coauths =~ s/  */ /g;
+
+        $coauths =~ s/Assembly Members/ASM/g;
+        $coauths =~ s/Assembly Member/ASM/g;
+
+        print "coauths: \"".$coauths."\"\n";
+    }
+}
 
 exit(0);

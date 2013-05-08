@@ -44,11 +44,12 @@ CREATE TABLE `bill_versions` (
   `pk` int(11) NOT NULL,
   `bill_pk` int(11) DEFAULT NULL,
   `file` varchar(128) DEFAULT NULL,
-  `issue_date` char(10) DEFAULT NULL,
+  `file_date` char(10) DEFAULT NULL,
   `kind` varchar(32) DEFAULT NULL,
   `title` varchar(10240) DEFAULT NULL,
-  PRIMARY KEY (`pk`),
-  UNIQUE KEY `file` (`file`)
+  `authors` varchar(1024) DEFAULT NULL,
+  `coauthors` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
