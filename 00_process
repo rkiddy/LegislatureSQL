@@ -12,9 +12,11 @@ fi
 
 ./05_connectSections $*
 
-./07_updateStatusDate $*
+./06_updateStatusDate $*
 
 ./07_thisBillWoulds $*
+
+./08_addHistoryItems $*
 
 ./99_testData $*
 

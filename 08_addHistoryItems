@@ -1,0 +1,151 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+}
+
+%month = (
+    "Jan." => "01",
+    "Feb." => "02",
+    "Mar." => "03",
+    "Apr." => "04",
+    "May"  => "05",
+    "June" => "06",
+    "July" => "07",
+    "Aug." => "08",
+    "Sep." => "09",
+    "Oct." => "10",
+    "Nov." => "11",
+    "Dec." => "12"
+);
+
+sub fixedAction {
+    local $act = $_[0];
+#    while ($act =~ /Com\./) { $act =~ s/Com\./Committee/; }
+#    $act =~ s/NAT\. RES\./Natural Resources/g;
+#    $act =~ s/APPR\./Appropriations/g;
+#    $act =~ s/L\. GOV\./Local Government/g;
+#    $act =~ s/G\.O\./Government Organization/g;
+#    $act =~ s/E\.Q\./Environmental Quality/g;
+#    $act =~ s/RLS\./Rules/g;
+#    $act =~ s/BUDGET/Budget/g;
+#    $act =~ s/TRANS\./Transportation/g;
+#    $act =~ s/E\. & R\./Elections and Redistricting/g;
+#    $act =~ s/HIGHER ED\./Higher Education/g;
+#    $act =~ s/ED\./Education/g;
+    return $act;
+}
+
+$pk = &doSqlResult("select max(pk) from bill_actions;");
+if ($pk eq "NULL") { $pk = 0; }
+$pk++;
+#print "next pk: ".$pk."\n";
+
+@bills = &doSqlResults("select pk, history_file from bills where session_yrs = '".$session."';");
+#print "bills # ".(scalar(@bills))."\n";
+
+@actionCounts = &doSqlResults("select a1.bill_pk, count(*) from bill_actions a1, bills b1 ".
+                              "where a1.bill_pk = b1.pk and b1.session_yrs = '".$session."' group by a1.bill_pk;");
+chomp(@actionCounts);
+foreach (@actionCounts) {
+    ($billPk, $count) = split '\t', $_;
+    $counts{$billPk} = $count;
+}
+
+$skipped = 0;
+
+foreach (@bills) {
+    ($billPk, $historyFile) = split '\t', $_;
+
+    undef @actions;
+    undef @dates;
+
+    #print "billPk: ".$billPk, " history: ".$historyFile."\n";
+    if (substr($historyFile,0,5) ne $session) { next; }
+
+    $fullFile = $billDir."/".$historyFile;
+    #print "history file: \"".$fullFile."\"\n";
+
+    open F, $billDir."/".$historyFile;
+    @lines = <F>;
+    chomp(@lines);
+    close F;
+
+    #print "lines # ".(scalar(@lines))."\n";
+
+    foreach (@lines) {
+        $line = $_;
+
+        if ($line eq "") { undef $inHistory; }
+
+        if (defined($inHistory)) {
+            if ($line =~ /^20[0-9]{2}$/) { $year = $line; }
+            else {
+                if ($line =~ /^\t/) {
+                    $line =~ s/^\t//;
+                    $last = pop @actions;
+                    push @actions, $last." ".$line;
+                } else {
+                    ($date, $action) = split '\t', $line;
+                    ($month, $dom) = split ' ', $date;
+                    if (length($dom) == 1) { $dom = "0".$dom; }
+                    push @dates, $year."-".$month{$month}."-".$dom;
+
+                    push @actions, &fixedAction($action);
+                }
+            }
+        }
+
+        if ($line eq "BILL HISTORY") { $inHistory = 1; }
+    }
+
+    #print "actions # ".(scalar(@actions))."\n";
+    #print "dates # ".(scalar(@dates))."\n";
+
+    #print "\n";
+
+    if (defined($counts{$billPk})) {
+        $already = $counts{$billPk};
+    } else {
+        $already = 0;
+    }
+
+    @actions = reverse @actions;
+    @dates = reverse @dates;
+
+    $skipped = $skipped + $already;
+
+    for ($idx = $already; $idx < scalar(@actions); $idx++) {
+#       print "DATE: ".$dates[$idx]."\n";
+#       print "ACTION: (".(length($actions[$idx])).") ".$actions[$idx]."\n\n";
+
+        $actions[$idx] =~ s/'/''/g;
+
+        push @sql, "insert into bill_actions (pk, bill_pk, action_num, when_act, action) ".
+                   "values (".$pk.", ".$billPk.", ".$idx.", '".$dates[$idx]."', '".$actions[$idx]."');\n";
+        $pk++;
+    }
+}
+
+print "\nInserting actions # ".(scalar(@sql)).", skipping # ".$skipped."\n\n";
+
+open M, "| ".&mysql;
+$num = 1;
+foreach (@sql) {
+    #print $_;
+    print M $_;
+    if ($num % 100 == 0) { close M; open M, "| ".&mysql; }
+    $num++;
+}
+close M;
+
+print "Done.\n\n";
+
+exit(0);
+

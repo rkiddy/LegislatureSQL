@@ -6,6 +6,10 @@ require "cmds.pl";
 
 $session = $options{"session"};
 
+sub dprint {
+    if (defined($verbose)) { print $_[0]; }
+}
+
 for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
     if ($ARGV[$idx] eq "-v") { $verbose = 1; }
@@ -36,7 +40,7 @@ if (! defined($billFile)) {
     chomp(@dirLines);
     close F;
 
-    print "/tmp/legDirs_".$d.".txt\n";
+    &dprint("/tmp/legDirs_".$d.".txt\n");
 
     if (! defined($overDate) || ( ! -f "/tmp/legBills_".$d.".txt")) {
 
@@ -54,7 +58,7 @@ if (! defined($billFile)) {
         close FTP;
     }
 
-    print "/tmp/legBills_".$d.".txt\n";
+    &dprint("/tmp/legBills_".$d.".txt\n");
 
     open F, "/tmp/legBills_".$d.".txt";
     @fileLines = <F>;
@@ -78,7 +82,7 @@ if (! defined($billFile)) {
     open F, ">/tmp/legBillRemotes_".$d.".txt";
     foreach (keys %remoteFiles) { print F $_."\n"; }
     close F;
-    print "/tmp/legBillRemotes_".$d.".txt\n";
+    &dprint("/tmp/legBillRemotes_".$d.".txt\n");
 
     $cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -type f";
     @localFiles = `$cmd`;
@@ -88,30 +92,48 @@ if (! defined($billFile)) {
     open F, ">/tmp/legBillLocal_".$d.".txt";
     foreach (@localFiles) { print F $_."\n"; }
     close F;
-    print "/tmp/legBillLocal_".$d.".txt\n";
+    &dprint("/tmp/legBillLocal_".$d.".txt\n");
 
     foreach (@localFiles) { delete $remoteFiles{$_}; }
 
     open F, ">/tmp/legBillAddable_".$d.".txt";
     foreach (keys %remoteFiles) { print F $_."\n"; }
     close F;
-    print "/tmp/legBillAddable_".$d.".txt\n";
+    &dprint("/tmp/legBillAddable_".$d.".txt\n");
 
-    open FTP, "| /usr/bin/ftp leginfo.public.ca.gov";
+    open FTP, "| /usr/bin/ftp -V leginfo.public.ca.gov";
+    #open FTP, "| /usr/bin/ftp leginfo.public.ca.gov";
+    #open FTP, ">ftpCmds.txt";
 
     print FTP "lcd leginfo.public.ca.gov\n";
 
-    foreach (keys %remoteFiles) {
+    $lastDir = "";
+
+    @dirs = sort keys %remoteFiles;
+
+    @p = split '/', $dirs[0];
+    shift @p;
+    pop @p;
+    $dir = join '/', @p;
+    $lastDir = $dir;
+
+    print FTP "cd ".$dir."\n";
+    print FTP "lcd ".$dir."\n";
+
+    foreach (@dirs) {
         @p = split '/', $_;
         shift @p;
         $file = pop @p;
         $dir = join '/', @p;
 
-        print FTP "cd ".$dir."\n";
-        print FTP "lcd ".$dir."\n";
-        print FTP "get ".$file."\n";
-        print FTP "cd ../../../../..\n";
-        print FTP "lcd ../../../../..\n";
+        if ($dir ne $lastDir) {
+            print FTP "cd ../../../../../".$dir."\n";
+            print FTP "lcd ../../../../../".$dir."\n";
+            print FTP "get ".$file."\n";
+            $lastDir = $dir;
+        } else {
+            print FTP "get ".$file."\n";
+        }
     }
     print FTP "quit\n";
     close FTP;
@@ -123,7 +145,7 @@ exit(0);
 #
 $cmd = $lynx." http://leginfo.public.ca.gov/pub/".$session."/bill/index_assembly_bill_author_topic ; ".
        $lynx." http://leginfo.public.ca.gov/pub/".$session."/bill/index_senate_bill_author_topic";
-if (defined($verbose)) { print "\ncmd: \"".$cmd."\"\n"; }
+&dprint("\ncmd: \"".$cmd."\"\n");
 @lines = `$cmd`;
 chomp(@lines);
 

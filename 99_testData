@@ -121,4 +121,15 @@ print "Bad history # ".&doSqlResult("select count(*) from bills where session_yr
 
 print "\n\n";
 
+@months = &doSqlResults("select distinct(substr(when_act,6,2)) from bill_actions;");
+chomp(@months);
+
+print "Check months in actions:\n\n";
+
+foreach (@months) { if (! /^[0-9]{2}$/) { print "Bad month: \"".$_."\"\n"; } }
+
+print "\n\n";
+
+print "Ok!\n\n";
+
 exit(0);
