@@ -1,5 +1,7 @@
 
 
+$billDir = "leginfo.public.ca.gov/pub";
+
 sub mysql { return "/opt/local/bin/mysql -u ".$options{"user"}." --password=".$options{"pwd"}." --skip-column-names ".$options{"db"}."\n"; }
 
 sub readOptions {
