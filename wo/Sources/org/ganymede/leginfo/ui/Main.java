@@ -1,180 +1,297 @@
 package org.ganymede.leginfo.ui;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import org.ganymede.leginfo.Session;
 import org.ganymede.leginfo.eo.Bill;
-import org.ganymede.leginfo.eo.BillType;
-import org.ganymede.leginfo.eo.CodeSection;
+import org.ganymede.leginfo.eo.BillVersion;
+import org.ganymede.leginfo.util.Day;
+import org.ganymede.leginfo.util.Month;
+import org.ganymede.leginfo.util.Week;
+import org.ganymede.leginfo.util.Year;
 
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WOResponse;
+import com.webobjects.eocontrol.EOAndQualifier;
 import com.webobjects.eocontrol.EOEditingContext;
-import com.webobjects.eocontrol.EOEnterpriseObject;
+import com.webobjects.eocontrol.EOOrQualifier;
+import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSComparator;
-import com.webobjects.foundation.NSComparator.ComparisonException;
 import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSMutableSet;
 
-import er.extensions.components.ERXComponent;
+import er.ajax.AjaxUtils;
+import er.extensions.qualifiers.ERXTrueQualifier;
 
-public class Main extends ERXComponent {
+public class Main extends GComponent {
 
     public Main(WOContext context) {
         super(context);
+        _selectedMonth = Month.thisMonth();
     }
+
+    public String message = null;
 
     public EOEditingContext ec() { return session().defaultEditingContext(); }
 
-    public String date;
+    public Session session() { return (Session)super.session(); }
 
-    private NSMutableDictionary<String,NSMutableArray<Bill>> histActions;
+    public String recentDate;
 
-    private NSMutableDictionary<String,NSMutableArray<Bill>> histActions() {
-        if (histActions == null) {
-            NSArray<Bill> foundBills = Bill.fetchAllBills(ec());
-
-            histActions = new NSMutableDictionary<String,NSMutableArray<Bill>>();
-
-            for (Bill bill : foundBills) {
-                String actionDate = bill.lastHistActDate();
-                if (! histActions.containsKey(actionDate)) histActions.setObjectForKey(new NSMutableArray<Bill>(), actionDate);
-                histActions.objectForKey(actionDate).add(bill);
-            }
+    private static final ThreadLocal<SimpleDateFormat> dateOnlyFormatter = new ThreadLocal<SimpleDateFormat>(){
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
         }
-        return histActions;
+    };
+
+    public NSArray<String> recentDates() {
+    	Date now = new Date();
+    	GregorianCalendar cal = new GregorianCalendar();
+    	cal.setTime(now);
+    	NSMutableArray<String> dates = new NSMutableArray<String>();
+    	dates.add(dateOnlyFormatter.get().format(now));
+
+    	for (int idx = 0; idx < 13; idx++) {
+    		cal.add(Calendar.DATE, -1);
+    		dates.add(dateOnlyFormatter.get().format(cal.getTime()));
+    	}
+
+    	return dates.immutableClone();
     }
 
-    public int histActionDatesCount() { return histActions.objectForKey(date).size(); }
-
-    public NSArray<String> lastHistActionDates() {
-
-        NSArray<String> found = histActions().allKeys();
-        try {
-            return found.sortedArrayUsingComparator(NSComparator.DescendingStringComparator);
-        } catch (ComparisonException e) {
-            return found;
-        }
+    private EOQualifier isMajorBillQualifier() {
+    	if (session().includeExtraBills)
+    		return BillVersion.BILL.dot(Bill.BILL_NUM).ilike("ab_*").or(BillVersion.BILL.dot(Bill.BILL_NUM).ilike("sb_*"));
+    	else
+    		return new ERXTrueQualifier();
     }
 
-    private NSMutableDictionary<String,NSMutableArray<Bill>> statusActions;
+    public NSArray<Bill> recentlyIntroduced() {
 
-    private NSMutableDictionary<String,NSMutableArray<Bill>> statusActions() {
-        if (statusActions == null) {
+    	EOQualifier recentlyIntroducedQualifier = null;
 
-            NSArray<Bill> foundBills = Bill.fetchAllBills(ec());
+    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED)).and(this.isMajorBillQualifier());
 
-            statusActions = new NSMutableDictionary<String,NSMutableArray<Bill>>();
+    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
+    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-            for (Bill bill : foundBills) {
-                String statusDate = bill.statusDate();
-                if (! statusActions.containsKey(statusDate)) statusActions.setObjectForKey(new NSMutableArray<Bill>(), statusDate);
-                statusActions.objectForKey(statusDate).add(bill);
-            }
-        }
-        return statusActions;
+    	return bills;
     }
 
-    public int statusDatesCount() { return statusActions.objectForKey(date).size(); }
+    public NSArray<Bill> selectedIntroduced() {
 
-    public NSArray<String> statusUpdateDates() {
+    	EOQualifier recentlyIntroducedQualifier = null;
 
-        NSArray<String> found = statusActions().allKeys();
-        try {
-            return found.sortedArrayUsingComparator(NSComparator.DescendingStringComparator);
-        } catch (ComparisonException e) {
-            return found;
-        }
+    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED)).and(this.isMajorBillQualifier());
+
+    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
+    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+
+    	return bills;
     }
 
-    public String relating;
+    public NSArray<Bill> recentlyAmended() {
 
-    private NSMutableDictionary<String,NSMutableArray<Bill>> relatings;
+    	System.out.print("looking for amended for repetitionDay: "+_repetitionDay.dateString());
+    	EOQualifier recentlyAmendedQualifier = null;
 
-    NSArray<String> deleteMe = new NSArray<String>(new String[] {
-            " and declaring the urgency thereof, to take effect immediately",
-            " and making an appropriation therefor",
-            " making an appropriation therefor",
-            " to take effect immediately",
-            " to make an appropriation therefor",
-            " and calling a special election to be consolidated with a statewide election",
-            " as an act calling an election",
-            " and declaring the urgency thereof",
-            " to take efffect immediately",
-            " bill related to the budget",
-            " as an appropriation for the usual and current expenses of the state",
-            " Budget Bill.",
-            " budget bill.",
-            " as an act calling an election",
-            " and calling a special election to be consolidated with the next statewide general election",
-            " tax levy.",
-            " by providing the funds necessary therefor through an election for the issuance and sale of bonds of the State of California and for the handling and disposition of those funds",
-            " as an act calling an election",
-            " and calling a special election to be consolidated with the November 4, 2014, statewide general election"
-    } );
-    public NSMutableDictionary<String,NSMutableArray<Bill>> relatings() {
-        if (relatings == null) {
+    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED)).and(this.isMajorBillQualifier());
 
-            NSArray<Bill> foundBills = Bill.fetchAllBills(ec());
+    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
+    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-            relatings = new NSMutableDictionary<String,NSMutableArray<Bill>>();
-
-            for (Bill bill : foundBills) {
-                String relating = bill.shortTitle();
-                if (relating.startsWith("Relating")) relating = relating.replaceFirst("Relating", "relating");
-                for (String deletable : deleteMe) {
-                    relating = relating.replaceFirst(deletable, "");
-                }
-                relating = relating.replaceFirst("[\\p{Punct} ]*$", ".");
-                if (relating.indexOf("relating") >= 0) {
-                    if (! relatings.containsKey(relating)) relatings.setObjectForKey(new NSMutableArray<Bill>(), relating);
-                    relatings.objectForKey(relating).add(bill);
-                }
-            }
-        }
-        return relatings;
+    	System.out.println(" - found # "+bills.size());
+    	return bills;
     }
 
-    public int relatingsCount() { return relatings.objectForKey(relating).size(); }
+    public NSArray<Bill> selectedAmended() {
 
-    public WOActionResults showBillsFromRelating() {
-        WOComponent nextPage = pageWithName(BillListPage.class);
-        nextPage.takeValueForKey(relatings.objectForKey(relating), "bills");
-        return nextPage;
+    	System.out.print("looking for amended for selectedDay: "+_selectedDay.dateString());
+    	EOQualifier recentlyAmendedQualifier = null;
+
+    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED)).and(this.isMajorBillQualifier());
+
+    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
+    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+
+    	System.out.println(" - found # "+bills.size());
+    	return bills;
     }
 
-    public EOEnterpriseObject billType;
-
-    public NSArray<BillType> billTypes() {
-        return BillType.fetchAllBillTypes(session().defaultEditingContext());
+    public NSArray<Bill> recentlyLastActions() {
+    	return Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_repetitionDay.dateString()).and(this.isMajorBillQualifier()), null);
     }
 
-    public WOActionResults showBillsFromType() {
-        WOComponent nextPage = pageWithName(BillListPage.class);
-        nextPage.takeValueForKey(billType.valueForKey("bills"), "bills");
-        return nextPage;
+    public NSArray<Bill> selectedLastActions() {
+    	return Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_selectedDay.dateString()).and(this.isMajorBillQualifier()), null);
     }
 
-    public CodeSection section;
-
-    public NSArray<CodeSection> sections() {
-        return CodeSection.fetchAllCodeSections(session().defaultEditingContext());
+    public NSArray<Bill> recentlyScheduledHearings() {
+    	return Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_repetitionDay.dateString()).and(this.isMajorBillQualifier()), null);
     }
 
-    public WOActionResults showBillsFromSection() {
-        WOComponent nextPage = pageWithName(BillListPage.class);
-        nextPage.takeValueForKey(section.valueForKey("bills"), "bills");
-        return nextPage;
+    public NSArray<Bill> selectedScheduledHearings() {
+    	return Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_selectedDay.dateString()).and(this.isMajorBillQualifier()), Bill.COMM_LOCATION.ascs());
     }
 
-    public WOActionResults showBillsFromHistActionDate() {
-        WOComponent nextPage = pageWithName(BillListPage.class);
-        nextPage.takeValueForKey(histActions.objectForKey(date), "bills");
-        return nextPage;
+    public NSArray<String> selectedScheduledHearingCommittees() {
+    	NSArray<Bill> found = this.selectedScheduledHearings();
+    	NSMutableSet<String> comms = new NSMutableSet<String>();
+    	comms.addAll((NSArray<String>)found.valueForKey(Bill.COMM_LOCATION_KEY));
+    	return comms.allObjects();
     }
 
-    public WOActionResults showBillsFromStatusDate() {
-        WOComponent nextPage = pageWithName(BillListPage.class);
-        nextPage.takeValueForKey(statusActions.objectForKey(date), "bills");
-        return nextPage;
+    public String selectedScheduledHearingCommittee;
+
+    public NSArray<Bill> selectedScheduledHearingsForCommitteeBills() {
+    	if (selectedScheduledHearingCommittee == null) return NSArray.EmptyArray;
+    	return EOQualifier.filteredArrayWithQualifier(this.selectedScheduledHearings(), Bill.COMM_LOCATION.is(selectedScheduledHearingCommittee));
+    }
+
+    public Bill selectedScheduledHearingCommitteeBill;
+
+    public Bill billHearing;
+
+    public String searchTerm;
+
+    public boolean inMeasure;
+    public boolean inTopic;
+    public boolean inTitle;
+    public boolean inAuthors;
+
+    public WOActionResults search() {
+
+    	message = null;
+
+    	EOQualifier sessionQualifier = Bill.SESSION_YRS.is(session().valueForKey("sessionYrs").toString());
+
+    	NSMutableArray<EOQualifier> qualifiers = new NSMutableArray<EOQualifier>();
+
+    	if (inMeasure) qualifiers.add(Bill.BILL_NUM.is(searchTerm));
+    	if (inTopic) qualifiers.add(Bill.TOPIC.likeInsensitive("*"+searchTerm+"*"));
+
+    	EOQualifier qualifier = null;
+
+    	if (qualifiers.size() == 0) qualifier = sessionQualifier;
+    	if (qualifiers.size() == 1) qualifier = new EOAndQualifier(new NSArray<EOQualifier>(new EOQualifier[] { sessionQualifier, qualifiers.get(0) } ));
+    	if (qualifiers.size() > 1) qualifier = new EOAndQualifier(new NSArray<EOQualifier>(new EOQualifier[] { sessionQualifier, new EOOrQualifier(qualifiers) } ));
+
+    	System.out.println("qualifier: "+qualifier);
+
+    	WOComponent nextPage = pageWithName(BillListPage.class);
+    	NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
+    	System.out.println("rows # "+rows.size());
+    	nextPage.takeValueForKey(rows, "bills");
+
+    	return nextPage;
+    }
+
+    public WOActionResults doIncludeExtraBills() { session().includeExtraBills = true; return context().page(); }
+    public WOActionResults dontIncludeExtraBills() { session().includeExtraBills = false; return context().page(); }
+
+    public String findableBillNum;
+    public String findableAuthor;
+    public String findableTopic;
+
+    public WOActionResults find() {
+    	message = null;
+    	NSMutableSet<EOQualifier> qualifiers = new NSMutableSet<EOQualifier>();
+    	if (findableBillNum != null) {
+    		findableBillNum = findableBillNum.replaceAll("\\.", "");
+    		findableBillNum = findableBillNum.replaceAll(" ", "_");
+    		findableBillNum = findableBillNum.replaceAll("__", "_");    		
+    		if (! findableBillNum.matches("^[A-Za-z0-9]*_[0-9][0-9]*")) {
+    			message = "Bill number should be lile \"ab 23\" or \"SB 110\" or \"ab_11\". Cannot interpret given bill number.";
+    			return context().page();
+    		}
+    		qualifiers.add(Bill.BILL_NUM.is(findableBillNum));
+    	}
+    	if (findableAuthor != null) {
+    		qualifiers.add(Bill.AUTHORS.ilike("*"+findableAuthor+"*"));
+    	}
+    	if (findableTopic != null) {
+    		qualifiers.add(Bill.TOPIC.ilike("*"+findableTopic+"*"));
+    	}
+    	if (qualifiers.size() > 0) {
+    		EOQualifier qualifier = (qualifiers.size() == 1) ? qualifiers.anyObject() : new EOAndQualifier(qualifiers.allObjects());
+        	WOComponent nextPage = pageWithName(BillListPage.class);
+        	NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
+        	System.out.println("rows # "+rows.size());
+        	nextPage.takeValueForKey(rows, "bills");
+        	return nextPage;
+    	} else {
+    		message = "Nothing to search for....";
+    		return context().page();
+    	}
+    }
+    
+    public Year _selectedYear = null;
+    public Month _selectedMonth = null;
+    public Week _repetitionWeek = null;
+    public Day _repetitionDay = null;
+    public Day _selectedDay = null;
+
+    public int lastMonth = -1;
+
+    @Override
+    protected boolean useDefaultComponentCSS() {
+      return true;
+    }
+
+    @Override
+    public void appendToResponse(WOResponse response, WOContext context) {
+      super.appendToResponse(response, context);
+      AjaxUtils.addScriptResourceInHead(context, response, "Ajax", "prototype.js");
+    }
+    
+    @Override
+    public boolean synchronizesVariablesWithBindings() {
+      return false;
+    }
+
+    public String dayClass() {
+  	StringBuilder dayClass = new StringBuilder();
+      dayClass.append("day");
+      if (_repetitionDay.weekend()) {
+        dayClass.append(" weekend");
+      }
+      if (_repetitionDay.today()) {
+        dayClass.append(" today");
+      }
+      return dayClass.toString();
+    }
+
+    public boolean sameAsLastMonth() {
+    	if (_repetitionDay.month() == lastMonth)
+    		return true;
+    	else {
+    		lastMonth = _repetitionDay.month();
+    		return false;
+    	}
+    }
+
+    public WOActionResults selectDay() {
+      _selectedDay = _repetitionDay;
+      System.out.println("_selectedYear: "+_selectedYear);
+      System.out.println("_selectedMonth: "+_selectedMonth);
+      System.out.println("_selectedDay: "+_selectedDay);
+      return null;
+    }
+
+    public WOActionResults previousMonth() {
+    	_selectedDay = null;
+    	_selectedMonth = _selectedMonth.previousMonth();
+    	return context().page();
+    }
+
+    public WOActionResults nextMonth() {
+    	_selectedDay = null;
+    	_selectedMonth = _selectedMonth.nextMonth();
+    	return context().page();
     }
 }

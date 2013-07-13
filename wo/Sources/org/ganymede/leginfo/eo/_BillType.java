@@ -41,7 +41,7 @@ public abstract class _BillType extends  ERXGenericRecord {
 
   public void setName(String value) {
     if (_BillType.LOG.isDebugEnabled()) {
-        _BillType.LOG.debug( "updating name from " + name() + " to " + value);
+    	_BillType.LOG.debug( "updating name from " + name() + " to " + value);
     }
     takeStoredValueForKey(value, _BillType.NAME_KEY);
   }
@@ -65,7 +65,7 @@ public abstract class _BillType extends  ERXGenericRecord {
       }
     return results;
   }
-
+  
   public void addToBills(org.ganymede.leginfo.eo.Bill object) {
     includeObjectIntoPropertyWithKey(object, _BillType.BILLS_KEY);
   }
@@ -79,10 +79,10 @@ public abstract class _BillType extends  ERXGenericRecord {
       _BillType.LOG.debug("adding " + object + " to bills relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-        addToBills(object);
+    	addToBills(object);
     }
     else {
-        addObjectToBothSidesOfRelationshipWithKey(object, _BillType.BILLS_KEY);
+    	addObjectToBothSidesOfRelationshipWithKey(object, _BillType.BILLS_KEY);
     }
   }
 
@@ -91,10 +91,10 @@ public abstract class _BillType extends  ERXGenericRecord {
       _BillType.LOG.debug("removing " + object + " from bills relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-        removeFromBills(object);
+    	removeFromBills(object);
     }
     else {
-        removeObjectFromBothSidesOfRelationshipWithKey(object, _BillType.BILLS_KEY);
+    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillType.BILLS_KEY);
     }
   }
 
@@ -121,8 +121,8 @@ public abstract class _BillType extends  ERXGenericRecord {
 
   public static BillType createBillType(EOEditingContext editingContext, String name
 ) {
-    BillType eo = (BillType) EOUtilities.createAndInsertInstance(editingContext, _BillType.ENTITY_NAME);
-        eo.setName(name);
+    BillType eo = (BillType) EOUtilities.createAndInsertInstance(editingContext, _BillType.ENTITY_NAME);    
+		eo.setName(name);
     return eo;
   }
 

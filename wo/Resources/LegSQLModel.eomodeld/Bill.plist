@@ -120,6 +120,13 @@
             width = 512; 
         }, 
         {
+            columnName = "last_version_pk"; 
+            externalType = int; 
+            name = lastVersionPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
             columnName = measure; 
             externalType = varchar; 
             name = measure; 
@@ -155,13 +162,6 @@
             width = 64; 
         }, 
         {
-            columnName = title; 
-            externalType = varchar; 
-            name = title; 
-            valueClassName = NSString; 
-            width = 10240; 
-        }, 
-        {
             columnName = topic; 
             externalType = varchar; 
             name = topic; 
@@ -177,13 +177,13 @@
             width = 128; 
         }
     ); 
-    attributesUsedForLocking = (billNum, historyFile, pk, sessionYrs, statusDate, statusFile); 
+    attributesUsedForLocking = (billNum, historyFile, lastVersionPk, pk, sessionYrs, statusDate, statusFile); 
     className = "org.ganymede.leginfo.eo.Bill"; 
     classProperties = (
         authors, 
+        billActions, 
         billNum, 
         billTypes, 
-        codeSections, 
         commAction, 
         commActionDate, 
         commLocation, 
@@ -197,11 +197,11 @@
         lastAmendedDate, 
         lastHistActDate, 
         lastHistAction, 
+        lastVersion, 
         measure, 
         sessionYrs, 
         statusDate, 
         statusFile, 
-        title, 
         topic, 
         typeOfBill, 
         versions
@@ -212,6 +212,13 @@
     primaryKeyAttributes = (pk); 
     relationships = (
         {
+            destination = BillAction; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = billPk; sourceAttribute = pk; }); 
+            name = billActions; 
+        }, 
+        {
             destination = BillTypeJoin; 
             isToMany = Y; 
             joinSemantic = EOInnerJoin; 
@@ -221,13 +228,13 @@
         }, 
         {definition = "billTypeJoins.billType"; name = billTypes; }, 
         {
-            destination = CodeSectionJoin; 
-            isToMany = Y; 
+            destination = BillVersion; 
+            isMandatory = Y; 
+            isToMany = N; 
             joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = billPk; sourceAttribute = pk; }); 
-            name = codeSectionJoins; 
+            joins = ({destinationAttribute = pk; sourceAttribute = lastVersionPk; }); 
+            name = lastVersion; 
         }, 
-        {definition = "codeSectionJoins.codeSection"; name = codeSections; }, 
         {
             destination = BillVersion; 
             isToMany = Y; 

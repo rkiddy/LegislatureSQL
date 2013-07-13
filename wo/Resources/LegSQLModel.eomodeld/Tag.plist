@@ -1,0 +1,32 @@
+{
+    attributes = (
+        {columnName = pk; externalType = int; name = pk; valueClassName = NSNumber; }, 
+        {
+            columnName = "src_entity"; 
+            externalType = enum; 
+            name = srcEntity; 
+            valueClassName = NSString; 
+        }, 
+        {
+            columnName = "src_pk"; 
+            externalType = INT; 
+            name = srcPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = tag; 
+            externalType = varchar; 
+            name = tag; 
+            valueClassName = NSString; 
+            width = 31; 
+        }
+    ); 
+    attributesUsedForLocking = (pk, srcEntity, srcPk); 
+    className = "org.ganymede.leginfo.eo.Tag"; 
+    classProperties = (srcEntity, srcPk, tag); 
+    externalName = tags; 
+    fetchSpecificationDictionary = {}; 
+    name = Tag; 
+    primaryKeyAttributes = (pk); 
+}

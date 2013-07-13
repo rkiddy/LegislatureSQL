@@ -7,4 +7,12 @@ public class Session extends ERXSession {
 
     public Session() {
     }
+
+    public String sessionYrs = "13-14";
+
+    public boolean displayMeasure = true;
+    public boolean displayTopic = true;
+    public boolean displayTitle = false;
+
+    public boolean includeExtraBills = false;
 }

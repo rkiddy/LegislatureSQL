@@ -1,11 +1,25 @@
 {
     attributes = (
         {
+            columnName = authors; 
+            externalType = varchar; 
+            name = authors; 
+            valueClassName = NSString; 
+            width = 1024; 
+        }, 
+        {
             columnName = "bill_pk"; 
             externalType = int; 
             name = billPk; 
             valueClassName = NSNumber; 
             valueType = i; 
+        }, 
+        {
+            columnName = coauthors; 
+            externalType = varchar; 
+            name = coauthors; 
+            valueClassName = NSString; 
+            width = 1024; 
         }, 
         {
             columnName = file; 
@@ -34,11 +48,18 @@
             name = pk; 
             valueClassName = NSNumber; 
             valueType = i; 
+        }, 
+        {
+            columnName = title; 
+            externalType = varchar; 
+            name = title; 
+            valueClassName = NSString; 
+            width = 10240; 
         }
     ); 
-    attributesUsedForLocking = (billPk, pk); 
+    attributesUsedForLocking = (authors, billPk, coauthors, pk); 
     className = "org.ganymede.leginfo.eo.BillVersion"; 
-    classProperties = (bill, file, fileDate, kind, woulds); 
+    classProperties = (authors, bill, coauthors, codeSections, file, fileDate, kind, title, woulds); 
     externalName = "bill_versions"; 
     fetchSpecificationDictionary = {}; 
     name = BillVersion; 
@@ -52,6 +73,14 @@
             joins = ({destinationAttribute = pk; sourceAttribute = billPk; }); 
             name = bill; 
         }, 
+        {
+            destination = CodeSectionJoin; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = billVersionPk; sourceAttribute = pk; }); 
+            name = codeSectionJoins; 
+        }, 
+        {definition = "codeSectionJoins.codeSection"; name = codeSections; }, 
         {
             destination = BillWould; 
             isToMany = Y; 

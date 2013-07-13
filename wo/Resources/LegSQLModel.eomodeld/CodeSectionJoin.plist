@@ -1,9 +1,9 @@
 {
     attributes = (
         {
-            columnName = "bill_pk"; 
+            columnName = "bill_version_pk"; 
             externalType = INT; 
-            name = billPk; 
+            name = billVersionPk; 
             valueClassName = NSNumber; 
             valueType = i; 
         }, 
@@ -15,20 +15,21 @@
             valueType = i; 
         }
     ); 
-    attributesUsedForLocking = (billPk, sectionPk); 
-    className = "com.webobjects.eocontrol.EOGenericRecord"; 
+    attributesUsedForLocking = (billVersionPk, sectionPk); 
+    className = "er.extensions.eof.ERXGenericRecord"; 
+    classProperties = (billVersion, codeSection); 
     externalName = "code_section_joins"; 
     fetchSpecificationDictionary = {}; 
     name = CodeSectionJoin; 
-    primaryKeyAttributes = (billPk, sectionPk); 
+    primaryKeyAttributes = (billVersionPk, sectionPk); 
     relationships = (
         {
-            destination = Bill; 
+            destination = BillVersion; 
             isMandatory = Y; 
             isToMany = N; 
             joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = pk; sourceAttribute = billPk; }); 
-            name = bill; 
+            joins = ({destinationAttribute = pk; sourceAttribute = billVersionPk; }); 
+            name = billVersion; 
         }, 
         {
             destination = CodeSection; 

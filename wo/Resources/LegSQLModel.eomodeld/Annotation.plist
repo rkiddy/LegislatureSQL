@@ -1,0 +1,39 @@
+{
+    attributes = (
+        {
+            columnName = note; 
+            externalType = varchar; 
+            name = note; 
+            valueClassName = NSString; 
+            width = 10240; 
+        }, 
+        {columnName = pk; externalType = int; name = pk; valueClassName = NSNumber; }, 
+        {
+            columnName = "src_entity"; 
+            externalType = enum; 
+            name = srcEntity; 
+            valueClassName = NSString; 
+        }, 
+        {
+            columnName = "src_pk"; 
+            externalType = INT; 
+            name = srcPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            className = "java.util.Date"; 
+            columnName = "note_when"; 
+            externalType = datetime; 
+            name = when; 
+            valueType = D; 
+        }
+    ); 
+    attributesUsedForLocking = (pk, srcEntity, srcPk, when); 
+    className = "org.ganymede.leginfo.eo.Annotation"; 
+    classProperties = (note, srcEntity, srcPk, when); 
+    externalName = annotations; 
+    fetchSpecificationDictionary = {}; 
+    name = Annotation; 
+    primaryKeyAttributes = (pk); 
+}

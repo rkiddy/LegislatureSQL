@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+  <head>
+    <title>CA Legislature WO</title>
+    <meta http-equiv = "Content-Type" content = "text/html;charset=UTF-8" />
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td valign="top">
+          Tests: 
+          <ul>
+            <li><wo:link action="$selectBillVersions">Bill Versions</wo:link></li>
+            <li><wo:link action="$selectThisBillWoulds">&quot;This Bill Woulds&quot;</wo:link></li>
+          </ul>
+        </td>
+        <td>
+          <wo:if condition = "$testBillVersions">
+          <h3>Bill Versions:</h3>
+          <ul>
+          <wo:loop list="$bills" item="$bill">
+          <wo:str value="$bill.measure" />
+          <ul>
+          <wo:loop list="$bill.versions" item="$version">
+          <li>
+          <strong>File:</strong> <wo:str value="$version.file" /><br/>
+          <strong>Title:</strong> <wo:str value="$version.title" escapeHTML="$false" /><br/>
+          <strong>Author(s):</strong> <wo:str value="$version.authors" escapeHTML="$false" />
+          </li>
+          </wo:loop>
+          </ul>
+          </wo:loop>
+          </ul>
+          </wo:if>
+          <wo:if condition = "$testThisBillWoulds"> </wo:if>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

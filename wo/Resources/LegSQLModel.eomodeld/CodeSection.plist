@@ -17,13 +17,13 @@
     ); 
     attributesUsedForLocking = (name, pk); 
     className = "org.ganymede.leginfo.eo.CodeSection"; 
-    classProperties = (bills, name); 
+    classProperties = (billVersions, name); 
     externalName = "code_sections"; 
     fetchSpecificationDictionary = {}; 
     name = CodeSection; 
     primaryKeyAttributes = (pk); 
     relationships = (
-        {definition = "codeSectionJoins.bill"; name = bills; }, 
+        {definition = "codeSectionJoins.billVersion"; name = billVersions; }, 
         {
             destination = CodeSectionJoin; 
             isToMany = Y; 

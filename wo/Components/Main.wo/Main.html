@@ -1,72 +1,145 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
-<head>
-	<title>CA Legislature WO</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-</head>
-<body>
-
-<table border="1">
-
-<tr>
-	<td><h3>Bills By Bill Types</h3></td>
-	<td><h3>Bills By Code Section</h3></td>
-	<td><h3>Bills By Last Historical Action Date</h3></td>
-	<td><h3>Bills By Status Update Date</h3></td>
-	<td><h3>Bills By "Relating To"</h3></td>
-</tr>
-<tr>
-	<td valign="top">
-		<table>
-		<wo:loop list="$billTypes" item="$billType">
-		<tr>
-			<td><wo:str value="$billType.name//VALID" /></td>
-			<td nowrap>&nbsp;&nbsp;<wo:link action="$showBillsFromType"><wo:str value="$billType.bills.count//VALID" /></wo:link> bills</td>
-		</tr>
-		</wo:loop>
-		</table>
-	</td>
-	<td valign="top">
-		<table>
-		<wo:loop list="$sections" item="$section">
-		<tr>
-			<td><wo:str value="$section.name//VALID" /></td>
-			<td nowrap>&nbsp;&nbsp;<wo:link action="$showBillsFromSection"><wo:str value="$section.bills.count//VALID" /></wo:link> bills</td>
-		</tr>
-		</wo:loop>
-		</table>
-	</td>
-	<td valign="top">
-		<table>
-		<wo:loop list="$lastHistActionDates" item="$date">
-		<tr>
-			<td><wo:str value="$date" /></td>
-			<td align="right" nowrap>&nbsp;&nbsp;&nbsp;<wo:link action="$showBillsFromHistActionDate"><wo:str value="$histActionDatesCount" numberformat="0" /></wo:link>&nbsp;bills</td>
-		</tr>
-		</wo:loop>
-		</table>
-	</td>
-	<td valign="top">
-		<table>
-		<wo:loop list="$statusUpdateDates" item="$date">
-		<tr>
-			<td><wo:str value="$date" /></td>
-			<td align="right" nowrap>&nbsp;&nbsp;&nbsp;<wo:link action="$showBillsFromStatusDate"><wo:str value="$statusDatesCount" numberformat="0" /></wo:link>&nbsp;bills</td>
-		</tr>
-		</wo:loop>
-		</table>
-	</td>
-	<td valign="top">
-		<table>
-		<wo:loop list="$relatings.allKeys" item="$relating">
-		<tr>
-			<td><wo:str value="$relating" /></td>
-			<td align="right">&nbsp;&nbsp;&nbsp;<wo:link action="$showBillsFromRelating"><wo:str value="$relatingsCount" numberformat="0" /></wo:link></td>
-		</tr>
-		</wo:loop>
-		</table>
-	</td>
-</tr>
-</table>
-
-</body></html>
+  <head>
+    <title>CA Legislature WO</title>
+    <meta http-equiv = "Content-Type" content = "text/html;charset=UTF-8" />
+    <style media = "screen" type = "text/css">
+      td { text-align:center; padding:5px; }
+      td.list { text-align:left; padding:5px; }
+    </style>
+    <wo:ERXStyleSheet filename = "Calendar.css" />
+  </head>
+  <body>
+    <blockquote>
+      <table border = "1">
+        <tr>
+          <td valign = "top">
+            <wo:form>
+              <table>
+                <caption>
+                  <h2>Search Bills:</h2>
+                </caption>
+                <tr>
+                  <td align = "right">Bill Number:</td>
+                  <td align = "left"><wo:textfield value = "$findableBillNum" /></td>
+                </tr>
+                <tr>
+                  <td align = "right">Bill Author:</td>
+                  <td align = "left"><wo:textfield value = "$findableAuthor" /></td>
+                </tr>
+                <tr>
+                  <td align = "right">Bill Topic:</td>
+                  <td align = "left"><wo:textfield value = "$findableTopic" /></td>
+                </tr>
+                <tr>
+                  <td><wo:submit action = "$find" value = "Find" /></td>
+                  <td>&nbsp;</td>
+                </tr>
+              </table>
+            </wo:form>
+          </td>
+          <td valign = "top">
+            <wo:AjaxUpdateContainer id = "selectedDay">
+              <h3>CA Leg News &amp; Events</h3>
+              <h4>Session <wo:str value = "$session.sessionYrs" /></h4>
+              <wo:if condition = "$selectedDay">
+                <table>
+                  <tr>
+                    <td>
+                      <h4><wo:str value = "$selectedDay.dateString" /></h4>
+                      <wo:str value = "$selectedIntroduced.count" />
+                      Introduced Bills<br />
+                      <wo:str value = "$selectedAmended.count" />
+                      Amended Bills<br />
+                      <wo:str value = "$selectedLastActions.count" />
+                      Actions on Bills<br />
+                      <wo:str value = "$selectedScheduledHearings.count" />
+                      Hearings Scheduled 
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><hr /></td>
+                  </tr>
+                  <tr>
+                    <td align = "left" class = "list">
+                      <wo:if condition = "$selectedScheduledHearings.count">
+                        <ul>
+                          <wo:loop list = "$selectedScheduledHearingCommittees" item = "$selectedScheduledHearingCommittee">
+                            <li>
+                              <wo:str value = "$selectedScheduledHearingCommittee" />
+                              <ul>
+                                <wo:loop list = "$selectedScheduledHearingsForCommitteeBills" item = "$selectedScheduledHearingCommitteeBill">
+                                  <li>
+                                    <wo:str value = "$selectedScheduledHearingCommitteeBill.measure" />
+                                    &nbsp;-&nbsp; 
+                                    <wo:str value = "$selectedScheduledHearingCommitteeBill.topic" />
+                                  </li>
+                                </wo:loop>
+                              </ul>
+                            </li>
+                          </wo:loop>
+                        </ul>
+                      </wo:if>
+                    </td>
+                  </tr>
+                </table>
+              </wo:if>
+            </wo:AjaxUpdateContainer>
+          </td>
+          <td valign = "top">
+            <table width = "100%">
+              <tr>
+                <td align = "left">
+                  <wo:link action = "$previousMonth">&lt;&lt;&lt;&lt;</wo:link>
+                </td>
+                <td>
+                  <h4><wo:str value = "$selectedMonth.previousMonth.shortMonthName" /></h4>
+                </td>
+                <td>
+                  <h2>
+                    <wo:str value = "$selectedMonth.shortMonthName" />&nbsp;<wo:str value = "$selectedMonth.year" />
+                  </h2>
+                </td>
+                <td>
+                  <h4><wo:str value = "$selectedMonth.nextMonth.shortMonthName" /></h4>
+                </td>
+                <td align = "right">
+                  <wo:link action = "$nextMonth">&gt;&gt;&gt;&gt;</wo:link>
+                </td>
+              </tr>
+            </table>
+            <table id = "calendar">
+              <wo:WORepetition list = "$selectedMonth.weekObjects" item = "$repetitionWeek">
+                <tr class = "week">
+                  <wo:WORepetition list = "$repetitionWeek.days" item = "$repetitionDay">
+                    <wo:AjaxUpdateLink elementName = "td" class = "$dayClass" action = "$selectDay" updateContainerID = "selectedDay">
+                      <wo:not condition = "$sameAsLastMonth"><wo:str value = "$repetitionDay.monthObject.shortMonthName" />&nbsp;/&nbsp;</wo:not>
+                      <wo:str value = "$repetitionDay.day" />
+                      <wo:if condition = "$recentlyIntroduced.count">
+                        <br />Intr: 
+                        <wo:str value = "$recentlyIntroduced.count" />
+                      </wo:if>
+                      <wo:if condition = "$recentlyAmended.count">
+                        <br />Amnd: 
+                        <wo:str value = "$recentlyAmended.count" />
+                      </wo:if>
+                      <wo:if condition = "$recentlyLastActions.count">
+                        <br />LAct: 
+                        <wo:str value = "$recentlyLastActions.count" />
+                      </wo:if>
+                      <wo:if condition = "$recentlyScheduledHearings.count">
+                        <br />Hrng: 
+                        <wo:str value = "$recentlyScheduledHearings.count" />
+                      </wo:if>
+                    </wo:AjaxUpdateLink>
+                  </wo:WORepetition>
+                </tr>
+              </wo:WORepetition>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </blockquote>
+    <wo:link pageName = "TestsPage">&pi;</wo:link>
+  </body>
+</html>

@@ -3,16 +3,18 @@
     adaptorName = JDBC; 
     connectionDictionary = {URL = ""; password = ""; username = ""; }; 
     entities = (
+        {className = "org.ganymede.leginfo.eo.Annotation"; name = Annotation; }, 
         {className = "org.ganymede.leginfo.eo.Bill"; name = Bill; }, 
+        {className = "org.ganymede.leginfo.eo.BillAction"; name = BillAction; }, 
+        {className = "org.ganymede.leginfo.eo.BillActionType"; name = BillActionType; }, 
         {className = "org.ganymede.leginfo.eo.BillType"; name = BillType; }, 
-        {className = "com.webobjects.eocontrol.EOGenericRecord"; name = BillTypeJoin; }, 
+        {className = "er.extensions.eof.ERXGenericRecord"; name = BillTypeJoin; }, 
         {className = "org.ganymede.leginfo.eo.BillVersion"; name = BillVersion; }, 
         {className = "org.ganymede.leginfo.eo.BillWould"; name = BillWould; }, 
         {className = "org.ganymede.leginfo.eo.CodeSection"; name = CodeSection; }, 
-        {
-            className = "com.webobjects.eocontrol.EOGenericRecord"; 
-            name = CodeSectionJoin; 
-        }
+        {className = "er.extensions.eof.ERXGenericRecord"; name = CodeSectionJoin; }, 
+        {className = "org.ganymede.leginfo.eo.Tag"; name = Tag; }
     ); 
+    internalInfo = {"_deletedEntityNamesInObjectStore" = (BillActions, BillActionTypes); }; 
     userInfo = {"_EntityModeler" = {reverseEngineered = Y; }; }; 
 }

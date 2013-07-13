@@ -20,10 +20,12 @@ public class Application extends ERXApplication {
     public Application() {
         ERXApplication.log.info("Welcome to " + name() + " !");
 
-        NSNotificationCenter.defaultCenter().addObserver(this, new NSSelector("setConnectionDictionary", new Class [] {NSNotification.class}), WOApplication.ApplicationDidFinishLaunchingNotification, null);
+        setPageRefreshOnBacktrackEnabled(false);
+
+        NSNotificationCenter.defaultCenter().addObserver(this, new NSSelector("finishLaunch", new Class [] {NSNotification.class}), WOApplication.ApplicationDidFinishLaunchingNotification, null);
     }
 
-    public void setConnectionDictionary(NSNotification notification) {
+    public void finishLaunch(NSNotification notification) {
 
         String dbName = null;
         String dbUserName = null;
@@ -48,5 +50,7 @@ public class Application extends ERXApplication {
             dict.setObjectForKey(dbPassword, "password");
             legModel.setConnectionDictionary(dict);
         }
+
+        Fixer.fixAll();
     }
 }

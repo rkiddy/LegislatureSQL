@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+	<title>CA Legislature WO</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<wo:ERXStyleSheet filename="bills.css" />
+</head>
+<body>
+
+<p>(<wo:link pageName="Main">Home</wo:link>)</p>
+
+<h2><wo:str value="$bill.measure" /></h2>
+
+<ul>
+<li>Topic: <wo:str value="$bill.topic" /></li>
+<li>Last Action: <wo:str value="$bill.lastHistAction" /></li>
+<li>Versions
+	<ul>
+	<wo:loop list="$bill.versions" item="$billVersion">
+	<li><wo:ERXDataHyperlink pageName="BillVersionPage" version="$billVersion" ><wo:str value="$billVersion.prettyName" /></wo:ERXDataHyperlink><br/>
+	Author(s): <wo:str value="$billVersion.authors" escapeHTML="$false" /><br/>
+	Co-author(s): <wo:str value="$billVersion.coauthors" escapeHTML="$false" />
+	</li>
+	</wo:loop>
+	</ul></li>
+<li>Bill Type(s): <wo:loop list="$bill.billTypes" item="$billType"><wo:str value="$billType.name" />&nbsp;&nbsp;</wo:loop></li>
+<li>Code Section(s): <wo:loop list="$bill.lastVersion.codeSections" item="$section"><wo:str value="$section.name" />&nbsp;&nbsp;</wo:loop></li>
+<li>Tags: <wo:loop list="$bill.tags" item="$tag"><wo:str value="$tag.tag" /></wo:loop></li>
+<li>Annotations: <wo:loop list="$bill.annotations" item="$annotation"><wo:str value="$annotation.note" /></wo:loop></li>
+<li>ThisBillWoulds: <wo:loop list="$bill.lastVersion.woulds" item="$would"><wo:str value="$would.sentence" escapeHTML="$false" /></wo:loop></li>
+</ul>
+
+</body></html>

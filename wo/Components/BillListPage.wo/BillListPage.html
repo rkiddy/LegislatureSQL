@@ -3,59 +3,51 @@
 <head>
 	<title>CA Legislature WO</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<wo:ERXStyleSheet filename="bills.css" />
 </head>
 <body>
 
-<p><wo:link pageName="Main">Back to Main</wo:link><p>
+<p>(<wo:link pageName="Main">Home</wo:link>)</p>
 
-<table border="1">
-<tr>
-	<th>Measure</th>
-	<th>Info</th>
-</tr>
 <wo:loop list="$bills" item="$bill">
-<tr>
-	<td nowrap rowspan="6">
-		<wo:str value="$bill.measure" /><br/>
-		(<wo:ERXDataHyperlink pageName="BillVersionPage" filename="$bill.statusFile">S</wo:ERXDataHyperlink>)&nbsp;(<wo:ERXDataHyperlink pageName="BillVersionPage" filename="$bill.historyFile//VALID">H</wo:ERXDataHyperlink>)
-	</td>
-	<td>Short Title</td>
-	<td><wo:str value="$bill.shortTitle" /></td>
-</tr>
-<tr>
-	<td>Topic</td>
-	<td><wo:str value="$bill.topic" /></td>
-</tr>
-<tr>
-	<td>Authors</td>
-	<td><wo:str value="$bill.authors" /></td>
-</tr>
-<tr>
-	<td>Versions</td>
-	<td>
-		<wo:loop list="$bill.versions" item="$billVersion">
-		<table border="1">
-		<tr><td>
-			<wo:str value="$billVersion.fileDate" /> - <wo:ERXDataHyperlink pageName="BillVersionPage" filename="$billVersion.file" ><wo:str value="$billVersion.kind" /></wo:ERXDataHyperlink><br/>
-		</td></tr>
-		<tr><td>
-			<wo:loop list="$billVersion.woulds" item="$would">
-			<wo:str value="$would.sentence" /><br/>
-			</wo:loop>
-		</td></tr>
-		</table></wo:loop>
-	</td>
-</tr>
-<tr>
-	<td>LastHistAction</td>
-	<td><wo:str value="$bill.lastHistAction" /></td>
-</tr>
-<tr>
-	<td>Section(s)</td>
-	<td><wo:str value="$bill.codeSections.name//VALID" /></td>
-</tr>
-<tr><td colspan="3">&nbsp;</td></tr>
+	<div class = "billInfo">
+		<wo:ERXDataHyperlink pageName="BillPage" bill="$bill"><wo:str value="$bill.measure" /></wo:ERXDataHyperlink> - <wo:str value="$bill.topic" /><br/>
+		<wo:AjaxExpansion id="$bill.billNum" class="bill" insertion="Effect.blind" insertionDuration="0.1" closedLabel="details" openedLabel="hide details">
+				<dl>
+					<dt>Measure</dt><dd><wo:str value="$bill.measure" /></dd>
+					<dt>Topic</dt><dd><wo:str value="$bill.lastVersion.title" escapeHTML="$false" /></dd>
+					<dt>Last Action</dt><dd><wo:str value="$bill.lastHistAction" /></dd>
+					<dt>Versions</dt>
+						<dd>
+						<ul>
+						<wo:loop list="$bill.versions" item="$billVersion">
+							<li><wo:ERXDataHyperlink pageName="BillVersionPage" version="$billVersion" ><wo:str value="$billVersion.prettyName" /></wo:ERXDataHyperlink></li>
+						</wo:loop>
+						</ul>
+						</dd>
+					<dt>Bill Type(s)</dt>
+						<dd>
+						<wo:loop list="$bill.billTypes" item="$billType">
+						<wo:str value="$billType.name" />&nbsp;&nbsp;
+						</wo:loop>
+						</dd>
+					<dt>Code Section(s)</dt>
+						<dd>
+						<wo:loop list="$bill.lastVersion.codeSections" item="$section">
+						<wo:str value="$section.name" />&nbsp;&nbsp;
+						</wo:loop>
+						</dd>
+					<dt>TBWs</dt>
+						<dd>
+						<ul>
+						<wo:loop list="$bill.lastVersion.woulds" item="$would">
+						<li><wo:str value="$would.sentence" /></li>
+						</wo:loop>
+						</ul>
+						</dd>
+				</dl>
+		</wo:AjaxExpansion>
+	</div>
 </wo:loop>
-</table>
 
 </body></html>

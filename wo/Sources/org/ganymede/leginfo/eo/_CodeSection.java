@@ -18,12 +18,12 @@ public abstract class _CodeSection extends  ERXGenericRecord {
   // Attribute Keys
   public static final ERXKey<String> NAME = new ERXKey<String>("name");
   // Relationship Keys
-  public static final ERXKey<org.ganymede.leginfo.eo.Bill> BILLS = new ERXKey<org.ganymede.leginfo.eo.Bill>("bills");
+  public static final ERXKey<org.ganymede.leginfo.eo.BillVersion> BILL_VERSIONS = new ERXKey<org.ganymede.leginfo.eo.BillVersion>("billVersions");
 
   // Attributes
   public static final String NAME_KEY = NAME.key();
   // Relationships
-  public static final String BILLS_KEY = BILLS.key();
+  public static final String BILL_VERSIONS_KEY = BILL_VERSIONS.key();
 
   private static Logger LOG = Logger.getLogger(_CodeSection.class);
 
@@ -41,88 +41,88 @@ public abstract class _CodeSection extends  ERXGenericRecord {
 
   public void setName(String value) {
     if (_CodeSection.LOG.isDebugEnabled()) {
-        _CodeSection.LOG.debug( "updating name from " + name() + " to " + value);
+    	_CodeSection.LOG.debug( "updating name from " + name() + " to " + value);
     }
     takeStoredValueForKey(value, _CodeSection.NAME_KEY);
   }
 
-  public NSArray<org.ganymede.leginfo.eo.Bill> bills() {
-    return (NSArray<org.ganymede.leginfo.eo.Bill>)storedValueForKey(_CodeSection.BILLS_KEY);
+  public NSArray<org.ganymede.leginfo.eo.BillVersion> billVersions() {
+    return (NSArray<org.ganymede.leginfo.eo.BillVersion>)storedValueForKey(_CodeSection.BILL_VERSIONS_KEY);
   }
 
-  public NSArray<org.ganymede.leginfo.eo.Bill> bills(EOQualifier qualifier) {
-    return bills(qualifier, null);
+  public NSArray<org.ganymede.leginfo.eo.BillVersion> billVersions(EOQualifier qualifier) {
+    return billVersions(qualifier, null);
   }
 
-  public NSArray<org.ganymede.leginfo.eo.Bill> bills(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings) {
-    NSArray<org.ganymede.leginfo.eo.Bill> results;
-      results = bills();
+  public NSArray<org.ganymede.leginfo.eo.BillVersion> billVersions(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings) {
+    NSArray<org.ganymede.leginfo.eo.BillVersion> results;
+      results = billVersions();
       if (qualifier != null) {
-        results = (NSArray<org.ganymede.leginfo.eo.Bill>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
+        results = (NSArray<org.ganymede.leginfo.eo.BillVersion>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
       }
       if (sortOrderings != null) {
-        results = (NSArray<org.ganymede.leginfo.eo.Bill>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
+        results = (NSArray<org.ganymede.leginfo.eo.BillVersion>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
       }
     return results;
   }
-
-  public void addToBills(org.ganymede.leginfo.eo.Bill object) {
-    includeObjectIntoPropertyWithKey(object, _CodeSection.BILLS_KEY);
+  
+  public void addToBillVersions(org.ganymede.leginfo.eo.BillVersion object) {
+    includeObjectIntoPropertyWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
   }
 
-  public void removeFromBills(org.ganymede.leginfo.eo.Bill object) {
-    excludeObjectFromPropertyWithKey(object, _CodeSection.BILLS_KEY);
+  public void removeFromBillVersions(org.ganymede.leginfo.eo.BillVersion object) {
+    excludeObjectFromPropertyWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
   }
 
-  public void addToBillsRelationship(org.ganymede.leginfo.eo.Bill object) {
+  public void addToBillVersionsRelationship(org.ganymede.leginfo.eo.BillVersion object) {
     if (_CodeSection.LOG.isDebugEnabled()) {
-      _CodeSection.LOG.debug("adding " + object + " to bills relationship");
+      _CodeSection.LOG.debug("adding " + object + " to billVersions relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-        addToBills(object);
+    	addToBillVersions(object);
     }
     else {
-        addObjectToBothSidesOfRelationshipWithKey(object, _CodeSection.BILLS_KEY);
+    	addObjectToBothSidesOfRelationshipWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
     }
   }
 
-  public void removeFromBillsRelationship(org.ganymede.leginfo.eo.Bill object) {
+  public void removeFromBillVersionsRelationship(org.ganymede.leginfo.eo.BillVersion object) {
     if (_CodeSection.LOG.isDebugEnabled()) {
-      _CodeSection.LOG.debug("removing " + object + " from bills relationship");
+      _CodeSection.LOG.debug("removing " + object + " from billVersions relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-        removeFromBills(object);
+    	removeFromBillVersions(object);
     }
     else {
-        removeObjectFromBothSidesOfRelationshipWithKey(object, _CodeSection.BILLS_KEY);
+    	removeObjectFromBothSidesOfRelationshipWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
     }
   }
 
-  public org.ganymede.leginfo.eo.Bill createBillsRelationship() {
-    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName( org.ganymede.leginfo.eo.Bill.ENTITY_NAME );
+  public org.ganymede.leginfo.eo.BillVersion createBillVersionsRelationship() {
+    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName( org.ganymede.leginfo.eo.BillVersion.ENTITY_NAME );
     EOEnterpriseObject eo = eoClassDesc.createInstanceWithEditingContext(editingContext(), null);
     editingContext().insertObject(eo);
-    addObjectToBothSidesOfRelationshipWithKey(eo, _CodeSection.BILLS_KEY);
-    return (org.ganymede.leginfo.eo.Bill) eo;
+    addObjectToBothSidesOfRelationshipWithKey(eo, _CodeSection.BILL_VERSIONS_KEY);
+    return (org.ganymede.leginfo.eo.BillVersion) eo;
   }
 
-  public void deleteBillsRelationship(org.ganymede.leginfo.eo.Bill object) {
-    removeObjectFromBothSidesOfRelationshipWithKey(object, _CodeSection.BILLS_KEY);
+  public void deleteBillVersionsRelationship(org.ganymede.leginfo.eo.BillVersion object) {
+    removeObjectFromBothSidesOfRelationshipWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
     editingContext().deleteObject(object);
   }
 
-  public void deleteAllBillsRelationships() {
-    Enumeration<org.ganymede.leginfo.eo.Bill> objects = bills().immutableClone().objectEnumerator();
+  public void deleteAllBillVersionsRelationships() {
+    Enumeration<org.ganymede.leginfo.eo.BillVersion> objects = billVersions().immutableClone().objectEnumerator();
     while (objects.hasMoreElements()) {
-      deleteBillsRelationship(objects.nextElement());
+      deleteBillVersionsRelationship(objects.nextElement());
     }
   }
 
 
   public static CodeSection createCodeSection(EOEditingContext editingContext, String name
 ) {
-    CodeSection eo = (CodeSection) EOUtilities.createAndInsertInstance(editingContext, _CodeSection.ENTITY_NAME);
-        eo.setName(name);
+    CodeSection eo = (CodeSection) EOUtilities.createAndInsertInstance(editingContext, _CodeSection.ENTITY_NAME);    
+		eo.setName(name);
     return eo;
   }
 

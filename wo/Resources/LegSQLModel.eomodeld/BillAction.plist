@@ -1,0 +1,71 @@
+{
+    attributes = (
+        {
+            columnName = action; 
+            externalType = varchar; 
+            name = action; 
+            valueClassName = NSString; 
+            width = 1280; 
+        }, 
+        {
+            columnName = "action_num"; 
+            externalType = TINYINT; 
+            name = actionNum; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "bill_action_type_pk"; 
+            externalType = INT; 
+            name = billActionTypePk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = "bill_pk"; 
+            externalType = INT; 
+            name = billPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = pk; 
+            externalType = INT; 
+            name = pk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = "when_act"; 
+            externalType = CHAR; 
+            name = whenAct; 
+            valueClassName = NSString; 
+            width = 10; 
+        }
+    ); 
+    attributesUsedForLocking = (billActionTypePk, billPk, pk); 
+    className = "org.ganymede.leginfo.eo.BillAction"; 
+    classProperties = (action, actionNum, bill, billActionType, whenAct); 
+    externalName = "bill_actions"; 
+    fetchSpecificationDictionary = {}; 
+    name = BillAction; 
+    primaryKeyAttributes = (pk); 
+    relationships = (
+        {
+            destination = Bill; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = pk; sourceAttribute = billPk; }); 
+            name = bill; 
+        }, 
+        {
+            destination = BillActionType; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = pk; sourceAttribute = billActionTypePk; }); 
+            name = billActionType; 
+        }
+    ); 
+}

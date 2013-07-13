@@ -16,7 +16,7 @@
         }
     ); 
     attributesUsedForLocking = (billPk, billTypePk); 
-    className = "com.webobjects.eocontrol.EOGenericRecord"; 
+    className = "er.extensions.eof.ERXGenericRecord"; 
     externalName = "bill_type_joins"; 
     fetchSpecificationDictionary = {}; 
     name = BillTypeJoin; 

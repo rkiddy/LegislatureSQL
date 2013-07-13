@@ -1,0 +1,53 @@
+div.billInfo {
+	padding: 1em;
+	border: 3px solid rgb(220, 220, 220);
+	background-color: rgb(240, 240, 240);
+	-webkit-border-radius: 1em;
+	margin-bottom: 1em;
+}
+
+h1 {
+	margin-bottom: 0.1em;
+	margin-top: 0em;
+}
+
+h1 img {
+	margin-right: 8px;
+	border: 1px solid rgb(180, 180, 180);
+}
+
+div.bill {
+	margin-left: 62px;
+}
+
+div.bill > a {
+	text-decoration: none;
+	vertical-align: top;
+	color: rgb(140, 140, 140);
+}
+
+div.bill dl {
+	margin-left: 19px;
+}
+
+div.bill dt {
+	text-transform: lowercase;
+	color: rgb(140, 140, 140);
+}
+
+div.bill dd {
+	margin-bottom: 0.75em;
+}
+
+a#billLink {
+	background-image: url(triangleRight.gif);
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	margin-left: 62px;
+	color: rgb(140, 140, 140);
+	text-decoration: none;
+}
+
+a#billLink.expanded {
+	background-image: url(triangleDown.gif);
+}
