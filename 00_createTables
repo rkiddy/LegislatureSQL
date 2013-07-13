@@ -2,6 +2,8 @@
 
 # TODO the table create commands can first determine if a table exists. Since I am not dropping tables, this is ok for now.
 
+# From 'show create table xxx \G'
+
 require "cmds.pl";
 
 %options = &readOptions;
@@ -11,26 +13,26 @@ $table{"bills"} = <<SQL
 CREATE TABLE `bills` (
   `pk` int(11) NOT NULL DEFAULT '0',
   `bill_num` varchar(12) DEFAULT NULL,
-  `session_yrs` char(5) CHARACTER SET latin1 DEFAULT NULL,
-  `status_file` varchar(64) CHARACTER SET latin1 DEFAULT NULL,
+  `session_yrs` char(5) DEFAULT NULL,
+  `status_file` varchar(64) DEFAULT NULL,
   `history_file` varchar(64) DEFAULT NULL,
   `authors` varchar(2048) DEFAULT NULL,
-  `comm_action` varchar(1024) CHARACTER SET latin1 DEFAULT NULL,
-  `comm_action_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
-  `comm_location` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
-  `comm_vote_summary` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
-  `file_location` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
-  `file_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
-  `hearing_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
-  `house_location` char(3) CHARACTER SET latin1 DEFAULT NULL,
-  `item` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
-  `last_amended_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
-  `last_hist_act_date` char(10) CHARACTER SET latin1 DEFAULT NULL,
-  `last_hist_action` varchar(512) CHARACTER SET latin1 DEFAULT NULL,
+  `comm_action` varchar(1024) DEFAULT NULL,
+  `comm_action_date` char(10) DEFAULT NULL,
+  `comm_location` varchar(128) DEFAULT NULL,
+  `comm_vote_summary` varchar(128) DEFAULT NULL,
+  `file_location` varchar(128) DEFAULT NULL,
+  `file_date` char(10) DEFAULT NULL,
+  `hearing_date` char(10) DEFAULT NULL,
+  `house_location` char(3) DEFAULT NULL,
+  `item` varchar(128) DEFAULT NULL,
+  `last_amended_date` char(10) DEFAULT NULL,
+  `last_hist_act_date` char(10) DEFAULT NULL,
+  `last_hist_action` varchar(512) DEFAULT NULL,
   `status_date` char(10) DEFAULT NULL,
-  `measure` varchar(32) CHARACTER SET latin1 DEFAULT NULL,
-  `topic` varchar(1024) CHARACTER SET latin1 DEFAULT NULL,
-  `type_of_bill` varchar(128) CHARACTER SET latin1 DEFAULT NULL,
+  `measure` varchar(32) DEFAULT NULL,
+  `topic` varchar(1024) DEFAULT NULL,
+  `type_of_bill` varchar(128) DEFAULT NULL,
   'last_version_pk` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`pk`),
   UNIQUE KEY `bill_num_2` (`bill_num`,`session_yrs`),
@@ -97,6 +99,28 @@ CREATE TABLE `bill_woulds` (
   `sentence` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+$table{"bill_actions") = <<SQL
+
+CREATE TABLE `bill_actions` (
+  `pk` int(11) NOT NULL,
+  `bill_pk` int(11) DEFAULT NULL,
+  `action_num` tinyint(4) DEFAULT NULL,
+  `bill_action_type_pk` int(11) DEFAULT NULL,
+  `when_act` char(10) DEFAULT NULL,
+  `action` varchar(1280) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL
+
+$table{"bill_action_types") = <<SQL
+
+CREATE TABLE `bill_action_types` (
+  `pk` int(11) NOT NULL,
+  `action` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
 SQL
 
 open M, "| ".&mysql;
