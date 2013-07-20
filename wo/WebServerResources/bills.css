@@ -1,8 +1,9 @@
 div.billInfo {
-	padding: 1em;
-	border: 3px solid rgb(220, 220, 220);
+	/* padding: 1em; */
+	padding: 3px;
+	border: 2px solid rgb(220, 220, 220);
 	background-color: rgb(240, 240, 240);
-	-webkit-border-radius: 1em;
+	border-radius: 1em;
 	margin-bottom: 1em;
 }
 
