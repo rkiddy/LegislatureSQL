@@ -20,16 +20,28 @@
                   <h2>Search Bills:</h2>
                 </caption>
                 <tr>
-                  <td align = "right">Bill Number:</td>
-                  <td align = "left"><wo:textfield value = "$findableBillNum" /></td>
+                  <td align = "right">Bill&nbsp;Number:</td>
+                  <td align = "left">
+                    <span title = "(eg: 'ab 22' or 'sbx1 3' or '37')"><wo:textfield value = "$findableBillNum" /></span>
+                  </td>
                 </tr>
                 <tr>
-                  <td align = "right">Bill Author:</td>
+                  <td align = "right"><wo:ERXDataHyperlink pageName="CatalogPage" category="authors">Author</wo:ERXDataHyperlink>:</td>
                   <td align = "left"><wo:textfield value = "$findableAuthor" /></td>
                 </tr>
                 <tr>
-                  <td align = "right">Bill Topic:</td>
+                  <td align = "right">Topic:</td>
                   <td align = "left"><wo:textfield value = "$findableTopic" /></td>
+                </tr>
+                <tr>
+                  <td align = "right">Last&nbsp;Action:</td>
+                  <td align = "left"><span title = "(eg: 'Chaptered' or 'Do pass' or 'Hearing postponed')"><wo:textfield value = "$findableAction" /></span></td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>
+                    <wo:radio selection = "$operator" value = "or" />&nbsp;Or&nbsp;&nbsp;<wo:radio selection = "$operator" value = "and" />&nbsp;And
+                  </td>
                 </tr>
                 <tr>
                   <td><wo:submit action = "$find" value = "Find" /></td>
@@ -47,14 +59,14 @@
                   <tr>
                     <td>
                       <h4><wo:str value = "$selectedDay.dateString" /></h4>
-                      <wo:str value = "$selectedIntroduced.count" />
-                      Introduced Bills<br />
-                      <wo:str value = "$selectedAmended.count" />
-                      Amended Bills<br />
-                      <wo:str value = "$selectedLastActions.count" />
-                      Actions on Bills<br />
-                      <wo:str value = "$selectedScheduledHearings.count" />
-                      Hearings Scheduled 
+                      <wo:if condition="$selectedIntroduced.count">
+                      <wo:ERXDataHyperlink pageName="BillListPage" date="$selectedDay.dateString" bills="$selectedIntroduced" type="intro"><wo:str value = "$selectedIntroduced.count" /></wo:ERXDataHyperlink>&nbsp;Introduced&nbsp;Bills<br /></wo:if>
+                      <wo:if condition="$selectedAmended.count">
+                      <wo:ERXDataHyperlink pageName="BillListPage" date="$selectedDay.dateString" bills="$selectedAmended" type="amend"><wo:str value = "$selectedAmended.count" /></wo:ERXDataHyperlink>&nbsp;Amended&nbsp;Bills<br />
+                      </wo:if>
+                      <wo:if condition="$selectedLastActions.count">
+                      <wo:ERXDataHyperlink pageName="BillListPage" date="$selectedDay.dateString" bills="$selectedLastActions" type="lastact"><wo:str value = "$selectedLastActions.count" /></wo:ERXDataHyperlink>&nbsp;Actions&nbsp;on&nbsp;Bills<br /></wo:if>
+                      <wo:str value = "$selectedScheduledHearings.count" />&nbsp;Hearings&nbsp;Scheduled 
                     </td>
                   </tr>
                   <tr>

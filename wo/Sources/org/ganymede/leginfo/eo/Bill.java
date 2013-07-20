@@ -2,6 +2,7 @@ package org.ganymede.leginfo.eo;
 
 import org.apache.log4j.Logger;
 
+import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSComparator;
 import com.webobjects.foundation.NSMutableArray;
@@ -11,6 +12,8 @@ public class Bill extends _Bill {
 
     @SuppressWarnings("unused")
     private static Logger log = Logger.getLogger(Bill.class);
+
+    public static EOQualifier majorBillQualifier = BILL_NUM.ilike("ab_*").or(BILL_NUM.ilike("sb_*"));
 
     public static NSArray<Bill> sortedByMeasure(NSArray<Bill> bills) {
 
@@ -36,5 +39,15 @@ public class Bill extends _Bill {
 		} catch (com.webobjects.foundation.NSComparator.ComparisonException e) { }
 
 		return sorted.immutableClone();
+    }
+
+    public String prefixlessHouse() {
+    	String num = this.billNum();
+    	if (num.indexOf("x") > 0) {
+    		num = num.substring(0, num.indexOf("x"));
+    	} else {
+    		num = num.substring(0, num.indexOf("_"));
+    	}
+    	return num;
     }
 }

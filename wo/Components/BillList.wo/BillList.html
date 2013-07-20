@@ -1,0 +1,40 @@
+<wo:loop list="$bills" item="$bill">
+	<div class = "billInfo">
+		<wo:ERXDataHyperlink pageName="BillPage" bill="$bill"><wo:str value="$bill.measure" /></wo:ERXDataHyperlink> - <wo:str value="$bill.topic" />
+		<wo:AjaxExpansion id="$bill.billNum" class="bill" insertion="Effect.blind" insertionDuration="0.1" closedLabel="(details)" openedLabel="(hide)">
+				<dl>
+					<dt>Measure</dt><dd><wo:str value="$bill.measure" /></dd>
+					<dt>Topic</dt><dd><wo:str value="$bill.lastVersion.title" escapeHTML="$false" /></dd>
+					<dt>Last Action</dt><dd><wo:str value="$bill.lastHistActDate" />&nbsp;-&nbsp;<wo:str value="$bill.lastHistAction" /></dd>
+					<dt>Versions</dt>
+						<dd>
+						<ul>
+						<wo:loop list="$bill.versions" item="$billVersion">
+							<li><wo:ERXDataHyperlink pageName="BillVersionPage" version="$billVersion" ><wo:str value="$billVersion.prettyName" /></wo:ERXDataHyperlink></li>
+						</wo:loop>
+						</ul>
+						</dd>
+					<dt>Bill Type(s)</dt>
+						<dd>
+						<wo:loop list="$bill.billTypes" item="$billType">
+						<wo:str value="$billType.name" />&nbsp;&nbsp;
+						</wo:loop>
+						</dd>
+					<dt>Code Section(s)</dt>
+						<dd>
+						<wo:loop list="$bill.lastVersion.codeSections" item="$section">
+						<wo:str value="$section.name" />&nbsp;&nbsp;
+						</wo:loop>
+						</dd>
+					<dt>TBWs</dt>
+						<dd>
+						<ul>
+						<wo:loop list="$bill.lastVersion.woulds" item="$would">
+						<li><wo:str value="$would.sentence" /></li>
+						</wo:loop>
+						</ul>
+						</dd>
+				</dl>
+		</wo:AjaxExpansion>
+	</div>
+</wo:loop>

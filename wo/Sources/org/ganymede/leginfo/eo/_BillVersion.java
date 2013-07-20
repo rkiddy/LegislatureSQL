@@ -17,24 +17,28 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   // Attribute Keys
   public static final ERXKey<String> AUTHORS = new ERXKey<String>("authors");
+  public static final ERXKey<String> AUTHORS_NEXT = new ERXKey<String>("authorsNext");
   public static final ERXKey<String> COAUTHORS = new ERXKey<String>("coauthors");
   public static final ERXKey<String> FILE = new ERXKey<String>("file");
   public static final ERXKey<String> FILE_DATE = new ERXKey<String>("fileDate");
   public static final ERXKey<String> KIND = new ERXKey<String>("kind");
   public static final ERXKey<String> TITLE = new ERXKey<String>("title");
   // Relationship Keys
+  public static final ERXKey<org.ganymede.leginfo.eo.BillAuthoring> AUTHORINGS = new ERXKey<org.ganymede.leginfo.eo.BillAuthoring>("authorings");
   public static final ERXKey<org.ganymede.leginfo.eo.Bill> BILL = new ERXKey<org.ganymede.leginfo.eo.Bill>("bill");
   public static final ERXKey<org.ganymede.leginfo.eo.CodeSection> CODE_SECTIONS = new ERXKey<org.ganymede.leginfo.eo.CodeSection>("codeSections");
   public static final ERXKey<org.ganymede.leginfo.eo.BillWould> WOULDS = new ERXKey<org.ganymede.leginfo.eo.BillWould>("woulds");
 
   // Attributes
   public static final String AUTHORS_KEY = AUTHORS.key();
+  public static final String AUTHORS_NEXT_KEY = AUTHORS_NEXT.key();
   public static final String COAUTHORS_KEY = COAUTHORS.key();
   public static final String FILE_KEY = FILE.key();
   public static final String FILE_DATE_KEY = FILE_DATE.key();
   public static final String KIND_KEY = KIND.key();
   public static final String TITLE_KEY = TITLE.key();
   // Relationships
+  public static final String AUTHORINGS_KEY = AUTHORINGS.key();
   public static final String BILL_KEY = BILL.key();
   public static final String CODE_SECTIONS_KEY = CODE_SECTIONS.key();
   public static final String WOULDS_KEY = WOULDS.key();
@@ -58,6 +62,17 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     	_BillVersion.LOG.debug( "updating authors from " + authors() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.AUTHORS_KEY);
+  }
+
+  public String authorsNext() {
+    return (String) storedValueForKey(_BillVersion.AUTHORS_NEXT_KEY);
+  }
+
+  public void setAuthorsNext(String value) {
+    if (_BillVersion.LOG.isDebugEnabled()) {
+    	_BillVersion.LOG.debug( "updating authorsNext from " + authorsNext() + " to " + value);
+    }
+    takeStoredValueForKey(value, _BillVersion.AUTHORS_NEXT_KEY);
   }
 
   public String coauthors() {
@@ -140,6 +155,100 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     }
   }
   
+  public NSArray<org.ganymede.leginfo.eo.BillAuthoring> authorings() {
+    return (NSArray<org.ganymede.leginfo.eo.BillAuthoring>)storedValueForKey(_BillVersion.AUTHORINGS_KEY);
+  }
+
+  public NSArray<org.ganymede.leginfo.eo.BillAuthoring> authorings(EOQualifier qualifier) {
+    return authorings(qualifier, null, false);
+  }
+
+  public NSArray<org.ganymede.leginfo.eo.BillAuthoring> authorings(EOQualifier qualifier, boolean fetch) {
+    return authorings(qualifier, null, fetch);
+  }
+
+  public NSArray<org.ganymede.leginfo.eo.BillAuthoring> authorings(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings, boolean fetch) {
+    NSArray<org.ganymede.leginfo.eo.BillAuthoring> results;
+    if (fetch) {
+      EOQualifier fullQualifier;
+      EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.BillAuthoring.BILL_VERSION_KEY, EOQualifier.QualifierOperatorEqual, this);
+    	
+      if (qualifier == null) {
+        fullQualifier = inverseQualifier;
+      }
+      else {
+        NSMutableArray<EOQualifier> qualifiers = new NSMutableArray<EOQualifier>();
+        qualifiers.addObject(qualifier);
+        qualifiers.addObject(inverseQualifier);
+        fullQualifier = new EOAndQualifier(qualifiers);
+      }
+
+      results = org.ganymede.leginfo.eo.BillAuthoring.fetchBillAuthorings(editingContext(), fullQualifier, sortOrderings);
+    }
+    else {
+      results = authorings();
+      if (qualifier != null) {
+        results = (NSArray<org.ganymede.leginfo.eo.BillAuthoring>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
+      }
+      if (sortOrderings != null) {
+        results = (NSArray<org.ganymede.leginfo.eo.BillAuthoring>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
+      }
+    }
+    return results;
+  }
+  
+  public void addToAuthorings(org.ganymede.leginfo.eo.BillAuthoring object) {
+    includeObjectIntoPropertyWithKey(object, _BillVersion.AUTHORINGS_KEY);
+  }
+
+  public void removeFromAuthorings(org.ganymede.leginfo.eo.BillAuthoring object) {
+    excludeObjectFromPropertyWithKey(object, _BillVersion.AUTHORINGS_KEY);
+  }
+
+  public void addToAuthoringsRelationship(org.ganymede.leginfo.eo.BillAuthoring object) {
+    if (_BillVersion.LOG.isDebugEnabled()) {
+      _BillVersion.LOG.debug("adding " + object + " to authorings relationship");
+    }
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	addToAuthorings(object);
+    }
+    else {
+    	addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.AUTHORINGS_KEY);
+    }
+  }
+
+  public void removeFromAuthoringsRelationship(org.ganymede.leginfo.eo.BillAuthoring object) {
+    if (_BillVersion.LOG.isDebugEnabled()) {
+      _BillVersion.LOG.debug("removing " + object + " from authorings relationship");
+    }
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	removeFromAuthorings(object);
+    }
+    else {
+    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.AUTHORINGS_KEY);
+    }
+  }
+
+  public org.ganymede.leginfo.eo.BillAuthoring createAuthoringsRelationship() {
+    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName( org.ganymede.leginfo.eo.BillAuthoring.ENTITY_NAME );
+    EOEnterpriseObject eo = eoClassDesc.createInstanceWithEditingContext(editingContext(), null);
+    editingContext().insertObject(eo);
+    addObjectToBothSidesOfRelationshipWithKey(eo, _BillVersion.AUTHORINGS_KEY);
+    return (org.ganymede.leginfo.eo.BillAuthoring) eo;
+  }
+
+  public void deleteAuthoringsRelationship(org.ganymede.leginfo.eo.BillAuthoring object) {
+    removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.AUTHORINGS_KEY);
+    editingContext().deleteObject(object);
+  }
+
+  public void deleteAllAuthoringsRelationships() {
+    Enumeration<org.ganymede.leginfo.eo.BillAuthoring> objects = authorings().immutableClone().objectEnumerator();
+    while (objects.hasMoreElements()) {
+      deleteAuthoringsRelationship(objects.nextElement());
+    }
+  }
+
   public NSArray<org.ganymede.leginfo.eo.CodeSection> codeSections() {
     return (NSArray<org.ganymede.leginfo.eo.CodeSection>)storedValueForKey(_BillVersion.CODE_SECTIONS_KEY);
   }
@@ -308,6 +417,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
 
   public static BillVersion createBillVersion(EOEditingContext editingContext, String authors
+, String authorsNext
 , String coauthors
 , String file
 , String fileDate
@@ -316,6 +426,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 , org.ganymede.leginfo.eo.Bill bill) {
     BillVersion eo = (BillVersion) EOUtilities.createAndInsertInstance(editingContext, _BillVersion.ENTITY_NAME);    
 		eo.setAuthors(authors);
+		eo.setAuthorsNext(authorsNext);
 		eo.setCoauthors(coauthors);
 		eo.setFile(file);
 		eo.setFileDate(fileDate);

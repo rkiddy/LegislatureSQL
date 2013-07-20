@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+	<title>CA Legislature WO</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<wo:ERXStyleSheet filename="bills.css" />
+</head>
+<body>
+
+<table border="1">
+<tr>
+	<th>Category</th>
+	<th>Bills</th>
+</tr>
+<wo:loop list="$categoryObjs" item="$categoryObj">
+<tr>
+	<td valign="top"><wo:str value="$categoryObj" escapeHMTL="$false" /></td>
+	<td><wo:BillList bills="$bills" /></td>
+</tr>
+</wo:loop>
+</table>
+</body></html>

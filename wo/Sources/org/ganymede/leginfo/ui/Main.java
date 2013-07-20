@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.ganymede.leginfo.Session;
 import org.ganymede.leginfo.eo.Bill;
+import org.ganymede.leginfo.eo.BillAction;
 import org.ganymede.leginfo.eo.BillVersion;
 import org.ganymede.leginfo.util.Day;
 import org.ganymede.leginfo.util.Month;
@@ -18,7 +18,6 @@ import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.eocontrol.EOAndQualifier;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOOrQualifier;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
@@ -26,7 +25,6 @@ import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableSet;
 
 import er.ajax.AjaxUtils;
-import er.extensions.qualifiers.ERXTrueQualifier;
 
 public class Main extends GComponent {
 
@@ -36,10 +34,6 @@ public class Main extends GComponent {
     }
 
     public String message = null;
-
-    public EOEditingContext ec() { return session().defaultEditingContext(); }
-
-    public Session session() { return (Session)super.session(); }
 
     public String recentDate;
 
@@ -64,21 +58,16 @@ public class Main extends GComponent {
     	return dates.immutableClone();
     }
 
-    private EOQualifier isMajorBillQualifier() {
-    	if (session().includeExtraBills)
-    		return BillVersion.BILL.dot(Bill.BILL_NUM).ilike("ab_*").or(BillVersion.BILL.dot(Bill.BILL_NUM).ilike("sb_*"));
-    	else
-    		return new ERXTrueQualifier();
-    }
-
     public NSArray<Bill> recentlyIntroduced() {
 
     	EOQualifier recentlyIntroducedQualifier = null;
 
-    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED)).and(this.isMajorBillQualifier());
+    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED));
 
     	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
     	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
 
     	return bills;
     }
@@ -87,25 +76,27 @@ public class Main extends GComponent {
 
     	EOQualifier recentlyIntroducedQualifier = null;
 
-    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED)).and(this.isMajorBillQualifier());
+    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED));
 
     	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
     	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
 
     	return bills;
     }
 
     public NSArray<Bill> recentlyAmended() {
 
-    	System.out.print("looking for amended for repetitionDay: "+_repetitionDay.dateString());
     	EOQualifier recentlyAmendedQualifier = null;
 
-    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED)).and(this.isMajorBillQualifier());
+    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED));
 
     	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
     	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-    	System.out.println(" - found # "+bills.size());
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+
     	return bills;
     }
 
@@ -114,35 +105,45 @@ public class Main extends GComponent {
     	System.out.print("looking for amended for selectedDay: "+_selectedDay.dateString());
     	EOQualifier recentlyAmendedQualifier = null;
 
-    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED)).and(this.isMajorBillQualifier());
+    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED));
 
     	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
     	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-    	System.out.println(" - found # "+bills.size());
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+
     	return bills;
     }
 
     public NSArray<Bill> recentlyLastActions() {
-    	return Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_repetitionDay.dateString()).and(this.isMajorBillQualifier()), null);
+    	NSArray<Bill> bills = Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_repetitionDay.dateString()), null);
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+    	return bills;
     }
 
     public NSArray<Bill> selectedLastActions() {
-    	return Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_selectedDay.dateString()).and(this.isMajorBillQualifier()), null);
+    	NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_selectedDay.dateString()), null);
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+    	return bills;
     }
 
     public NSArray<Bill> recentlyScheduledHearings() {
-    	return Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_repetitionDay.dateString()).and(this.isMajorBillQualifier()), null);
+    	NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_repetitionDay.dateString()), null);
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+    	return bills;
     }
 
     public NSArray<Bill> selectedScheduledHearings() {
-    	return Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_selectedDay.dateString()).and(this.isMajorBillQualifier()), Bill.COMM_LOCATION.ascs());
+    	NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_selectedDay.dateString()), Bill.COMM_LOCATION.ascs());
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+    	return bills;
     }
 
     public NSArray<String> selectedScheduledHearingCommittees() {
-    	NSArray<Bill> found = this.selectedScheduledHearings();
+    	NSArray<Bill> bills = this.selectedScheduledHearings();
+    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
     	NSMutableSet<String> comms = new NSMutableSet<String>();
-    	comms.addAll((NSArray<String>)found.valueForKey(Bill.COMM_LOCATION_KEY));
+    	comms.addAll((NSArray<String>)bills.valueForKey(Bill.COMM_LOCATION_KEY));
     	return comms.allObjects();
     }
 
@@ -197,6 +198,8 @@ public class Main extends GComponent {
     public String findableBillNum;
     public String findableAuthor;
     public String findableTopic;
+    public String findableAction;
+    public String operator = "or";
 
     public WOActionResults find() {
     	message = null;
@@ -217,8 +220,11 @@ public class Main extends GComponent {
     	if (findableTopic != null) {
     		qualifiers.add(Bill.TOPIC.ilike("*"+findableTopic+"*"));
     	}
+    	if (findableAction != null) {
+    		qualifiers.add(Bill.BILL_ACTIONS.dot(BillAction.ACTION.ilike("*"+findableAction+"*")));
+    	}
     	if (qualifiers.size() > 0) {
-    		EOQualifier qualifier = (qualifiers.size() == 1) ? qualifiers.anyObject() : new EOAndQualifier(qualifiers.allObjects());
+    		EOQualifier qualifier = (qualifiers.size() == 1) ? qualifiers.anyObject() : ((operator.equals("or")) ? new EOOrQualifier(qualifiers.allObjects()) : new EOAndQualifier(qualifiers.allObjects()));
         	WOComponent nextPage = pageWithName(BillListPage.class);
         	NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
         	System.out.println("rows # "+rows.size());

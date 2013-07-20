@@ -13,7 +13,8 @@ import com.webobjects.foundation.NSSelector;
 import er.extensions.appserver.ERXApplication;
 
 public class Application extends ERXApplication {
-    public static void main(String[] argv) {
+
+	public static void main(String[] argv) {
         ERXApplication.main(argv, Application.class);
     }
 
@@ -51,6 +52,9 @@ public class Application extends ERXApplication {
             legModel.setConnectionDictionary(dict);
         }
 
-        Fixer.fixAll();
+        if (System.getProperty("RunFixesAndQuit") != null) {
+        	Fixer.fixAll();
+        	System.exit(0);
+        }
     }
 }
