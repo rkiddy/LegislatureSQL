@@ -123,6 +123,32 @@ CREATE TABLE `bill_action_types` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 SQL
 
+$table{"authors") = <<SQL
+
+CREATE TABLE `authors` (
+  `pk` int(11) NOT NULL,
+  `name` varchar(64),
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL
+
+$table{"bill_authorings") = <<SQL
+
+CREATE TABLE `bill_authorings` (
+  `pk` int(11) NOT NULL,
+  `author_pk` int(11) DEFAULT NULL,
+  `bill_version_pk` int(11) DEFAULT NULL,
+  `is_latest_version` enum('Y','N') DEFAULT NULL,
+  `author_type` enum('A','C','PC') DEFAULT NULL,
+  `author_house` enum('A','S') DEFAULT NULL,
+  `session_yrs` char(5) DEFAULT NULL,
+  PRIMARY KEY (`pk`),
+  KEY `author_pk` (`author_pk`),
+  KEY `bill_version_pk` (`bill_version_pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL
+
+
 open M, "| ".&mysql;
 foreach (keys %tables) {
     print M $tables{$_};
