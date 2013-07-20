@@ -18,5 +18,7 @@ fi
 
 ./08_addHistoryItems $*
 
+./97_fixInWO
+
 ./99_testData $*
 
