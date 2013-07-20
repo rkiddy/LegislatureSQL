@@ -81,12 +81,30 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                 @lines = `$cmd`;
                 chomp(@lines);
 
+                $otherAuthors = "";
+
                 foreach (@lines) {
                     $line = $_;
 
                     if ($line =~ /<meta name=\"FILEDATE\" content=\"([0-9]{8})\">/) { $dateStr = substr($1,0,4)."-".substr($1,4,2)."-".substr($1,6,2); }
                     if ($line =~ /<meta name=\"AUTHOR\" content=\"(.*)\">/) { $authors = $1; }
                     if ($line =~ /<meta name=\"COAUTHOR\" content=\"(.*)\">/) { $coauthors = $1; }
+
+                    // Getting the authors and coauthors via the meta info is not working very well. Instead, I will parse the
+                    // "INTRO BY" line in the version of the bill text, build a structure from that and process it with the WO
+                    // application method in the Fixer class.
+                    //
+                    // TODO - get rid of the $authors and $coauthors ivar at some point.
+                    //
+                    if ($line =~ /^INTRODUCED BY/) { $in_other_authors = 1; }
+                    if ($line eq "") { undef $in_other_authors; }
+                    if (defined($in_other_authors)) {
+                        if (($otherAuthors =~ /,$/) || ($otherAuthors =~ /\-$/)) {
+                            $otherAuthors = $otherAuthors."".$line;
+                        } else {
+                            $otherAuthors = $otherAuthors." ".$line;
+                        }
+                    }
                 }
 
                 undef $title;
@@ -116,11 +134,12 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                     print "    title: \"".$title."\"\n";
                     print "    authors: \"".$authors."\"\n";
                     print "    coauthors: \"".$coauthors."\"\n";
+                    print "    otherAuthors: \"".$otherAuthors."\"\n";
                 }
 
-                push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, title, authors, coauthors) ". 
+                push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, title, authors, coauthors, authors_next) ". 
                            "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."', ".
-                                  "'".$title."', '".$authors."', '".$coauthors."');\n";
+                                  "'".$title."', '".$authors."', '".$coauthors."', '".$otherAuthors."');\n";
                 push @sql, "update bills set last_version_pk = ".$maxPk.", last_amended_date = '".$dateStr."' where pk = ".$billPk.";\n";
             }
         }
