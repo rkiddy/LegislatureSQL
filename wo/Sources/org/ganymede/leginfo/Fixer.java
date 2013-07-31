@@ -128,7 +128,7 @@ public class Fixer {
 
 				if (aVersion.authorings().size() == 0) {
 
-					String authorsNext = aVersion.authorsNext();
+					String authorsNext = aVersion.authsParsed();
 
 					// remove all <strike>text</strike>
 					boolean finished = false;
@@ -188,7 +188,7 @@ public class Fixer {
 						authorsNext = authorsNext.replaceAll("Coauthor\\s*:", ",CO,");
 					}
 
-					aVersion.setAuthorsNext(authorsNext);
+					aVersion.setAuthsParsed(authorsNext);
 					edited++;
 
 					ec.saveChanges();

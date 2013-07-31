@@ -1,16 +1,18 @@
 {
     attributes = (
         {
+            allowsNull = Y; 
             columnName = authors; 
             externalType = varchar; 
-            name = authors; 
+            name = authorsStr; 
             valueClassName = NSString; 
             width = 1024; 
         }, 
         {
-            columnName = "authors_next"; 
+            allowsNull = Y; 
+            columnName = "auths_parsed"; 
             externalType = varchar; 
-            name = authorsNext; 
+            name = authsParsed; 
             valueClassName = NSString; 
             width = 10240; 
         }, 
@@ -22,9 +24,10 @@
             valueType = i; 
         }, 
         {
+            allowsNull = Y; 
             columnName = coauthors; 
             externalType = varchar; 
-            name = coauthors; 
+            name = coauthorsStr; 
             valueClassName = NSString; 
             width = 1024; 
         }, 
@@ -68,10 +71,10 @@
     className = "org.ganymede.leginfo.eo.BillVersion"; 
     classProperties = (
         authorings, 
-        authors, 
-        authorsNext, 
+        authorsStr, 
+        authsParsed, 
         bill, 
-        coauthors, 
+        coauthorsStr, 
         codeSections, 
         file, 
         fileDate, 
@@ -111,7 +114,7 @@
             destination = BillWould; 
             isToMany = Y; 
             joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = versionPk; sourceAttribute = pk; }); 
+            joins = ({destinationAttribute = billVersionPk; sourceAttribute = pk; }); 
             name = woulds; 
         }
     ); 

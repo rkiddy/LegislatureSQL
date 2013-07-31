@@ -17,13 +17,11 @@ public abstract class _BillWould extends  ERXGenericRecord {
 
   // Attribute Keys
   public static final ERXKey<String> SENTENCE = new ERXKey<String>("sentence");
-  public static final ERXKey<Integer> VERSION_PK = new ERXKey<Integer>("versionPk");
   // Relationship Keys
   public static final ERXKey<org.ganymede.leginfo.eo.BillVersion> BILL_VERSION = new ERXKey<org.ganymede.leginfo.eo.BillVersion>("billVersion");
 
   // Attributes
   public static final String SENTENCE_KEY = SENTENCE.key();
-  public static final String VERSION_PK_KEY = VERSION_PK.key();
   // Relationships
   public static final String BILL_VERSION_KEY = BILL_VERSION.key();
 
@@ -46,17 +44,6 @@ public abstract class _BillWould extends  ERXGenericRecord {
     	_BillWould.LOG.debug( "updating sentence from " + sentence() + " to " + value);
     }
     takeStoredValueForKey(value, _BillWould.SENTENCE_KEY);
-  }
-
-  public Integer versionPk() {
-    return (Integer) storedValueForKey(_BillWould.VERSION_PK_KEY);
-  }
-
-  public void setVersionPk(Integer value) {
-    if (_BillWould.LOG.isDebugEnabled()) {
-    	_BillWould.LOG.debug( "updating versionPk from " + versionPk() + " to " + value);
-    }
-    takeStoredValueForKey(value, _BillWould.VERSION_PK_KEY);
   }
 
   public org.ganymede.leginfo.eo.BillVersion billVersion() {
@@ -86,11 +73,9 @@ public abstract class _BillWould extends  ERXGenericRecord {
   
 
   public static BillWould createBillWould(EOEditingContext editingContext, String sentence
-, Integer versionPk
 , org.ganymede.leginfo.eo.BillVersion billVersion) {
     BillWould eo = (BillWould) EOUtilities.createAndInsertInstance(editingContext, _BillWould.ENTITY_NAME);    
 		eo.setSentence(sentence);
-		eo.setVersionPk(versionPk);
     eo.setBillVersionRelationship(billVersion);
     return eo;
   }

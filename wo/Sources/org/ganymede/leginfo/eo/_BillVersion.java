@@ -16,9 +16,9 @@ public abstract class _BillVersion extends  ERXGenericRecord {
   public static final String ENTITY_NAME = "BillVersion";
 
   // Attribute Keys
-  public static final ERXKey<String> AUTHORS = new ERXKey<String>("authors");
-  public static final ERXKey<String> AUTHORS_NEXT = new ERXKey<String>("authorsNext");
-  public static final ERXKey<String> COAUTHORS = new ERXKey<String>("coauthors");
+  public static final ERXKey<String> AUTHORS_STR = new ERXKey<String>("authorsStr");
+  public static final ERXKey<String> AUTHS_PARSED = new ERXKey<String>("authsParsed");
+  public static final ERXKey<String> COAUTHORS_STR = new ERXKey<String>("coauthorsStr");
   public static final ERXKey<String> FILE = new ERXKey<String>("file");
   public static final ERXKey<String> FILE_DATE = new ERXKey<String>("fileDate");
   public static final ERXKey<String> KIND = new ERXKey<String>("kind");
@@ -30,9 +30,9 @@ public abstract class _BillVersion extends  ERXGenericRecord {
   public static final ERXKey<org.ganymede.leginfo.eo.BillWould> WOULDS = new ERXKey<org.ganymede.leginfo.eo.BillWould>("woulds");
 
   // Attributes
-  public static final String AUTHORS_KEY = AUTHORS.key();
-  public static final String AUTHORS_NEXT_KEY = AUTHORS_NEXT.key();
-  public static final String COAUTHORS_KEY = COAUTHORS.key();
+  public static final String AUTHORS_STR_KEY = AUTHORS_STR.key();
+  public static final String AUTHS_PARSED_KEY = AUTHS_PARSED.key();
+  public static final String COAUTHORS_STR_KEY = COAUTHORS_STR.key();
   public static final String FILE_KEY = FILE.key();
   public static final String FILE_DATE_KEY = FILE_DATE.key();
   public static final String KIND_KEY = KIND.key();
@@ -53,37 +53,37 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     return localInstance;
   }
 
-  public String authors() {
-    return (String) storedValueForKey(_BillVersion.AUTHORS_KEY);
+  public String authorsStr() {
+    return (String) storedValueForKey(_BillVersion.AUTHORS_STR_KEY);
   }
 
-  public void setAuthors(String value) {
+  public void setAuthorsStr(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating authors from " + authors() + " to " + value);
+    	_BillVersion.LOG.debug( "updating authorsStr from " + authorsStr() + " to " + value);
     }
-    takeStoredValueForKey(value, _BillVersion.AUTHORS_KEY);
+    takeStoredValueForKey(value, _BillVersion.AUTHORS_STR_KEY);
   }
 
-  public String authorsNext() {
-    return (String) storedValueForKey(_BillVersion.AUTHORS_NEXT_KEY);
+  public String authsParsed() {
+    return (String) storedValueForKey(_BillVersion.AUTHS_PARSED_KEY);
   }
 
-  public void setAuthorsNext(String value) {
+  public void setAuthsParsed(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating authorsNext from " + authorsNext() + " to " + value);
+    	_BillVersion.LOG.debug( "updating authsParsed from " + authsParsed() + " to " + value);
     }
-    takeStoredValueForKey(value, _BillVersion.AUTHORS_NEXT_KEY);
+    takeStoredValueForKey(value, _BillVersion.AUTHS_PARSED_KEY);
   }
 
-  public String coauthors() {
-    return (String) storedValueForKey(_BillVersion.COAUTHORS_KEY);
+  public String coauthorsStr() {
+    return (String) storedValueForKey(_BillVersion.COAUTHORS_STR_KEY);
   }
 
-  public void setCoauthors(String value) {
+  public void setCoauthorsStr(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating coauthors from " + coauthors() + " to " + value);
+    	_BillVersion.LOG.debug( "updating coauthorsStr from " + coauthorsStr() + " to " + value);
     }
-    takeStoredValueForKey(value, _BillVersion.COAUTHORS_KEY);
+    takeStoredValueForKey(value, _BillVersion.COAUTHORS_STR_KEY);
   }
 
   public String file() {
@@ -416,18 +416,12 @@ public abstract class _BillVersion extends  ERXGenericRecord {
   }
 
 
-  public static BillVersion createBillVersion(EOEditingContext editingContext, String authors
-, String authorsNext
-, String coauthors
-, String file
+  public static BillVersion createBillVersion(EOEditingContext editingContext, String file
 , String fileDate
 , String kind
 , String title
 , org.ganymede.leginfo.eo.Bill bill) {
     BillVersion eo = (BillVersion) EOUtilities.createAndInsertInstance(editingContext, _BillVersion.ENTITY_NAME);    
-		eo.setAuthors(authors);
-		eo.setAuthorsNext(authorsNext);
-		eo.setCoauthors(coauthors);
 		eo.setFile(file);
 		eo.setFileDate(fileDate);
 		eo.setKind(kind);

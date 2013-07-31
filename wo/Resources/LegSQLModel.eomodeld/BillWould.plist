@@ -1,6 +1,13 @@
 {
     attributes = (
         {
+            columnName = "bill_version_pk"; 
+            externalType = INT; 
+            name = billVersionPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
             columnName = pk; 
             externalType = INT; 
             name = pk; 
@@ -13,18 +20,11 @@
             name = sentence; 
             valueClassName = NSString; 
             width = 1024; 
-        }, 
-        {
-            columnName = "version_pk"; 
-            externalType = INT; 
-            name = versionPk; 
-            valueClassName = NSNumber; 
-            valueType = i; 
         }
     ); 
-    attributesUsedForLocking = (pk, sentence, versionPk); 
+    attributesUsedForLocking = (billVersionPk, pk); 
     className = "org.ganymede.leginfo.eo.BillWould"; 
-    classProperties = (billVersion, sentence, versionPk); 
+    classProperties = (billVersion, sentence); 
     externalName = "bill_woulds"; 
     fetchSpecificationDictionary = {}; 
     name = BillWould; 
@@ -35,7 +35,7 @@
             isMandatory = Y; 
             isToMany = N; 
             joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = pk; sourceAttribute = versionPk; }); 
+            joins = ({destinationAttribute = pk; sourceAttribute = billVersionPk; }); 
             name = billVersion; 
         }
     ); 

@@ -15,4 +15,21 @@ public class Session extends ERXSession {
     public boolean displayTitle = false;
 
     public boolean includeExtraBills = false;
+
+    public boolean alwaysShowTopic = false;
+    public boolean alwaysShowAuthors = false;
+    public boolean alwaysShowLastActions = false;
+    public boolean alwaysShowVersions = false;
+    public boolean alwaysShowBillTypes = false;
+    public boolean alwaysShowSections = false;
+    public boolean alwaysShowThisBillWoulds = false;
+
+    public boolean hideEverything() {
+    	return ! alwaysShowTopic && ! alwaysShowAuthors && ! alwaysShowLastActions && ! alwaysShowVersions &&
+    			! alwaysShowBillTypes && ! alwaysShowSections && ! alwaysShowThisBillWoulds;
+    }
+    public boolean showEverything() {
+    	return alwaysShowTopic && alwaysShowAuthors && alwaysShowLastActions && alwaysShowVersions &&
+    			alwaysShowBillTypes && alwaysShowSections && alwaysShowThisBillWoulds;
+    }
 }

@@ -2,6 +2,7 @@ package org.ganymede.leginfo.ui;
 
 import org.ganymede.leginfo.eo.Bill;
 
+import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.foundation.NSArray;
 
@@ -27,5 +28,9 @@ public class BillListPage extends GComponent {
     public NSArray<Bill> bills;
     public NSArray<Bill> bills() {
     	return (bills == null) ? null : Bill.sortedByMeasure(bills);
+    }
+
+    public WOActionResults updatePrefsToShow() {
+    	return context().page();
     }
 }

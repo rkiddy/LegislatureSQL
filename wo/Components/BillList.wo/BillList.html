@@ -1,40 +1,167 @@
-<wo:loop list="$bills" item="$bill">
-	<div class = "billInfo">
-		<wo:ERXDataHyperlink pageName="BillPage" bill="$bill"><wo:str value="$bill.measure" /></wo:ERXDataHyperlink> - <wo:str value="$bill.topic" />
-		<wo:AjaxExpansion id="$bill.billNum" class="bill" insertion="Effect.blind" insertionDuration="0.1" closedLabel="(details)" openedLabel="(hide)">
-				<dl>
-					<dt>Measure</dt><dd><wo:str value="$bill.measure" /></dd>
-					<dt>Topic</dt><dd><wo:str value="$bill.lastVersion.title" escapeHTML="$false" /></dd>
-					<dt>Last Action</dt><dd><wo:str value="$bill.lastHistActDate" />&nbsp;-&nbsp;<wo:str value="$bill.lastHistAction" /></dd>
-					<dt>Versions</dt>
-						<dd>
-						<ul>
-						<wo:loop list="$bill.versions" item="$billVersion">
-							<li><wo:ERXDataHyperlink pageName="BillVersionPage" version="$billVersion" ><wo:str value="$billVersion.prettyName" /></wo:ERXDataHyperlink></li>
-						</wo:loop>
-						</ul>
-						</dd>
-					<dt>Bill Type(s)</dt>
-						<dd>
-						<wo:loop list="$bill.billTypes" item="$billType">
-						<wo:str value="$billType.name" />&nbsp;&nbsp;
-						</wo:loop>
-						</dd>
-					<dt>Code Section(s)</dt>
-						<dd>
-						<wo:loop list="$bill.lastVersion.codeSections" item="$section">
-						<wo:str value="$section.name" />&nbsp;&nbsp;
-						</wo:loop>
-						</dd>
-					<dt>TBWs</dt>
-						<dd>
-						<ul>
-						<wo:loop list="$bill.lastVersion.woulds" item="$would">
-						<li><wo:str value="$would.sentence" /></li>
-						</wo:loop>
-						</ul>
-						</dd>
-				</dl>
-		</wo:AjaxExpansion>
-	</div>
+<wo:loop list = "$bills" item = "$bill">
+  <div class = "billInfo">
+    <wo:ERXDataHyperlink pageName = "BillPage" bill = "$bill"><wo:str value = "$bill.measure" /></wo:ERXDataHyperlink>
+    - 
+    <wo:str value = "$bill.topic" />
+    <wo:not condition = "$session.hideEverything">
+      <dl>
+        <wo:if condition = "$session.alwaysShowTopic">
+          <dt>Topic</dt>
+          <dd><wo:str value = "$bill.lastVersion.title" escapeHTML = "$false" /></dd>
+        </wo:if>
+        <wo:if condition = "$session.alwaysShowAuthors">
+          <dt>Authors</dt>
+          <dd>
+            <wo:if condition = "$bill.lastVersion.authors.count">
+              Authors :<wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.authorsOffHouse.count">
+              (Authors: :<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.principalCoauthors.count">
+              Principal Coauthors: 
+              <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.principalCoauthorsOffHouse.count">
+              (Principal Coauthors: 
+              <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.coauthors.count">
+              Coauthors: 
+              <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.coauthorsOffHouse.count">
+              (Coauthors: 
+              <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+            </wo:if>
+          </dd>
+        </wo:if>
+        <wo:if condition = "$session.alwaysShowLastActions">
+          <dt>Last Action</dt>
+          <dd>
+            <wo:str value = "$bill.lastHistActDate" />&nbsp;-&nbsp;<wo:str value = "$bill.lastHistAction" />
+            <wo:AjaxExpansion closedLabel = "(+)" openedLabel = "(-)">
+              <wo:loop list = "$previousActions" item = "$billAction">
+                <br />
+                <wo:str value = "$billAction.whenAct" />&nbsp;-&nbsp;<wo:str value = "$billAction.action" />
+              </wo:loop>
+            </wo:AjaxExpansion>
+          </dd>
+        </wo:if>
+        <wo:if condition = "$session.alwaysShowVersions">
+          <dt>Versions</dt>
+          <dd>
+            <wo:loop list = "$bill.versions" item = "$billVersion">
+              &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName = "BillVersionPage" version = "$billVersion"><wo:str value = "$billVersion.prettyName" /></wo:ERXDataHyperlink>
+            </wo:loop>
+          </dd>
+        </wo:if>
+        <wo:if condition = "$session.alwaysShowBillTypes">
+          <dt>Bill Type(s)</dt>
+          <dd>
+            <wo:loop list = "$bill.billTypes" item = "$billType"> <wo:str value = "$billType.name" />&nbsp;&nbsp; </wo:loop>
+          </dd>
+        </wo:if>
+        <wo:if condition = "$session.alwaysShowSections">
+          <dt>Code Section(s)</dt>
+          <dd>
+            <wo:loop list = "$bill.lastVersion.codeSections" item = "$section"> <wo:str value = "$section.name" />&nbsp;&nbsp; </wo:loop>
+          </dd>
+        </wo:if>
+        <wo:if condition = "$session.alwaysShowThisBillWoulds">
+          <wo:if condition = "$bill.lastVersion.woulds.count">
+            <dt>TBWs</dt>
+            <dd>
+              <ul>
+                <wo:loop list = "$bill.lastVersion.woulds" item = "$would">
+                  <li><wo:str value = "$would.sentence" escapeHTML = "$false" /></li>
+                </wo:loop>
+              </ul>
+            </dd>
+          </wo:if>
+        </wo:if>
+      </dl>
+    </wo:not>
+    <wo:not condition = "$session.showEverything">
+      <wo:AjaxExpansion id = "$bill.billNum" class = "bill" insertion = "Effect.blind" insertionDuration = "0.1" closedLabel = "(details)" openedLabel = "(hide)">
+        <dl>
+          <wo:not condition = "$session.alwaysShowTopic">
+            <dt>Topic</dt>
+            <dd><wo:str value = "$bill.lastVersion.title" escapeHTML = "$false" /></dd>
+          </wo:not>
+          <wo:not condition = "$session.alwaysShowAuthors">
+            <dt>Authors</dt>
+            <dd>
+              <wo:if condition = "$bill.lastVersion.authors.count">
+                Authors :<wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+              </wo:if>
+              <wo:if condition = "$bill.lastVersion.authorsOffHouse.count">
+                (Authors: :<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+              </wo:if>
+              <wo:if condition = "$bill.lastVersion.principalCoauthors.count">
+                Principal Coauthors: 
+                <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+              </wo:if>
+              <wo:if condition = "$bill.lastVersion.principalCoauthorsOffHouse.count">
+                (Principal Coauthors: 
+                <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+              </wo:if>
+              <wo:if condition = "$bill.lastVersion.coauthors.count">
+                Coauthors: 
+                <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+              </wo:if>
+              <wo:if condition = "$bill.lastVersion.coauthorsOffHouse.count">
+                (Coauthors: 
+                <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+              </wo:if>
+            </dd>
+          </wo:not>
+          <wo:not condition = "$session.alwaysShowLastActions">
+            <dt>Last Action</dt>
+            <dd>
+              <wo:str value = "$bill.lastHistActDate" />&nbsp;-&nbsp;<wo:str value = "$bill.lastHistAction" />
+              <wo:AjaxExpansion closedLabel = "(+)" openedLabel = "(-)">
+                <wo:loop list = "$previousActions" item = "$billAction">
+                  <br />
+                  <wo:str value = "$billAction.whenAct" />&nbsp;-&nbsp;<wo:str value = "$billAction.action" />
+                </wo:loop>
+              </wo:AjaxExpansion>
+            </dd>
+          </wo:not>
+          <wo:not condition = "$session.alwaysShowVersions">
+            <dt>Versions</dt>
+            <dd>
+              <wo:loop list = "$bill.versions" item = "$billVersion">
+                &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName = "BillVersionPage" version = "$billVersion"><wo:str value = "$billVersion.prettyName" /></wo:ERXDataHyperlink>
+              </wo:loop>
+            </dd>
+          </wo:not>
+          <wo:not condition = "$session.alwaysShowBillTypes">
+            <dt>Bill Type(s)</dt>
+            <dd>
+              <wo:loop list = "$bill.billTypes" item = "$billType"> <wo:str value = "$billType.name" />&nbsp;&nbsp; </wo:loop>
+            </dd>
+          </wo:not>
+          <wo:not condition = "$session.alwaysShowSections">
+            <dt>Code Section(s)</dt>
+            <dd>
+              <wo:loop list = "$bill.lastVersion.codeSections" item = "$section"> <wo:str value = "$section.name" />&nbsp;&nbsp; </wo:loop>
+            </dd>
+          </wo:not>
+          <wo:not condition = "$session.alwaysShowThisBillWoulds">
+            <wo:if condition = "$bill.lastVersion.woulds.count">
+              <dt>TBWs</dt>
+              <dd>
+                <ul>
+                  <wo:loop list = "$bill.lastVersion.woulds" item = "$would">
+                    <li><wo:str value = "$would.sentence" escapeHTML = "$false" /></li>
+                  </wo:loop>
+                </ul>
+              </dd>
+            </wo:if>
+          </wo:not>
+        </dl>
+      </wo:AjaxExpansion>
+    </wo:not>
+  </div>
 </wo:loop>

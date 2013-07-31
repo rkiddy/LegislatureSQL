@@ -50,4 +50,6 @@ public class Bill extends _Bill {
     	}
     	return num;
     }
+
+    public String house() { return (this.billNum().startsWith("a") || this.billNum().startsWith("h")) ? "A" : "S"; }
 }

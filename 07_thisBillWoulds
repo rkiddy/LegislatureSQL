@@ -11,42 +11,24 @@ for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-v") { $verbose = 1; }
 }
 
-@versions = &doSqlResults("select v1.pk, v1.file from bill_versions v1, bills b1 where b1.session_yrs = '".$session."' and b1.pk = v1.bill_pk;");
-chomp(@versions);
+@needed = &doSqlResults("select v1.pk, v1.file from bill_versions v1 left join bill_woulds w1 on v1.pk = w1.bill_version_pk where w1.sentence is NULL;");
+chomp(@needed);
 
-foreach (@versions) {
+foreach (@needed) {
     ($pk, $file) = split '\t', $_;
     $version{$pk} = $file;
     $file{$file} = $pk;
+    # print "file: \"".$file."\" -> pk: ".$pk."\n";
 }
 
-print "\nFound bill versions # ".scalar(@versions)."\n";
-
-@sentences = &doSqlResults("select pk, version_pk from bill_woulds;");
-chomp(@sentences);
-
-foreach (@sentences) {
-    ($pk, $versionPk) = split '\t', $_;
-    $sentences{$versionPk} = $pk;
-}
-
-print "\nFound sentences # ".scalar(@sentences)."\n";
-
-foreach (keys %version) {
-    $versionPk = $_;
-    if (! defined($sentences{$versionPk})) {
-        push @needed, $version{$versionPk};
-    }
-}
-
-print "\nNeeded # ".scalar(@needed)."\n";
+print "\nFound bill versions needing TBWs # ".scalar(@needed)."\n";
 
 $maxPk = &doSqlResult("select max(pk) from bill_woulds;");
 if (($maxPk eq "") || ($maxPk eq "NULL")) { $maxPk = 0; }
 
 $pk = $maxPk + 1;
 
-foreach (@needed) {
+foreach (keys %file) {
     $file = $_;
 
     $versionPk = $file{$file};
@@ -79,14 +61,48 @@ foreach (@needed) {
 
         $line =~ s/'/''/g;
 
+        # print "line: \"".$line."\"\n";
+
         if (($line =~ /^This bill/ && $line =~ /would/) ||
+
             ($line =~ /^The bill would/) ||
             ($line =~ /^This measure would/) ||
             ($line =~ /^With specified exceptions, this bill would/) ||
             ($line =~ /^This measure states/) ||
             ($line =~ /^This bill states/) ||
             ($line =~ /^Resolved/)) {
-            push @sql, "insert into bill_woulds (pk, version_pk, sentence) values (".$pk.",".$versionPk.",'".$line."');\n";
+
+            # terminate any <strike> or <em> tags that are not balanced within the sentence.
+
+            $strikeCount = 0;
+            $idx = 0;
+            while (index($line, "<strike>", $idx) > 0) {
+                $strikeCount++;
+                $idx = index($line, "<strike>", $idx) + 1;
+            }
+
+            while (index($line, "<\\strike>", $idx) > 0) {
+                $strikeCount--;
+                $idx = index($line, "<\\strike>", $idx) + 1;
+            }
+
+            for ($idx = 0; $idx < $strikeCount; $idx++) { $line .= "</strike>"; }
+
+            $emCount = 0;
+            $idx = 0;
+            while (index($line, "<em>", $idx) > 0) {
+                $emCount++;
+                $idx = index($line, "<em>", $idx) + 1;
+            }
+
+            while (index($line, "<\\em>", $idx) > 0) {
+                $emCount--;
+                $idx = index($line, "<\\em>", $idx) + 1;
+            }
+
+            for ($idx = 0; $idx < $emCount; $idx++) { $line .= "</em>"; }
+
+            push @sql, "insert into bill_woulds (pk, bill_version_pk, sentence) values (".$pk.",".$versionPk.",'".$line."');\n";
             $pk++;
         }
     }
@@ -96,8 +112,8 @@ print "\nSentences to add # ".scalar(@sql)."\n";
 
 open M, "| ".&mysql;
 foreach (@sql) { print M $_; }
+# foreach (@sql) { print $_; }
 close M;
 
 print "\n";
 exit(0);
-

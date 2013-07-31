@@ -8,6 +8,109 @@ require "cmds.pl";
 
 %options = &readOptions;
 
+
+$table{"authors") = <<SQL
+
+CREATE TABLE `authors` (
+  `pk` int(11) NOT NULL,
+  `person_pk` int(11) NOT NULL,
+  `name` varchar(64),
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL
+
+
+$table{"bill_action_types") = <<SQL
+
+CREATE TABLE `bill_action_types` (
+  `pk` int(11) NOT NULL,
+  `action` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL
+
+
+$table{"bill_actions") = <<SQL
+
+CREATE TABLE `bill_actions` (
+  `pk` int(11) NOT NULL,
+  `bill_pk` int(11) DEFAULT NULL,
+  `action_num` tinyint(4) DEFAULT NULL,
+  `bill_action_type_pk` int(11) DEFAULT NULL,
+  `when_act` char(10) DEFAULT NULL,
+  `action` varchar(1280) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL
+
+
+$table{"bill_authorings") = <<SQL
+
+CREATE TABLE `bill_authorings` (
+  `pk` int(11) NOT NULL,
+  `author_pk` int(11) DEFAULT NULL,
+  `bill_version_pk` int(11) DEFAULT NULL,
+  `is_latest_version` enum('Y','N') DEFAULT NULL,
+  `author_type` enum('A','C','PC') DEFAULT NULL,
+  `author_house` enum('A','S') DEFAULT NULL,
+  `session_yrs` char(5) DEFAULT NULL,
+  PRIMARY KEY (`pk`),
+  KEY `author_pk` (`author_pk`),
+  KEY `bill_version_pk` (`bill_version_pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+SQL
+
+
+$table{"bill_type_joins"} = <<SQL
+
+
+CREATE TABLE `bill_type_joins` (
+  `bill_pk` int(11) NOT NULL DEFAULT 0,
+  `bill_type_pk` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`bill_pk`,`bill_type_pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"bill_types"} = <<SQL
+
+CREATE TABLE `bill_types` (
+  `pk` int(11) NOT NULL DEFAULT 0,
+  `name` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"bill_versions"} = <<SQL
+
+CREATE TABLE `bill_versions` (
+  `pk` int(11) NOT NULL,
+  `bill_pk` int(11) DEFAULT NULL,
+  `file` varchar(128) DEFAULT NULL,
+  `file_date` char(10) DEFAULT NULL,
+  `kind` varchar(32) DEFAULT NULL,
+  `title` varchar(10240) DEFAULT NULL,
+  `authors` varchar(1024) DEFAULT NULL,
+  `coauthors` varchar(1024) DEFAULT NULL,
+  `auths_parsed` varchar(10240) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"bill_woulds") = <<SQL
+
+CREATE TABLE `bill_woulds` (
+  `pk` int(11) NOT NULL,
+  `bill_version_pk` int(11) DEFAULT NULL,
+  `sentence` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`pk`), 
+  KEY `bill_version_pk` (`bill_version_pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
 $table{"bills"} = <<SQL
 
 CREATE TABLE `bills` (
@@ -40,47 +143,6 @@ CREATE TABLE `bills` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
-$table{"bill_versions"} = <<SQL
-
-CREATE TABLE `bill_versions` (
-  `pk` int(11) NOT NULL,
-  `bill_pk` int(11) DEFAULT NULL,
-  `file` varchar(128) DEFAULT NULL,
-  `file_date` char(10) DEFAULT NULL,
-  `kind` varchar(32) DEFAULT NULL,
-  `title` varchar(10240) DEFAULT NULL,
-  `authors` varchar(1024) DEFAULT NULL,
-  `coauthors` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`pk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SQL
-
-$table{"bill_types"} = <<SQL
-
-CREATE TABLE `bill_types` (
-  `pk` int(11) NOT NULL DEFAULT 0,
-  `name` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`pk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SQL
-
-$table{"bill_type_joins"} = <<SQL
-
-CREATE TABLE `bill_type_joins` (
-  `bill_pk` int(11) NOT NULL DEFAULT 0,
-  `bill_type_pk` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`bill_pk`,`bill_type_pk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SQL
-
-$table{"code_sections"} = <<SQL
-
-CREATE TABLE `code_sections` (
-  `pk` int(11) NOT NULL DEFAULT 0,
-  `name` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`pk`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SQL
 
 $table{"code_section_joins"} = <<SQL
 
@@ -91,61 +153,50 @@ CREATE TABLE `code_section_joins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
-$table{"bill_woulds") = <<SQL
 
-CREATE TABLE `bill_woulds` (
-  `pk` int(11) NOT NULL,
-  `version_pk` int(11) DEFAULT NULL,
-  `sentence` varchar(1024) DEFAULT NULL,
+$table{"code_sections"} = <<SQL
+
+CREATE TABLE `code_sections` (
+  `pk` int(11) NOT NULL DEFAULT 0,
+  `name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
-$table{"bill_actions") = <<SQL
 
-CREATE TABLE `bill_actions` (
+$table{"file_items"} = <<SQL
+
+CREATE TABLE `file_items` (
   `pk` int(11) NOT NULL,
   `bill_pk` int(11) DEFAULT NULL,
-  `action_num` tinyint(4) DEFAULT NULL,
-  `bill_action_type_pk` int(11) DEFAULT NULL,
-  `when_act` char(10) DEFAULT NULL,
-  `action` varchar(1280) DEFAULT NULL,
+  `file_location` varchar(64) DEFAULT NULL,
+  `file_date` char(10) DEFAULT NULL,
+  `item` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SQL
 
-$table{"bill_action_types") = <<SQL
 
-CREATE TABLE `bill_action_types` (
+$table{"leg_sessions"} = <<SQL
+
+CREATE TABLE `leg_sessions` (
   `pk` int(11) NOT NULL,
-  `action` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
-SQL
-
-$table{"authors") = <<SQL
-
-CREATE TABLE `authors` (
-  `pk` int(11) NOT NULL,
-  `name` varchar(64),
-  PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
-SQL
-
-$table{"bill_authorings") = <<SQL
-
-CREATE TABLE `bill_authorings` (
-  `pk` int(11) NOT NULL,
-  `author_pk` int(11) DEFAULT NULL,
-  `bill_version_pk` int(11) DEFAULT NULL,
-  `is_latest_version` enum('Y','N') DEFAULT NULL,
-  `author_type` enum('A','C','PC') DEFAULT NULL,
-  `author_house` enum('A','S') DEFAULT NULL,
   `session_yrs` char(5) DEFAULT NULL,
-  PRIMARY KEY (`pk`),
-  KEY `author_pk` (`author_pk`),
-  KEY `bill_version_pk` (`bill_version_pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+  `prefix` varchar(5) DEFAULT NULL,
+  `date_start` char(10) DEFAULT NULL,
+  `date_end` char(10) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"persons"} = <<SQL
+
+CREATE TABLE `persons` (
+  `pk` int(11) NOT NULL,
+  `name` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SQL
 
 
