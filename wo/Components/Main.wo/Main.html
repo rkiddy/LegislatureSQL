@@ -82,7 +82,7 @@
                               <ul>
                                 <wo:loop list = "$selectedScheduledHearingsForCommitteeBills" item = "$selectedScheduledHearingCommitteeBill">
                                   <li>
-                                    <wo:str value = "$selectedScheduledHearingCommitteeBill.measure" />
+                                    <wo:ERXDataHyperlink pageName = "BillPage" bill = "$selectedScheduledHearingCommitteeBill"><wo:str value = "$selectedScheduledHearingCommitteeBill.measure" /></wo:ERXDataHyperlink>
                                     &nbsp;-&nbsp; 
                                     <wo:str value = "$selectedScheduledHearingCommitteeBill.topic" />
                                   </li>

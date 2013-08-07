@@ -70,6 +70,8 @@ public class BillVersion extends _BillVersion {
        	return (ok) ? str.toString() : this.file();
     }
 
+    public boolean isLastVersion() { return this.bill().lastVersion().equals(this); }
+
     // Authors for a bill:
     //
     // select b1.bill_num, ba1.author_type, ba1.author_pk, a1.name from bills b1, bill_versions v1, bill_authorings ba1, authors a1 where b1.bill_num = 'ab_314' and b1.last_version_pk = v1.pk and v1.pk = ba1.bill_version_pk and ba1.author_pk = a1.pk;

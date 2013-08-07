@@ -47,6 +47,7 @@
           <wo:if condition = "$testThisBillWoulds"> </wo:if>
           <wo:if condition = "$testAuthors">
             <h3>Bill Versions:</h3>
+            <p><wo:link action="$nextBills">Next Bills</wo:link>
             <ul>
               <wo:loop list = "$bills" item = "$bill">
                 <wo:str value = "$bill.measure" />

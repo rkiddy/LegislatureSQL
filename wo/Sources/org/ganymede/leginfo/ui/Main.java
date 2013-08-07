@@ -102,7 +102,6 @@ public class Main extends GComponent {
 
     public NSArray<Bill> selectedAmended() {
 
-    	System.out.print("looking for amended for selectedDay: "+_selectedDay.dateString());
     	EOQualifier recentlyAmendedQualifier = null;
 
     	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED));

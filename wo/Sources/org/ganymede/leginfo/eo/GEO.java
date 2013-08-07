@@ -6,6 +6,8 @@ import er.extensions.eof.ERXGenericRecord;
 
 public class GEO extends ERXGenericRecord {
 
+	public static final String modelName = "LegSQLModel";
+
 	public Integer pk() { return Integer.valueOf(this.primaryKey()); }
 
     public NSArray<String> tags() {

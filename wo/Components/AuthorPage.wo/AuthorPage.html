@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+	<title>CA Legislature WO</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<wo:ERXStyleSheet filename="bills.css" />
+</head>
+<body>
+
+<p>Author: <wo:str value="$author" /></p>
+
+<p>
+Persons:
+<ul>
+<wo:loop list="$author.persons" item="$person">
+<li><wo:str value="$person.name" /> - <wo:str value="$person.wpUrl" /></li>
+</wo:loop>
+</ul>
+</p>
+
+<p>
+Bills Authored:
+<ul>
+<wo:loop list="$author.billVersionsAuthored.bill//VALID" item="$bill">
+<li><wo:str value="$bill.measure" />&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
+</wo:loop>
+</ul>
+</p>
+
+<p>
+Bills Principal Coauthored:
+<ul>
+<wo:loop list="$author.billVersionsPrincipalCoauthored.bill//VALID" item="$bill">
+<li><wo:str value="$bill.measure" />&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
+</wo:loop>
+</ul>
+</p>
+
+<p>
+Bills Coauthored:
+<ul>
+<wo:loop list="$author.billVersionsCoauthored.bill//VALID" item="$bill">
+<li><wo:str value="$bill.measure" />&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
+</wo:loop>
+</ul>
+</p>
+
+</body></html>

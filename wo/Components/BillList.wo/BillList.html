@@ -13,26 +13,26 @@
           <dt>Authors</dt>
           <dd>
             <wo:if condition = "$bill.lastVersion.authors.count">
-              Authors :<wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+              <wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
             </wo:if>
             <wo:if condition = "$bill.lastVersion.authorsOffHouse.count">
-              (Authors: :<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+              (<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
             </wo:if>
             <wo:if condition = "$bill.lastVersion.principalCoauthors.count">
               Principal Coauthors: 
-              <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+              <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
             </wo:if>
             <wo:if condition = "$bill.lastVersion.principalCoauthorsOffHouse.count">
               (Principal Coauthors: 
-              <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+              <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
             </wo:if>
             <wo:if condition = "$bill.lastVersion.coauthors.count">
               Coauthors: 
-              <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
+              <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
             </wo:if>
             <wo:if condition = "$bill.lastVersion.coauthorsOffHouse.count">
               (Coauthors: 
-              <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
+              <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
             </wo:if>
           </dd>
         </wo:if>
@@ -91,30 +91,30 @@
           </wo:not>
           <wo:not condition = "$session.alwaysShowAuthors">
             <dt>Authors</dt>
-            <dd>
-              <wo:if condition = "$bill.lastVersion.authors.count">
-                Authors :<wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
-              </wo:if>
-              <wo:if condition = "$bill.lastVersion.authorsOffHouse.count">
-                (Authors: :<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
-              </wo:if>
-              <wo:if condition = "$bill.lastVersion.principalCoauthors.count">
-                Principal Coauthors: 
-                <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
-              </wo:if>
-              <wo:if condition = "$bill.lastVersion.principalCoauthorsOffHouse.count">
-                (Principal Coauthors: 
-                <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
-              </wo:if>
-              <wo:if condition = "$bill.lastVersion.coauthors.count">
-                Coauthors: 
-                <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>
-              </wo:if>
-              <wo:if condition = "$bill.lastVersion.coauthorsOffHouse.count">
-                (Coauthors: 
-                <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:str value = "$author.name" escapeHTML = "$false" /> </wo:loop>) 
-              </wo:if>
-            </dd>
+          <dd>
+            <wo:if condition = "$bill.lastVersion.authors.count">
+              <wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.authorsOffHouse.count">
+              (<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.principalCoauthors.count">
+              Principal Coauthors: 
+              <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.principalCoauthorsOffHouse.count">
+              (Principal Coauthors: 
+              <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.coauthors.count">
+              Coauthors: 
+              <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
+            </wo:if>
+            <wo:if condition = "$bill.lastVersion.coauthorsOffHouse.count">
+              (Coauthors: 
+              <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
+            </wo:if>
+          </dd>
           </wo:not>
           <wo:not condition = "$session.alwaysShowLastActions">
             <dt>Last Action</dt>

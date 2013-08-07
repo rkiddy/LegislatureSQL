@@ -1,6 +1,7 @@
 package org.ganymede.leginfo.ui;
 
 import org.ganymede.leginfo.eo.Annotation;
+import org.ganymede.leginfo.eo.Author;
 import org.ganymede.leginfo.eo.Bill;
 import org.ganymede.leginfo.eo.BillType;
 import org.ganymede.leginfo.eo.BillVersion;
@@ -17,6 +18,7 @@ public class BillPage extends GComponent {
     }
 
     public Bill bill;
+    public Author author;
     public BillVersion billVersion;
     public BillType billType;
     public BillWould would;

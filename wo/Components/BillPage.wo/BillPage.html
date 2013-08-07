@@ -18,8 +18,12 @@
 	<ul>
 	<wo:loop list="$bill.versions" item="$billVersion">
 	<li><wo:ERXDataHyperlink pageName="BillVersionPage" version="$billVersion" ><wo:str value="$billVersion.prettyName" /></wo:ERXDataHyperlink><br/>
-	Author(s): <wo:str value="$billVersion.authors" escapeHTML="$false" /><br/>
-	Co-author(s): <wo:str value="$billVersion.coauthors" escapeHTML="$false" />
+    Author(s): <wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
+              (<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
+	Principal Coauthors: <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
+	              <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
+	Co-author(s): <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
+              <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
 	</li>
 	</wo:loop>
 	</ul></li>
