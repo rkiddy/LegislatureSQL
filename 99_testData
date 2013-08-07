@@ -101,7 +101,7 @@ $missing = 0;
 
 foreach (@versionPks) {
      $versionPk = $_;
-     $sentences = &doSqlResult("select count(*) from bill_woulds where version_pk = ".$versionPk.";");
+     $sentences = &doSqlResult("select count(*) from bill_woulds where bill_version_pk = ".$versionPk.";");
      if ($sentences == 0) {
          $file = &doSqlResult("select file from bill_versions where pk = ".$versionPk.";");
          print "Sentences # 0 from bill version: \"".$file."\"\n";

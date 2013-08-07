@@ -15,6 +15,7 @@
         {className = "org.ganymede.leginfo.eo.BillWould"; name = BillWould; }, 
         {className = "org.ganymede.leginfo.eo.CodeSection"; name = CodeSection; }, 
         {className = "er.extensions.eof.ERXGenericRecord"; name = CodeSectionJoin; }, 
+        {className = "org.ganymede.leginfo.eo.Person"; name = Person; }, 
         {className = "org.ganymede.leginfo.eo.Tag"; name = Tag; }
     ); 
     userInfo = {"_EntityModeler" = {reverseEngineered = Y; }; }; 

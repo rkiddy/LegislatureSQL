@@ -1,0 +1,42 @@
+{
+    attributes = (
+        {
+            columnName = name; 
+            externalType = varchar; 
+            name = name; 
+            valueClassName = NSString; 
+            width = 64; 
+        }, 
+        {
+            columnName = pk; 
+            externalType = INT; 
+            name = pk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = "wp_url"; 
+            externalType = varchar; 
+            name = wpUrl; 
+            valueClassName = NSString; 
+            width = 128; 
+        }
+    ); 
+    attributesUsedForLocking = (pk); 
+    className = "org.ganymede.leginfo.eo.Person"; 
+    classProperties = (author, name, wpUrl); 
+    externalName = persons; 
+    fetchSpecificationDictionary = {}; 
+    name = Person; 
+    primaryKeyAttributes = (pk); 
+    relationships = (
+        {
+            destination = Author; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = personPk; sourceAttribute = pk; }); 
+            name = author; 
+        }
+    ); 
+}

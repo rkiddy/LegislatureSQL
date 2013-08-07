@@ -8,6 +8,13 @@
             width = 10240; 
         }, 
         {
+            columnName = "person_pk"; 
+            externalType = INT; 
+            name = personPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
             columnName = pk; 
             externalType = INT; 
             name = pk; 
@@ -15,9 +22,9 @@
             valueType = i; 
         }
     ); 
-    attributesUsedForLocking = (pk); 
+    attributesUsedForLocking = (personPk, pk); 
     className = "org.ganymede.leginfo.eo.Author"; 
-    classProperties = (authorings, name); 
+    classProperties = (authorings, name, persons); 
     externalName = authors; 
     fetchSpecificationDictionary = {}; 
     name = Author; 
@@ -29,6 +36,13 @@
             joinSemantic = EOInnerJoin; 
             joins = ({destinationAttribute = auithorPk; sourceAttribute = pk; }); 
             name = authorings; 
+        }, 
+        {
+            destination = Person; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = pk; sourceAttribute = personPk; }); 
+            name = persons; 
         }
     ); 
 }
