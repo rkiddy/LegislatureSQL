@@ -119,6 +119,10 @@ public class Fixer {
 
 		NSMutableDictionary<String,Author> authors = new NSMutableDictionary<String,Author>();
 
+		for (Author anAuthor : Author.fetchAllAuthors(ec)) {
+			authors.setObjectForKey(anAuthor, anAuthor.name());
+		}
+
 		int saves = 0;
 
 		for (Bill aBill : bills) {
@@ -130,7 +134,8 @@ public class Fixer {
 
 					String authorsNext = aVersion.authsParsed();
 
-					// remove all <strike>text</strike>
+					// remove all <strike>text</strike>, as we are not tracking removals here.
+					//
 					boolean finished = false;
 					while (! finished) {
 						int strikeStart = authorsNext.indexOf("<strike>");
@@ -149,22 +154,35 @@ public class Fixer {
 						}
 					}
 
+					// An emphasis tag marks the beginning of an addition and we are not tracking these here.
+					//
 					authorsNext = authorsNext.replaceAll("<em>", "").replaceAll("</em>", "");
 
-					authorsNext = authorsNext.replaceAll(",\\s\\s*", ",").replaceAll("\\s*\\s,", ",");
+					authorsNext = authorsNext.replaceFirst("INTRODUCED BY", "");
+					authorsNext = authorsNext.replaceAll(":", "");
 
-					authorsNext = authorsNext.replaceAll("^\\s*", "").replaceAll("\\s*$", "");
+					// Get rid of all spaces before and after commas.
+					//
+					authorsNext = authorsNext.replaceAll(",\\s\\s*", ",");
+					authorsNext = authorsNext.replaceAll("\\s\\s*,", ",");
 
-					authorsNext = authorsNext.replaceAll("\\)", "").replaceAll("\\(,", "");
+					// get rid of all ", and" strings and turn them into commas.
+					//
+					authorsNext = authorsNext.replaceAll(",\\s*and\\s*", ",");
+					authorsNext = authorsNext.replaceAll("\\s\\s*and", ",");
 
-					authorsNext = authorsNext.replaceAll(",and\\s*", ",");
-					authorsNext = authorsNext.replaceAll("\\s\\s*and\\s\\s*", ",");
-
+					// Get rid of all repeated commas.
+					//
 					authorsNext = authorsNext.replaceAll(",,*", ",");
 		
-					authorsNext = authorsNext.replaceFirst("^INTRODUCED BY\\s", "");
+					// Get rid of all repeated spaces.
+					//
+					authorsNext = authorsNext.replaceAll("\\s\\s*", " ");
 
-					while (authorsNext.matches("\\s\\s")) { authorsNext = authorsNext.replaceAll("\\s\\s", " "); }
+					authorsNext = authorsNext.replaceAll(",\\s*", ",");
+
+					authorsNext = authorsNext.replaceAll("^,*", "");
+					authorsNext = authorsNext.replaceAll(",*$", "");
 
 					if (authorsNext.indexOf("Committee") >= 0) {
 
@@ -179,14 +197,26 @@ public class Fixer {
 
 						authorsNext = authorsNext.replaceAll("Assembly\\s*Members ", ",ASM,");
 						authorsNext = authorsNext.replaceAll("Assembly\\s*Member ", ",ASM,");
-						authorsNext = authorsNext.replaceAll("Senators\\s*:*", ",SEN,");
-						authorsNext = authorsNext.replaceAll("Senator\\s*:*", ",SEN,");
+						authorsNext = authorsNext.replaceAll("Senators\\s*", ",SEN,");
+						authorsNext = authorsNext.replaceAll("Senator\\s*", ",SEN,");
 
-						authorsNext = authorsNext.replaceAll("Principal\\s*coauthors\\s*:", ",PCO,");
-						authorsNext = authorsNext.replaceAll("Principal\\s*coauthor\\s*:", ",PCO,");
-						authorsNext = authorsNext.replaceAll("Coauthors\\s*:", ",CO,");
-						authorsNext = authorsNext.replaceAll("Coauthor\\s*:", ",CO,");
+						authorsNext = authorsNext.replaceAll("Principal\\s*coauthors\\s*", ",PCO,");
+						authorsNext = authorsNext.replaceAll("Principal\\s*coauthor\\s*", ",PCO,");
+						authorsNext = authorsNext.replaceAll("Coauthors\\s*", ",CO,");
+						authorsNext = authorsNext.replaceAll("Coauthor\\s*", ",CO,");
 					}
+
+					authorsNext = authorsNext.replaceFirst("^,*", "");
+
+					authorsNext = authorsNext.replaceAll("^\\s*", "");
+					authorsNext = authorsNext.replaceAll("\\s*$", "");
+
+					authorsNext = authorsNext.replaceAll(",\\s*", ",");
+					authorsNext = authorsNext.replaceAll("\\s*,", ",");
+
+					authorsNext = authorsNext.replaceFirst("^,*", "");
+
+					authorsNext = authorsNext.replaceFirst(",,*", ",");
 
 					aVersion.setAuthsParsed(authorsNext);
 					edited++;
@@ -234,11 +264,15 @@ public class Fixer {
 							BillAuthoring.createBillAuthoring(ec, activeHouse, activeRole, "13-14", author, aVersion);
 						}
 					}
+					System.out.print("+");
+				} else {
+					System.out.print(".");
 				}
+
 				ec.saveChanges();
 				saves++;
 
-				System.out.print((saves % 100) == 0 ? ".\n" : ".");
+				if ((saves % 100) == 0) System.out.println("");
 			}
 		}
 
