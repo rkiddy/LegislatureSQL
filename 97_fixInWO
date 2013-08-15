@@ -1,4 +1,4 @@
-#!/bin/sh -vx
+#!/bin/sh
 
 if [ ! -d wo/build/LegislatureWO.woa ]; then
     echo ""
