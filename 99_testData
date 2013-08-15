@@ -130,6 +130,12 @@ foreach (@months) { if (! /^[0-9]{2}$/) { print "Bad month: \"".$_."\"\n"; } }
 
 print "\n\n";
 
-print "Ok!\n\n";
+print "Check authors:\n\n";
+
+$sql = "select * from authors where person_pk is NULL;";
+
+print &doSqlResults($sql);
+
+print "\n\nOk!\n\n";
 
 exit(0);
