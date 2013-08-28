@@ -3,6 +3,7 @@ package org.ganymede.leginfo.eo;
 import org.apache.log4j.Logger;
 
 import com.webobjects.eocontrol.EOQualifier;
+import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSComparator;
 import com.webobjects.foundation.NSMutableArray;
@@ -52,4 +53,8 @@ public class Bill extends _Bill {
     }
 
     public String house() { return (this.billNum().startsWith("a") || this.billNum().startsWith("h")) ? "A" : "S"; }
+
+    public NSArray<org.ganymede.leginfo.eo.BillAction> billActions() {
+    	return EOSortOrdering.sortedArrayUsingKeyOrderArray(super.billActions(), BillAction.ACTION_NUM.ascs());
+    }
 }

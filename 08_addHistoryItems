@@ -1,5 +1,11 @@
 #!/usr/bin/perl
 
+# This script takes apart the lines of the history files. If 11 items in the history file are found and only 10 are in the database, then
+# the 11th is added.
+#
+# This relies on the fact that the history file is only added to.
+#
+
 require "cmds.pl";
 
 %options = &readOptions;
@@ -61,6 +67,7 @@ foreach (@actionCounts) {
 $skipped = 0;
 
 foreach (@bills) {
+
     ($billPk, $historyFile) = split '\t', $_;
 
     undef @actions;
@@ -78,6 +85,8 @@ foreach (@bills) {
     close F;
 
     #print "lines # ".(scalar(@lines))."\n";
+
+    undef $inHistory;
 
     foreach (@lines) {
         $line = $_;

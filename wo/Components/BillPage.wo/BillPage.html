@@ -1,35 +1,49 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
-<head>
-	<title>CA Legislature WO</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<wo:ERXStyleSheet filename="bills.css" />
-</head>
-<body>
-
-<p>(<wo:link pageName="Main">Home</wo:link>)</p>
-
-<h2><wo:str value="$bill.measure" /></h2>
-
-<ul>
-<li>Topic: <wo:str value="$bill.topic" /></li>
-<li>Last Action: <wo:str value="$bill.lastHistAction" /></li>
-<li>Versions
-	<ul>
-	<wo:loop list="$bill.versions" item="$billVersion">
-	<li><wo:ERXDataHyperlink pageName="BillVersionPage" version="$billVersion" ><wo:str value="$billVersion.prettyName" /></wo:ERXDataHyperlink><br/>
-    Author(s): <wo:loop list = "$bill.lastVersion.authors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
-              (<wo:loop list = "$bill.lastVersion.authorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
-	Principal Coauthors: <wo:loop list = "$bill.lastVersion.principalCoauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
-	              <wo:loop list = "$bill.lastVersion.principalCoauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
-	Co-author(s): <wo:loop list = "$bill.lastVersion.coauthors" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>
-              <wo:loop list = "$bill.lastVersion.coauthorsOffHouse" item = "$author"> &nbsp;-&nbsp;<wo:ERXDataHyperlink pageName="AuthorPage" author="$author"><wo:str value = "$author.name" escapeHTML = "$false" /></wo:ERXDataHyperlink></wo:loop>) 
-	</li>
-	</wo:loop>
-	</ul></li>
-<li>Bill Type(s): <wo:loop list="$bill.billTypes" item="$billType"><wo:str value="$billType.name" />&nbsp;&nbsp;</wo:loop></li>
-<li>Code Section(s): <wo:loop list="$bill.lastVersion.codeSections" item="$section"><wo:str value="$section.name" />&nbsp;&nbsp;</wo:loop></li>
-<li>ThisBillWoulds: <wo:loop list="$bill.lastVersion.woulds" item="$would"><wo:str value="$would.sentence" escapeHTML="$false" /></wo:loop></li>
-</ul>
-
-</body></html>
+  <head>
+    <title>CA Legislature WO</title>
+    <meta http-equiv = "Content-Type" content = "text/html;charset=UTF-8" />
+    <wo:ERXStyleSheet filename = "bills.css" />
+  </head>
+  <body>
+    <div class = "BillPage"></div>
+    <p>(<wo:link pageName = "Main">Home</wo:link>)</p>
+    <h2><wo:str value = "$bill.measure" /></h2>
+    <ul>
+      <li>Topic: <wo:str value = "$bill.topic" /></li>
+      <li>Last Action: <wo:str value = "$bill.lastHistAction" /></li>
+      <li>Versions: 
+        <ul>
+          <wo:loop list = "$bill.versions" item = "$billVersion">
+            <li>
+              <wo:ERXDataHyperlink pageName = "BillVersionPage" version = "$billVersion"><wo:str value = "$billVersion.prettyName" /></wo:ERXDataHyperlink>
+              <wo:BillVersionAuthors billVersion = "$billVersion" />
+            </li>
+          </wo:loop>
+        </ul>
+        <li>Bill Type(s): 
+          <wo:loop list = "$bill.billTypes" item = "$billType"><wo:str value = "$billType.name" />&nbsp;&nbsp;</wo:loop>
+        </li>
+        <li>Code Section(s): 
+          <wo:loop list = "$bill.lastVersion.codeSections" item = "$section"><wo:str value = "$section.name" />&nbsp;&nbsp;</wo:loop>
+        </li>
+        <li>History: 
+          <ul>
+            <wo:loop list = "$bill.billActions" item = "$billAction">
+              <li>
+                <wo:str value = "$billAction.whenAct" />&nbsp;-&nbsp;<wo:str value = "$billAction.action" />
+              </li>
+            </wo:loop>
+          </ul>
+        </li>
+        <li>ThisBillWoulds: 
+          <ul>
+            <wo:loop list = "$bill.lastVersion.woulds" item = "$would">
+              <li><wo:str value = "$would.sentence" escapeHTML = "$false" /></li>
+            </wo:loop>
+          </ul>
+        </li>
+      </li>
+    </ul>
+  </body>
+</html>

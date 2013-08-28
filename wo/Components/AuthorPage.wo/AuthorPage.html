@@ -6,15 +6,21 @@
 	<wo:ERXStyleSheet filename="bills.css" />
 </head>
 <body>
-
-<p>Author: <wo:str value="$author" /></p>
+<div class="AuthorPage" />
 
 <p>
-Persons:
+Person: <wo:str value="$author.person.name" escapeHTML="$false" /> - <wo:link href="$author.person.wpUrl"><wo:str value="$author.person.wpUrl" /></wo:link>
 <ul>
-<wo:loop list="$author.persons" item="$person">
-<li><wo:str value="$person.name" /> - <wo:str value="$person.wpUrl" /></li>
-</wo:loop>
+  <wo:loop list="$author.person.contactGroups" item="$contactGroup">
+    <li>
+        <wo:str value="$contactGroup.name" />
+    	<ul>
+    	<wo:loop list="$contactGroup.contacts//VALID" item="$contact">
+    	  <li><wo:str value="$contact.contactType" />&nbsp;-&nbsp;<wo:str value="$contact.contactInfo" /></li>
+    	</wo:loop>
+    	</ul>
+    </li>
+  </wo:loop>
 </ul>
 </p>
 

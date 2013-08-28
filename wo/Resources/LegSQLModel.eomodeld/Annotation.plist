@@ -22,14 +22,14 @@
             valueType = i; 
         }, 
         {
-            className = "java.util.Date"; 
             columnName = "note_when"; 
             externalType = datetime; 
             name = when; 
+            valueClassName = "java.util.Date"; 
             valueType = D; 
         }
     ); 
-    attributesUsedForLocking = (pk, srcEntity, srcPk, when); 
+    attributesUsedForLocking = (pk); 
     className = "org.ganymede.leginfo.eo.Annotation"; 
     classProperties = (note, srcEntity, srcPk, when); 
     externalName = annotations; 

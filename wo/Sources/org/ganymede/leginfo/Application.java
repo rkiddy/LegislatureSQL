@@ -11,6 +11,7 @@ import com.webobjects.foundation.NSNotificationCenter;
 import com.webobjects.foundation.NSSelector;
 
 import er.extensions.appserver.ERXApplication;
+import er.extensions.eof.ERXEC;
 
 public class Application extends ERXApplication {
 
@@ -50,6 +51,16 @@ public class Application extends ERXApplication {
             dict.setObjectForKey(dbUserName, "username");
             dict.setObjectForKey(dbPassword, "password");
             legModel.setConnectionDictionary(dict);
+        }
+
+        if (System.getProperty("ProcessThisBillWoulds") != null) {
+        	Fixer.processThisBillWoulds(ERXEC.newEditingContext());
+        	System.exit(0);
+        }
+
+        if (System.getProperty("ProcessAuthors") != null) {
+        	Fixer.processAuthors(ERXEC.newEditingContext());
+        	System.exit(0);
         }
 
         if (System.getProperty("RunFixesAndQuit") != null) {

@@ -56,6 +56,8 @@ foreach (keys %file) {
 
     # if ($file =~ /sr_8_bill_20130109_introduced.html/) { for ($idx = 0; $idx < scalar(@lines); $idx++) { print "[".$idx."] = \"".$lines[$idx]."\"\n"; }}
 
+    $idx = 1;
+
     foreach (@lines) {
         $line = $_;
 
@@ -102,7 +104,7 @@ foreach (keys %file) {
 
             for ($idx = 0; $idx < $emCount; $idx++) { $line .= "</em>"; }
 
-            push @sql, "insert into bill_woulds (pk, bill_version_pk, sentence) values (".$pk.",".$versionPk.",'".$line."');\n";
+            push @sql, "insert into bill_woulds (pk, bill_version_pk, idx, sentence) values (".$pk.",".$versionPk.",".$idx.",'".$line."');\n";
             $pk++;
         }
     }

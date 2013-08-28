@@ -16,6 +16,11 @@
         {className = "org.ganymede.leginfo.eo.CodeSection"; name = CodeSection; }, 
         {className = "er.extensions.eof.ERXGenericRecord"; name = CodeSectionJoin; }, 
         {className = "org.ganymede.leginfo.eo.Person"; name = Person; }, 
+        {className = "org.ganymede.leginfo.eo.PersonContact"; name = PersonContact; }, 
+        {
+            className = "org.ganymede.leginfo.eo.PersonContactGroup"; 
+            name = PersonContactGroup; 
+        }, 
         {className = "org.ganymede.leginfo.eo.Tag"; name = Tag; }
     ); 
     userInfo = {"_EntityModeler" = {reverseEngineered = Y; }; }; 

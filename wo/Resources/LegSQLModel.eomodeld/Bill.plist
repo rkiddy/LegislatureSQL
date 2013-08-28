@@ -9,7 +9,6 @@
             width = 2048; 
         }, 
         {
-            allowsNull = Y; 
             columnName = "bill_num"; 
             externalType = varchar; 
             name = billNum; 
@@ -177,7 +176,7 @@
             width = 128; 
         }
     ); 
-    attributesUsedForLocking = (billNum, historyFile, lastVersionPk, pk, sessionYrs, statusDate, statusFile); 
+    attributesUsedForLocking = (lastVersionPk, pk); 
     className = "org.ganymede.leginfo.eo.Bill"; 
     classProperties = (
         authors, 

@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+}
+
+$file = pop @ARGV;
+
+$pk = &doSqlResult("select pk from bill_versions where file = '".$file."';");
+chomp($pk);
+
+if ($pk == 0 || $pk eq "" || $pk eq "NULL") {
+    print "ERROR: Could not find bill_versions pk from file \"".$file."\"\n\n";
+    exit(1);
+}
+
+print "pk: ".$pk."\n";
+
+# Not yet zapping!
+
+exit(0);

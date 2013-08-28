@@ -24,7 +24,7 @@
     ); 
     attributesUsedForLocking = (pk); 
     className = "org.ganymede.leginfo.eo.Person"; 
-    classProperties = (author, name, wpUrl); 
+    classProperties = (authors, contactGroups, name, wpUrl); 
     externalName = persons; 
     fetchSpecificationDictionary = {}; 
     name = Person; 
@@ -33,10 +33,17 @@
         {
             destination = Author; 
             isMandatory = Y; 
-            isToMany = N; 
+            isToMany = Y; 
             joinSemantic = EOInnerJoin; 
             joins = ({destinationAttribute = personPk; sourceAttribute = pk; }); 
-            name = author; 
+            name = authors; 
+        }, 
+        {
+            destination = PersonContactGroup; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = personPk; sourceAttribute = pk; }); 
+            name = contactGroups; 
         }
     ); 
 }

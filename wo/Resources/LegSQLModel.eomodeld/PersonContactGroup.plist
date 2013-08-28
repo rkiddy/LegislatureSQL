@@ -5,10 +5,9 @@
             externalType = varchar; 
             name = name; 
             valueClassName = NSString; 
-            width = 10240; 
+            width = 20; 
         }, 
         {
-            allowsNull = Y; 
             columnName = "person_pk"; 
             externalType = INT; 
             name = personPk; 
@@ -24,22 +23,23 @@
         }
     ); 
     attributesUsedForLocking = (personPk, pk); 
-    className = "org.ganymede.leginfo.eo.Author"; 
-    classProperties = (authorings, name, person); 
-    externalName = authors; 
+    className = "org.ganymede.leginfo.eo.PersonContactGroup"; 
+    classProperties = (contacts, name, person); 
+    externalName = "person_contact_groups"; 
     fetchSpecificationDictionary = {}; 
-    name = Author; 
+    name = PersonContactGroup; 
     primaryKeyAttributes = (pk); 
     relationships = (
         {
-            destination = BillAuthoring; 
+            destination = PersonContact; 
             isToMany = Y; 
             joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = auithorPk; sourceAttribute = pk; }); 
-            name = authorings; 
+            joins = ({destinationAttribute = groupPk; sourceAttribute = pk; }); 
+            name = contacts; 
         }, 
         {
             destination = Person; 
+            isMandatory = Y; 
             isToMany = N; 
             joinSemantic = EOInnerJoin; 
             joins = ({destinationAttribute = pk; sourceAttribute = personPk; }); 

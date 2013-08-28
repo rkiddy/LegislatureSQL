@@ -17,6 +17,7 @@ import er.extensions.qualifiers.ERXKeyValueQualifier;
 import er.extensions.qualifiers.ERXOrQualifier;
 
 public class DateUtils {
+
 	  public static final NSTimestampFormatter MONTH_NAME_AND_YEAR_FORMATTER = new NSTimestampFormatter("%B %Y");
 	  public static final NSTimestampFormatter MONTH_NAME_FORMATTER = new NSTimestampFormatter("%B");
 	  public static final NSTimestampFormatter SHORT_MONTH_NAME_FORMATTER = new NSTimestampFormatter("%b");

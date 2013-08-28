@@ -6,6 +6,7 @@
     <wo:ERXStyleSheet filename = "bills.css" />
   </head>
   <body>
+    <div class = "BillListPage"></div>
     <table>
       <tr>
         <td>
@@ -20,48 +21,6 @@
           </wo:if>
         </td>
         <td>&nbsp;&nbsp;&nbsp;</td>
-        <td>
-        <!--
-          &lt;wo:form&gt;
-            Always Show 
-            &lt;wo:radio name = "topic" selection = "$session.alwaysShowTopic" value = "$true" /&gt;
-            | Hide 
-            &lt;wo:radio name = "topic" selection = "$session.alwaysShowTopic" value = "$false" /&gt;
-            Topics in Lists&lt;br /&gt;
-            Always Show 
-            &lt;wo:radio name = "authors" selection = "$session.alwaysShowAuthors" value = "$true" /&gt;
-            | Hide 
-            &lt;wo:radio name = "authors" selection = "$session.alwaysShowAuthors" value = "$false" /&gt;
-            Authors in Lists&lt;br /&gt;
-            Always Show 
-            &lt;wo:radio name = "lastAction" selection = "$session.alwaysShowLastActions" value = "$true" /&gt;
-            | Hide 
-            &lt;wo:radio name = "lastAction" selection = "$session.alwaysShowLastActions" value = "$false" /&gt;
-            Last Action in Lists&lt;br /&gt;
-            Always Show 
-            &lt;wo:radio name = "versions" selection = "$session.alwaysShowVersions" value = "$true" /&gt;
-            | Hide 
-            &lt;wo:radio name = "versions" selection = "$session.alwaysShowVersions" value = "$false" /&gt;
-            Bill Versions in Lists&lt;br /&gt;
-            Always Show 
-            &lt;wo:radio name = "billTypes" selection = "$session.alwaysShowBillTypes" value = "$true" /&gt;
-            | Hide 
-            &lt;wo:radio name = "billTypes" selection = "$session.alwaysShowBillTypes" value = "$false" /&gt;
-            Bill Types in Lists&lt;br /&gt;
-            Always Show 
-            &lt;wo:radio name = "codeSections" selection = "$session.alwaysShowSections" value = "$true" /&gt;
-            | Hide 
-            &lt;wo:radio name = "codeSections" selection = "$session.alwaysShowSections" value = "$false" /&gt;
-            Code Sections in Lists&lt;br /&gt;
-            Always Show 
-            &lt;wo:radio name = "TBWs" selection = "$session.alwaysShowThisBillWoulds" value = "$true" /&gt;
-            | Hide 
-            &lt;wo:radio name = "TBWs" selection = "$session.alwaysShowThisBillWoulds" value = "$false" /&gt;
-            TBWs in Lists&lt;br /&gt;
-            &lt;wo:submit action = "$updatePrefsToShow" /&gt;
-          &lt;/wo:form&gt;
-          -->
-        </td>
       </tr>
     </table>
     <wo:BillList bills = "$bills" />

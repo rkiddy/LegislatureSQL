@@ -16,11 +16,13 @@ public abstract class _BillWould extends  ERXGenericRecord {
   public static final String ENTITY_NAME = "BillWould";
 
   // Attribute Keys
+  public static final ERXKey<Integer> IDX = new ERXKey<Integer>("idx");
   public static final ERXKey<String> SENTENCE = new ERXKey<String>("sentence");
   // Relationship Keys
   public static final ERXKey<org.ganymede.leginfo.eo.BillVersion> BILL_VERSION = new ERXKey<org.ganymede.leginfo.eo.BillVersion>("billVersion");
 
   // Attributes
+  public static final String IDX_KEY = IDX.key();
   public static final String SENTENCE_KEY = SENTENCE.key();
   // Relationships
   public static final String BILL_VERSION_KEY = BILL_VERSION.key();
@@ -33,6 +35,17 @@ public abstract class _BillWould extends  ERXGenericRecord {
       throw new IllegalStateException("You attempted to localInstance " + this + ", which has not yet committed.");
     }
     return localInstance;
+  }
+
+  public Integer idx() {
+    return (Integer) storedValueForKey(_BillWould.IDX_KEY);
+  }
+
+  public void setIdx(Integer value) {
+    if (_BillWould.LOG.isDebugEnabled()) {
+    	_BillWould.LOG.debug( "updating idx from " + idx() + " to " + value);
+    }
+    takeStoredValueForKey(value, _BillWould.IDX_KEY);
   }
 
   public String sentence() {
@@ -72,9 +85,11 @@ public abstract class _BillWould extends  ERXGenericRecord {
   }
   
 
-  public static BillWould createBillWould(EOEditingContext editingContext, String sentence
+  public static BillWould createBillWould(EOEditingContext editingContext, Integer idx
+, String sentence
 , org.ganymede.leginfo.eo.BillVersion billVersion) {
     BillWould eo = (BillWould) EOUtilities.createAndInsertInstance(editingContext, _BillWould.ENTITY_NAME);    
+		eo.setIdx(idx);
 		eo.setSentence(sentence);
     eo.setBillVersionRelationship(billVersion);
     return eo;

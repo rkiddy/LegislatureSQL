@@ -44,7 +44,7 @@
             width = 10; 
         }
     ); 
-    attributesUsedForLocking = (billActionTypePk, billPk, pk); 
+    attributesUsedForLocking = (billPk, pk); 
     className = "org.ganymede.leginfo.eo.BillAction"; 
     classProperties = (action, actionNum, bill, billActionType, whenAct); 
     externalName = "bill_actions"; 

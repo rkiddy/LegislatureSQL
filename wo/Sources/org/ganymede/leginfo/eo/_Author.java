@@ -19,13 +19,13 @@ public abstract class _Author extends  ERXGenericRecord {
   public static final ERXKey<String> NAME = new ERXKey<String>("name");
   // Relationship Keys
   public static final ERXKey<org.ganymede.leginfo.eo.BillAuthoring> AUTHORINGS = new ERXKey<org.ganymede.leginfo.eo.BillAuthoring>("authorings");
-  public static final ERXKey<org.ganymede.leginfo.eo.Person> PERSONS = new ERXKey<org.ganymede.leginfo.eo.Person>("persons");
+  public static final ERXKey<org.ganymede.leginfo.eo.Person> PERSON = new ERXKey<org.ganymede.leginfo.eo.Person>("person");
 
   // Attributes
   public static final String NAME_KEY = NAME.key();
   // Relationships
   public static final String AUTHORINGS_KEY = AUTHORINGS.key();
-  public static final String PERSONS_KEY = PERSONS.key();
+  public static final String PERSON_KEY = PERSON.key();
 
   private static Logger LOG = Logger.getLogger(_Author.class);
 
@@ -48,6 +48,31 @@ public abstract class _Author extends  ERXGenericRecord {
     takeStoredValueForKey(value, _Author.NAME_KEY);
   }
 
+  public org.ganymede.leginfo.eo.Person person() {
+    return (org.ganymede.leginfo.eo.Person)storedValueForKey(_Author.PERSON_KEY);
+  }
+  
+  public void setPerson(org.ganymede.leginfo.eo.Person value) {
+    takeStoredValueForKey(value, _Author.PERSON_KEY);
+  }
+
+  public void setPersonRelationship(org.ganymede.leginfo.eo.Person value) {
+    if (_Author.LOG.isDebugEnabled()) {
+      _Author.LOG.debug("updating person from " + person() + " to " + value);
+    }
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	setPerson(value);
+    }
+    else if (value == null) {
+    	org.ganymede.leginfo.eo.Person oldValue = person();
+    	if (oldValue != null) {
+    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _Author.PERSON_KEY);
+      }
+    } else {
+    	addObjectToBothSidesOfRelationshipWithKey(value, _Author.PERSON_KEY);
+    }
+  }
+  
   public NSArray<org.ganymede.leginfo.eo.BillAuthoring> authorings() {
     return (NSArray<org.ganymede.leginfo.eo.BillAuthoring>)storedValueForKey(_Author.AUTHORINGS_KEY);
   }
@@ -139,100 +164,6 @@ public abstract class _Author extends  ERXGenericRecord {
     Enumeration<org.ganymede.leginfo.eo.BillAuthoring> objects = authorings().immutableClone().objectEnumerator();
     while (objects.hasMoreElements()) {
       deleteAuthoringsRelationship(objects.nextElement());
-    }
-  }
-
-  public NSArray<org.ganymede.leginfo.eo.Person> persons() {
-    return (NSArray<org.ganymede.leginfo.eo.Person>)storedValueForKey(_Author.PERSONS_KEY);
-  }
-
-  public NSArray<org.ganymede.leginfo.eo.Person> persons(EOQualifier qualifier) {
-    return persons(qualifier, null, false);
-  }
-
-  public NSArray<org.ganymede.leginfo.eo.Person> persons(EOQualifier qualifier, boolean fetch) {
-    return persons(qualifier, null, fetch);
-  }
-
-  public NSArray<org.ganymede.leginfo.eo.Person> persons(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings, boolean fetch) {
-    NSArray<org.ganymede.leginfo.eo.Person> results;
-    if (fetch) {
-      EOQualifier fullQualifier;
-      EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.Person.AUTHOR_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
-      if (qualifier == null) {
-        fullQualifier = inverseQualifier;
-      }
-      else {
-        NSMutableArray<EOQualifier> qualifiers = new NSMutableArray<EOQualifier>();
-        qualifiers.addObject(qualifier);
-        qualifiers.addObject(inverseQualifier);
-        fullQualifier = new EOAndQualifier(qualifiers);
-      }
-
-      results = org.ganymede.leginfo.eo.Person.fetchPersons(editingContext(), fullQualifier, sortOrderings);
-    }
-    else {
-      results = persons();
-      if (qualifier != null) {
-        results = (NSArray<org.ganymede.leginfo.eo.Person>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
-      }
-      if (sortOrderings != null) {
-        results = (NSArray<org.ganymede.leginfo.eo.Person>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
-      }
-    }
-    return results;
-  }
-  
-  public void addToPersons(org.ganymede.leginfo.eo.Person object) {
-    includeObjectIntoPropertyWithKey(object, _Author.PERSONS_KEY);
-  }
-
-  public void removeFromPersons(org.ganymede.leginfo.eo.Person object) {
-    excludeObjectFromPropertyWithKey(object, _Author.PERSONS_KEY);
-  }
-
-  public void addToPersonsRelationship(org.ganymede.leginfo.eo.Person object) {
-    if (_Author.LOG.isDebugEnabled()) {
-      _Author.LOG.debug("adding " + object + " to persons relationship");
-    }
-    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToPersons(object);
-    }
-    else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _Author.PERSONS_KEY);
-    }
-  }
-
-  public void removeFromPersonsRelationship(org.ganymede.leginfo.eo.Person object) {
-    if (_Author.LOG.isDebugEnabled()) {
-      _Author.LOG.debug("removing " + object + " from persons relationship");
-    }
-    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromPersons(object);
-    }
-    else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _Author.PERSONS_KEY);
-    }
-  }
-
-  public org.ganymede.leginfo.eo.Person createPersonsRelationship() {
-    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName( org.ganymede.leginfo.eo.Person.ENTITY_NAME );
-    EOEnterpriseObject eo = eoClassDesc.createInstanceWithEditingContext(editingContext(), null);
-    editingContext().insertObject(eo);
-    addObjectToBothSidesOfRelationshipWithKey(eo, _Author.PERSONS_KEY);
-    return (org.ganymede.leginfo.eo.Person) eo;
-  }
-
-  public void deletePersonsRelationship(org.ganymede.leginfo.eo.Person object) {
-    removeObjectFromBothSidesOfRelationshipWithKey(object, _Author.PERSONS_KEY);
-    editingContext().deleteObject(object);
-  }
-
-  public void deleteAllPersonsRelationships() {
-    Enumeration<org.ganymede.leginfo.eo.Person> objects = persons().immutableClone().objectEnumerator();
-    while (objects.hasMoreElements()) {
-      deletePersonsRelationship(objects.nextElement());
     }
   }
 

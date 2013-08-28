@@ -598,13 +598,15 @@ public abstract class _Bill extends  ERXGenericRecord {
   }
 
 
-  public static Bill createBill(EOEditingContext editingContext, String historyFile
+  public static Bill createBill(EOEditingContext editingContext, String billNum
+, String historyFile
 , String measure
 , String statusDate
 , String statusFile
 , String topic
 , org.ganymede.leginfo.eo.BillVersion lastVersion) {
     Bill eo = (Bill) EOUtilities.createAndInsertInstance(editingContext, _Bill.ENTITY_NAME);    
+		eo.setBillNum(billNum);
 		eo.setHistoryFile(historyFile);
 		eo.setMeasure(measure);
 		eo.setStatusDate(statusDate);

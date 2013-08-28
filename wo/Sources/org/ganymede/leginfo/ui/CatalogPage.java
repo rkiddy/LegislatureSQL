@@ -5,6 +5,8 @@ import org.ganymede.leginfo.eo.Bill;
 import org.ganymede.leginfo.eo.BillAuthoring;
 import org.ganymede.leginfo.eo.BillVersion;
 
+import com.webobjects.appserver.WOActionResults;
+import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
@@ -45,7 +47,7 @@ public class CatalogPage extends GComponent {
 				if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
 				bills = EOSortOrdering.sortedArrayUsingKeyOrderArray(bills, Bill.MEASURE.ascs());
 				authorCache.setObjectForKey(bills, categoryObj);
-				System.out.println("CatalogPage:: bills for \""+category+"\" = \""+categoryObj+"\", bills # "+bills.size());
+				//System.out.println("CatalogPage:: bills for \""+category+"\" = \""+categoryObj+"\", bills # "+bills.size());
 			}
 			return authorCache.objectForKey(categoryObj);
 			//return NSArray.EmptyArray;
@@ -53,5 +55,17 @@ public class CatalogPage extends GComponent {
 
 		return NSArray.EmptyArray;
 	}
+
+	public WOActionResults toCategoryObj() {
+
+		if (CATEGORY_AUTHORS.equals(category)) {
+			Author author = Author.fetchAuthor(ec(), Author.NAME_KEY, categoryObj);
+			WOComponent nextPage = pageWithName(AuthorPage.class);
+			nextPage.takeValueForKey(author, "author");
+			return nextPage;
+		}
+		return context().page();
+	}
+
     public void setBills(Object value) { }
 }

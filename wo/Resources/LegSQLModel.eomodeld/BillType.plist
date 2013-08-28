@@ -15,7 +15,7 @@
             valueType = i; 
         }
     ); 
-    attributesUsedForLocking = (name, pk); 
+    attributesUsedForLocking = (pk); 
     className = "org.ganymede.leginfo.eo.BillType"; 
     classProperties = (bills, name); 
     externalName = "bill_types"; 

@@ -22,7 +22,7 @@
             width = 31; 
         }
     ); 
-    attributesUsedForLocking = (pk, srcEntity, srcPk); 
+    attributesUsedForLocking = (pk); 
     className = "org.ganymede.leginfo.eo.Tag"; 
     classProperties = (srcEntity, srcPk, tag); 
     externalName = tags; 

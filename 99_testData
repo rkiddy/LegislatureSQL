@@ -134,7 +134,7 @@ print "Check authors:\n\n";
 
 $sql = "select * from authors where person_pk is NULL;";
 
-print &doSqlResults($sql);
+foreach (&doSqlResults($sql)) { print $_."\n"; }
 
 print "\n\nOk!\n\n";
 

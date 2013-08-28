@@ -8,6 +8,13 @@
             valueType = i; 
         }, 
         {
+            columnName = idx; 
+            externalType = INT; 
+            name = idx; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
             columnName = pk; 
             externalType = INT; 
             name = pk; 
@@ -24,7 +31,7 @@
     ); 
     attributesUsedForLocking = (billVersionPk, pk); 
     className = "org.ganymede.leginfo.eo.BillWould"; 
-    classProperties = (billVersion, sentence); 
+    classProperties = (billVersion, idx, sentence); 
     externalName = "bill_woulds"; 
     fetchSpecificationDictionary = {}; 
     name = BillWould; 

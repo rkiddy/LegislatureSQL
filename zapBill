@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+}
+
+$billNum = pop @ARGV;
+
+$billPk = &doSqlResult("select pk from bills where bill_num = '".$billNum."';");
+chomp($billPk);
+
+if ($billPk == 0 || $billPk eq "" || $billPk eq "NULL") {
+    print "ERROR: Could not find pk for bill from bill_num \"".$billNum."\"\n\n";
+    exit(1);
+}
+
+print "billPk: ".$billPk."\n";
+
+# Not yet zapping!
+
+exit(0);

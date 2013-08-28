@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+$lower = 0;
+$length = scalar(@ARGV)-1;
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; $lower = $idx + 2; }
+}
+
+
+$authorPks = join ',', @ARGV[$lower..$length];
+
+print "Author pks = ".$authorPks."\n";
+
+@authorings = &doSqlResults("select bill_version_pk from bill_authorings where author_pk in (".$authorPks.");");
+
+print "Authorings found # ".scalar(@authorings)."\n";
+
+$versionPks = join ',', @authorings;
+
+@versions = &doSqlResults("select file from bill_versions where pk in (".$versionPks.");");
+
+foreach (@versions) { print $_."\n"; }
+
+&doSqlResult("delete from bill_versions where pk in (".$versionPks.");");
+&doSqlResult("delete from bill_woulds where bill_version_pk in (".$versionPks.");");
+&doSqlResult("delete from code_section_joins where bill_version_pk in (".$versionPks.");");
+&doSqlResult("delete from bill_authorings where bill_version_pk in (".$versionPks.");");
+&doSqlResult("delete from authors where pk in (".$authorPks.");");
+
+exit(0);

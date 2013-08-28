@@ -20,7 +20,6 @@ public class Fixer {
 
 	public static void fixAll() {
 		fixCommitteeAbbreviations(anEC);
-		processAuthors(anEC);
 	}
 
 	private static NSDictionary<String,BillActionType> actionTypes = null;
@@ -110,6 +109,10 @@ public class Fixer {
 		prefixes.setObjectForKey("S", "scr");
 		prefixes.setObjectForKey("S", "sjr");
 		prefixes.setObjectForKey("S", "sr");
+	}
+
+	public static void processThisBillWoulds(EOEditingContext ec) {
+		//xxx
 	}
 
 	public static void processAuthors(EOEditingContext ec) {
@@ -256,12 +259,14 @@ public class Fixer {
 
 							Author author = null;
 
-							if (! authors.containsKey(authorName))
-								authors.setObjectForKey(Author.createAuthor(ec, authorName), authorName);
+							if (! authorName.equals("")) {
+								if ( ! authors.containsKey(authorName))
+									authors.setObjectForKey(Author.createAuthor(ec, authorName), authorName);
 
-							author = authors.objectForKey(authorName);
+								author = authors.objectForKey(authorName);
 
-							BillAuthoring.createBillAuthoring(ec, activeHouse, activeRole, "13-14", author, aVersion);
+								BillAuthoring.createBillAuthoring(ec, activeHouse, activeRole, "13-14", author, aVersion);
+							}
 						}
 					}
 					System.out.print("+");

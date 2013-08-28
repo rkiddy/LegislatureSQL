@@ -13,10 +13,10 @@ $table{"authors") = <<SQL
 
 CREATE TABLE `authors` (
   `pk` int(11) NOT NULL,
-  `person_pk` int(11) NOT NULL,
+  `person_pk` int(11) DEFAULT NULL,
   `name` varchar(64),
   PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 
@@ -26,7 +26,7 @@ CREATE TABLE `bill_action_types` (
   `pk` int(11) NOT NULL,
   `action` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 
@@ -39,8 +39,9 @@ CREATE TABLE `bill_actions` (
   `bill_action_type_pk` int(11) DEFAULT NULL,
   `when_act` char(10) DEFAULT NULL,
   `action` varchar(1280) DEFAULT NULL,
-  PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+  PRIMARY KEY (`pk`),
+  KEY `bill_pk` (`bill_pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 
@@ -57,7 +58,7 @@ CREATE TABLE `bill_authorings` (
   PRIMARY KEY (`pk`),
   KEY `author_pk` (`author_pk`),
   KEY `bill_version_pk` (`bill_version_pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 
@@ -139,7 +140,8 @@ CREATE TABLE `bills` (
   'last_version_pk` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`pk`),
   UNIQUE KEY `bill_num_2` (`bill_num`,`session_yrs`),
-  KEY `bill_num` (`bill_num`)
+  KEY `bill_num` (`bill_num`), 
+  KEY `last_version_pk` (`last_version_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
@@ -173,7 +175,7 @@ CREATE TABLE `file_items` (
   `file_date` char(10) DEFAULT NULL,
   `item` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 
@@ -186,7 +188,7 @@ CREATE TABLE `leg_sessions` (
   `date_start` char(10) DEFAULT NULL,
   `date_end` char(10) DEFAULT NULL,
   PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 
@@ -195,8 +197,9 @@ $table{"persons"} = <<SQL
 CREATE TABLE `persons` (
   `pk` int(11) NOT NULL,
   `name` varchar(64) DEFAULT NULL,
+  `wp_url` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`pk`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 

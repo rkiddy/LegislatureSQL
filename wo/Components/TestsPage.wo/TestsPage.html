@@ -5,6 +5,7 @@
     <meta http-equiv = "Content-Type" content = "text/html;charset=UTF-8" />
   </head>
   <body>
+    <div class = "TestsPage"></div>
     <table>
       <tr>
         <td valign = "top">
@@ -19,9 +20,13 @@
             <li>
               <wo:link action = "$selectAuthors">Show Authors and Coauthors</wo:link>
             </li>
+            <li>
+              <wo:link action = "$fixTBWs">Add &quot;This bill would...&quot; to Bill Version</wo:link>
+            </li>
           </ul>
         </td>
         <td>
+          <wo:if condition = "$message"><wo:str value = "$message" /></wo:if>
           <wo:if condition = "$testBillVersions">
             <h3>Bill Versions:</h3>
             <ul>
@@ -45,31 +50,44 @@
             </ul>
           </wo:if>
           <wo:if condition = "$testThisBillWoulds"> </wo:if>
+          <wo:if condition = "$fixThisBillWoulds">
+            <wo:form>
+              File: 
+              <wo:textfield value = "$fileName" size = "100" />
+              <br />
+              TBW: 
+              <wo:textfield value = "$tbw" size = "150" />
+              <br />
+              <wo:submit action = "$addTBW" />
+            </wo:form>
+          </wo:if>
           <wo:if condition = "$testAuthors">
             <h3>Bill Versions:</h3>
-            <p><wo:link action="$nextBills">Next Bills</wo:link>
-            <ul>
-              <wo:loop list = "$bills" item = "$bill">
-                <wo:str value = "$bill.measure" />
-                <ul>
-                  <wo:loop list = "$bill.versions" item = "$version">
-                    <li>
-                      FILE: 
-                      <wo:str value = "$version.file" />
-                      <br />
-                      AUTHORS: 
-                      <wo:str value = "$version.authors" escapeHTML = "$false" />
-                      <br />
-                      COAUTHORS: 
-                      <wo:str value = "$version.coauthors" escapeHTML = "$false" />
-                      <br />
-                      ALL_AUTHORS: 
-                      <wo:str value = "$version.authsParsed" escapeHTML = "$false" />
-                    </li>
-                  </wo:loop>
-                </ul>
-              </wo:loop>
-            </ul>
+            <p>
+              <wo:link action = "$nextBills">Next Bills</wo:link>
+              <ul>
+                <wo:loop list = "$bills" item = "$bill">
+                  <wo:str value = "$bill.measure" />
+                  <ul>
+                    <wo:loop list = "$bill.versions" item = "$version">
+                      <li>
+                        FILE: 
+                        <wo:str value = "$version.file" />
+                        <br />
+                        AUTHORS: 
+                        <wo:str value = "$version.authors" escapeHTML = "$false" />
+                        <br />
+                        COAUTHORS: 
+                        <wo:str value = "$version.coauthors" escapeHTML = "$false" />
+                        <br />
+                        ALL_AUTHORS: 
+                        <wo:str value = "$version.authsParsed" escapeHTML = "$false" />
+                      </li>
+                    </wo:loop>
+                  </ul>
+                </wo:loop>
+              </ul>
+            </p>
           </wo:if>
         </td>
       </tr>

@@ -5,6 +5,8 @@ import java.io.LineNumberReader;
 
 import org.apache.log4j.Logger;
 
+import com.webobjects.eocontrol.EOQualifier;
+import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 
 public class BillVersion extends _BillVersion {
@@ -72,27 +74,23 @@ public class BillVersion extends _BillVersion {
 
     public boolean isLastVersion() { return this.bill().lastVersion().equals(this); }
 
-    // Authors for a bill:
-    //
-    // select b1.bill_num, ba1.author_type, ba1.author_pk, a1.name from bills b1, bill_versions v1, bill_authorings ba1, authors a1 where b1.bill_num = 'ab_314' and b1.last_version_pk = v1.pk and v1.pk = ba1.bill_version_pk and ba1.author_pk = a1.pk;
-    //
-    // ThisBillWoulds for a bill:
-    //
-    // select 
+    public NSArray<BillWould> woulds() { return EOSortOrdering.sortedArrayUsingKeyOrderArray(super.woulds(), BillWould.IDX.ascs()); }
 
     public NSArray<Author> authors() {
-    	return (NSArray<Author>)BillAuthoring.fetchBillAuthorings(editingContext(), BillAuthoring.BILL_VERSION.is(this).and(BillAuthoring.AUTHOR_HOUSE.is(this.bill().house())).and(BillAuthoring.AUTHOR_TYPE.is("A")), null).valueForKey(BillAuthoring.AUTHOR_KEY);
+    	EOQualifier qualifier = BillAuthoring.BILL_VERSION.is(this).and(BillAuthoring.AUTHOR_HOUSE.is(this.bill().house())).and(BillAuthoring.AUTHOR_TYPE.is("A"));
+    	System.out.println("authors qualifier: "+qualifier);
+    	return (NSArray<Author>)BillAuthoring.fetchBillAuthorings(editingContext(), qualifier, null).valueForKey(BillAuthoring.AUTHOR_KEY);
     }
 
-    public NSArray<Author> authorsOffHouse() {
+    public NSArray<Author> authorsOff() {
     	return (NSArray<Author>)BillAuthoring.fetchBillAuthorings(editingContext(), BillAuthoring.BILL_VERSION.is(this).and(BillAuthoring.AUTHOR_HOUSE.isNot(this.bill().house())).and(BillAuthoring.AUTHOR_TYPE.is("A")), null).valueForKey(BillAuthoring.AUTHOR_KEY);
     }
 
-    public NSArray<Author> principalCoauthors() {
+    public NSArray<Author> pCoauthors() {
     	return (NSArray<Author>)BillAuthoring.fetchBillAuthorings(editingContext(), BillAuthoring.BILL_VERSION.is(this).and(BillAuthoring.AUTHOR_HOUSE.is(this.bill().house())).and(BillAuthoring.AUTHOR_TYPE.is("PC")), null).valueForKey(BillAuthoring.AUTHOR_KEY);
     }
 
-    public NSArray<Author> principalCoauthorsOffHouse() {
+    public NSArray<Author> pCoauthorsOff() {
     	return (NSArray<Author>)BillAuthoring.fetchBillAuthorings(editingContext(), BillAuthoring.BILL_VERSION.is(this).and(BillAuthoring.AUTHOR_HOUSE.isNot(this.bill().house())).and(BillAuthoring.AUTHOR_TYPE.is("PC")), null).valueForKey(BillAuthoring.AUTHOR_KEY);
     }
 
@@ -100,7 +98,7 @@ public class BillVersion extends _BillVersion {
     	return (NSArray<Author>)BillAuthoring.fetchBillAuthorings(editingContext(), BillAuthoring.BILL_VERSION.is(this).and(BillAuthoring.AUTHOR_HOUSE.is(this.bill().house())).and(BillAuthoring.AUTHOR_TYPE.is("C")), null).valueForKey(BillAuthoring.AUTHOR_KEY);
     }
 
-    public NSArray<Author> coauthorsOffHouse() {
+    public NSArray<Author> coauthorsOff() {
     	return (NSArray<Author>)BillAuthoring.fetchBillAuthorings(editingContext(), BillAuthoring.BILL_VERSION.is(this).and(BillAuthoring.AUTHOR_HOUSE.isNot(this.bill().house())).and(BillAuthoring.AUTHOR_TYPE.is("C")), null).valueForKey(BillAuthoring.AUTHOR_KEY);
     }
 }
