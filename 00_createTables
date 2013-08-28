@@ -105,10 +105,23 @@ $table{"bill_woulds") = <<SQL
 CREATE TABLE `bill_woulds` (
   `pk` int(11) NOT NULL,
   `bill_version_pk` int(11) DEFAULT NULL,
+  `idx` int(11) DEFAULT NULL, 
   `sentence` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`pk`), 
   KEY `bill_version_pk` (`bill_version_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"bill_woulds_byhand") = <<SQL
+
+CREATE TABLE `bill_woulds_byhand` (
+  `pk` int(11) NOT NULL,
+  `file` varchar(128) DEFAULT NULL,
+  `idx` int(11) DEFAULT NULL,
+  `sentence` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+ ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
 
 
@@ -187,6 +200,28 @@ CREATE TABLE `leg_sessions` (
   `prefix` varchar(5) DEFAULT NULL,
   `date_start` char(10) DEFAULT NULL,
   `date_end` char(10) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"person_contact_groups"} = <<SQL
+CREATE TABLE `person_contact_groups` (
+  `pk` int(11) NOT NULL,
+  `person_pk` int(11) DEFAULT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"person_contacts"} <<SQL
+
+CREATE TABLE `person_contacts` (
+  `pk` int(11) NOT NULL,
+  `group_pk` int(11) DEFAULT NULL,
+  `contact_type` varchar(20) DEFAULT NULL,
+  `contact_info` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL
