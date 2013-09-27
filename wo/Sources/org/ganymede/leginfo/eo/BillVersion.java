@@ -68,6 +68,9 @@ public class BillVersion extends _BillVersion {
     	StringBuilder str = new StringBuilder();
     	if (this.file().indexOf("_introduced") > 0) { str.append(" as introduced, "); ok = true; }
     	if (this.file().indexOf("_amended") > 0) { str.append(" as amended, "); ok = true; }
+    	if (this.file().indexOf("_enrolled") > 0) { str.append(" as enrolled, "); ok = true; }
+    	if (this.file().indexOf("_chaptered") > 0) { str.append(" as chaptered, "); ok = true; }
+    	if (this.file().indexOf("_proposed") > 0) { str.append(" as proposed, "); ok = true; }
     	str.append(this.fileDate());
        	return (ok) ? str.toString() : this.file();
     }
