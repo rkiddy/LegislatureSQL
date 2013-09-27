@@ -47,7 +47,7 @@ public abstract class _BillAuthoring extends  ERXGenericRecord {
 
   public void setAuthorHouse(String value) {
     if (_BillAuthoring.LOG.isDebugEnabled()) {
-    	_BillAuthoring.LOG.debug( "updating authorHouse from " + authorHouse() + " to " + value);
+        _BillAuthoring.LOG.debug( "updating authorHouse from " + authorHouse() + " to " + value);
     }
     takeStoredValueForKey(value, _BillAuthoring.AUTHOR_HOUSE_KEY);
   }
@@ -58,7 +58,7 @@ public abstract class _BillAuthoring extends  ERXGenericRecord {
 
   public void setAuthorType(String value) {
     if (_BillAuthoring.LOG.isDebugEnabled()) {
-    	_BillAuthoring.LOG.debug( "updating authorType from " + authorType() + " to " + value);
+        _BillAuthoring.LOG.debug( "updating authorType from " + authorType() + " to " + value);
     }
     takeStoredValueForKey(value, _BillAuthoring.AUTHOR_TYPE_KEY);
   }
@@ -69,7 +69,7 @@ public abstract class _BillAuthoring extends  ERXGenericRecord {
 
   public void setSessionYrs(String value) {
     if (_BillAuthoring.LOG.isDebugEnabled()) {
-    	_BillAuthoring.LOG.debug( "updating sessionYrs from " + sessionYrs() + " to " + value);
+        _BillAuthoring.LOG.debug( "updating sessionYrs from " + sessionYrs() + " to " + value);
     }
     takeStoredValueForKey(value, _BillAuthoring.SESSION_YRS_KEY);
   }
@@ -77,7 +77,7 @@ public abstract class _BillAuthoring extends  ERXGenericRecord {
   public org.ganymede.leginfo.eo.Author author() {
     return (org.ganymede.leginfo.eo.Author)storedValueForKey(_BillAuthoring.AUTHOR_KEY);
   }
-  
+
   public void setAuthor(org.ganymede.leginfo.eo.Author value) {
     takeStoredValueForKey(value, _BillAuthoring.AUTHOR_KEY);
   }
@@ -87,22 +87,22 @@ public abstract class _BillAuthoring extends  ERXGenericRecord {
       _BillAuthoring.LOG.debug("updating author from " + author() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setAuthor(value);
+        setAuthor(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.Author oldValue = author();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAuthoring.AUTHOR_KEY);
+        org.ganymede.leginfo.eo.Author oldValue = author();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAuthoring.AUTHOR_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _BillAuthoring.AUTHOR_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _BillAuthoring.AUTHOR_KEY);
     }
   }
-  
+
   public org.ganymede.leginfo.eo.BillVersion billVersion() {
     return (org.ganymede.leginfo.eo.BillVersion)storedValueForKey(_BillAuthoring.BILL_VERSION_KEY);
   }
-  
+
   public void setBillVersion(org.ganymede.leginfo.eo.BillVersion value) {
     takeStoredValueForKey(value, _BillAuthoring.BILL_VERSION_KEY);
   }
@@ -112,27 +112,27 @@ public abstract class _BillAuthoring extends  ERXGenericRecord {
       _BillAuthoring.LOG.debug("updating billVersion from " + billVersion() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setBillVersion(value);
+        setBillVersion(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.BillVersion oldValue = billVersion();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAuthoring.BILL_VERSION_KEY);
+        org.ganymede.leginfo.eo.BillVersion oldValue = billVersion();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAuthoring.BILL_VERSION_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _BillAuthoring.BILL_VERSION_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _BillAuthoring.BILL_VERSION_KEY);
     }
   }
-  
+
 
   public static BillAuthoring createBillAuthoring(EOEditingContext editingContext, String authorHouse
 , String authorType
 , String sessionYrs
 , org.ganymede.leginfo.eo.Author author, org.ganymede.leginfo.eo.BillVersion billVersion) {
-    BillAuthoring eo = (BillAuthoring) EOUtilities.createAndInsertInstance(editingContext, _BillAuthoring.ENTITY_NAME);    
-		eo.setAuthorHouse(authorHouse);
-		eo.setAuthorType(authorType);
-		eo.setSessionYrs(sessionYrs);
+    BillAuthoring eo = (BillAuthoring) EOUtilities.createAndInsertInstance(editingContext, _BillAuthoring.ENTITY_NAME);
+        eo.setAuthorHouse(authorHouse);
+        eo.setAuthorType(authorType);
+        eo.setSessionYrs(sessionYrs);
     eo.setAuthorRelationship(author);
     eo.setBillVersionRelationship(billVersion);
     return eo;

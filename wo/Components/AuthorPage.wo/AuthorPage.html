@@ -1,9 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
 <head>
-	<title>CA Legislature WO</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<wo:ERXStyleSheet filename="bills.css" />
+    <title>CA Legislature WO</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <wo:ERXStyleSheet filename="bills.css" />
 </head>
 <body>
 <div class="AuthorPage" />
@@ -44,11 +44,11 @@
   <wo:loop list="$author.person.contactGroups" item="$contactGroup">
     <li>
         <wo:str value="$contactGroup.name" />
-    	<ul>
-    	<wo:loop list="$contactGroup.contacts//VALID" item="$contact">
-    	  <li><wo:str value="$contact.contactType" />&nbsp;-&nbsp;<wo:str value="$contact.contactInfo" /></li>
-    	</wo:loop>
-    	</ul>
+        <ul>
+        <wo:loop list="$contactGroup.contacts//VALID" item="$contact">
+          <li><wo:str value="$contact.contactType" />&nbsp;-&nbsp;<wo:str value="$contact.contactInfo" /></li>
+        </wo:loop>
+        </ul>
     </li>
   </wo:loop>
 </ul>

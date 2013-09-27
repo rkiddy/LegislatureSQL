@@ -43,7 +43,7 @@ public abstract class _BillWould extends  ERXGenericRecord {
 
   public void setIdx(Integer value) {
     if (_BillWould.LOG.isDebugEnabled()) {
-    	_BillWould.LOG.debug( "updating idx from " + idx() + " to " + value);
+        _BillWould.LOG.debug( "updating idx from " + idx() + " to " + value);
     }
     takeStoredValueForKey(value, _BillWould.IDX_KEY);
   }
@@ -54,7 +54,7 @@ public abstract class _BillWould extends  ERXGenericRecord {
 
   public void setSentence(String value) {
     if (_BillWould.LOG.isDebugEnabled()) {
-    	_BillWould.LOG.debug( "updating sentence from " + sentence() + " to " + value);
+        _BillWould.LOG.debug( "updating sentence from " + sentence() + " to " + value);
     }
     takeStoredValueForKey(value, _BillWould.SENTENCE_KEY);
   }
@@ -62,7 +62,7 @@ public abstract class _BillWould extends  ERXGenericRecord {
   public org.ganymede.leginfo.eo.BillVersion billVersion() {
     return (org.ganymede.leginfo.eo.BillVersion)storedValueForKey(_BillWould.BILL_VERSION_KEY);
   }
-  
+
   public void setBillVersion(org.ganymede.leginfo.eo.BillVersion value) {
     takeStoredValueForKey(value, _BillWould.BILL_VERSION_KEY);
   }
@@ -72,25 +72,25 @@ public abstract class _BillWould extends  ERXGenericRecord {
       _BillWould.LOG.debug("updating billVersion from " + billVersion() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setBillVersion(value);
+        setBillVersion(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.BillVersion oldValue = billVersion();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillWould.BILL_VERSION_KEY);
+        org.ganymede.leginfo.eo.BillVersion oldValue = billVersion();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillWould.BILL_VERSION_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _BillWould.BILL_VERSION_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _BillWould.BILL_VERSION_KEY);
     }
   }
-  
+
 
   public static BillWould createBillWould(EOEditingContext editingContext, Integer idx
 , String sentence
 , org.ganymede.leginfo.eo.BillVersion billVersion) {
-    BillWould eo = (BillWould) EOUtilities.createAndInsertInstance(editingContext, _BillWould.ENTITY_NAME);    
-		eo.setIdx(idx);
-		eo.setSentence(sentence);
+    BillWould eo = (BillWould) EOUtilities.createAndInsertInstance(editingContext, _BillWould.ENTITY_NAME);
+        eo.setIdx(idx);
+        eo.setSentence(sentence);
     eo.setBillVersionRelationship(billVersion);
     return eo;
   }

@@ -45,7 +45,7 @@ public abstract class _PersonContact extends  ERXGenericRecord {
 
   public void setContactInfo(String value) {
     if (_PersonContact.LOG.isDebugEnabled()) {
-    	_PersonContact.LOG.debug( "updating contactInfo from " + contactInfo() + " to " + value);
+        _PersonContact.LOG.debug( "updating contactInfo from " + contactInfo() + " to " + value);
     }
     takeStoredValueForKey(value, _PersonContact.CONTACT_INFO_KEY);
   }
@@ -56,7 +56,7 @@ public abstract class _PersonContact extends  ERXGenericRecord {
 
   public void setContactType(String value) {
     if (_PersonContact.LOG.isDebugEnabled()) {
-    	_PersonContact.LOG.debug( "updating contactType from " + contactType() + " to " + value);
+        _PersonContact.LOG.debug( "updating contactType from " + contactType() + " to " + value);
     }
     takeStoredValueForKey(value, _PersonContact.CONTACT_TYPE_KEY);
   }
@@ -64,7 +64,7 @@ public abstract class _PersonContact extends  ERXGenericRecord {
   public org.ganymede.leginfo.eo.PersonContactGroup contactGroup() {
     return (org.ganymede.leginfo.eo.PersonContactGroup)storedValueForKey(_PersonContact.CONTACT_GROUP_KEY);
   }
-  
+
   public void setContactGroup(org.ganymede.leginfo.eo.PersonContactGroup value) {
     takeStoredValueForKey(value, _PersonContact.CONTACT_GROUP_KEY);
   }
@@ -74,22 +74,22 @@ public abstract class _PersonContact extends  ERXGenericRecord {
       _PersonContact.LOG.debug("updating contactGroup from " + contactGroup() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setContactGroup(value);
+        setContactGroup(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.PersonContactGroup oldValue = contactGroup();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _PersonContact.CONTACT_GROUP_KEY);
+        org.ganymede.leginfo.eo.PersonContactGroup oldValue = contactGroup();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _PersonContact.CONTACT_GROUP_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _PersonContact.CONTACT_GROUP_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _PersonContact.CONTACT_GROUP_KEY);
     }
   }
-  
+
   public org.ganymede.leginfo.eo.Person person() {
     return (org.ganymede.leginfo.eo.Person)storedValueForKey(_PersonContact.PERSON_KEY);
   }
-  
+
   public void setPerson(org.ganymede.leginfo.eo.Person value) {
     takeStoredValueForKey(value, _PersonContact.PERSON_KEY);
   }
@@ -99,25 +99,25 @@ public abstract class _PersonContact extends  ERXGenericRecord {
       _PersonContact.LOG.debug("updating person from " + person() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setPerson(value);
+        setPerson(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.Person oldValue = person();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _PersonContact.PERSON_KEY);
+        org.ganymede.leginfo.eo.Person oldValue = person();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _PersonContact.PERSON_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _PersonContact.PERSON_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _PersonContact.PERSON_KEY);
     }
   }
-  
+
 
   public static PersonContact createPersonContact(EOEditingContext editingContext, String contactInfo
 , String contactType
 , org.ganymede.leginfo.eo.PersonContactGroup contactGroup) {
-    PersonContact eo = (PersonContact) EOUtilities.createAndInsertInstance(editingContext, _PersonContact.ENTITY_NAME);    
-		eo.setContactInfo(contactInfo);
-		eo.setContactType(contactType);
+    PersonContact eo = (PersonContact) EOUtilities.createAndInsertInstance(editingContext, _PersonContact.ENTITY_NAME);
+        eo.setContactInfo(contactInfo);
+        eo.setContactType(contactType);
     eo.setContactGroupRelationship(contactGroup);
     return eo;
   }

@@ -41,7 +41,7 @@ public abstract class _CodeSection extends  ERXGenericRecord {
 
   public void setName(String value) {
     if (_CodeSection.LOG.isDebugEnabled()) {
-    	_CodeSection.LOG.debug( "updating name from " + name() + " to " + value);
+        _CodeSection.LOG.debug( "updating name from " + name() + " to " + value);
     }
     takeStoredValueForKey(value, _CodeSection.NAME_KEY);
   }
@@ -65,7 +65,7 @@ public abstract class _CodeSection extends  ERXGenericRecord {
       }
     return results;
   }
-  
+
   public void addToBillVersions(org.ganymede.leginfo.eo.BillVersion object) {
     includeObjectIntoPropertyWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
   }
@@ -79,10 +79,10 @@ public abstract class _CodeSection extends  ERXGenericRecord {
       _CodeSection.LOG.debug("adding " + object + " to billVersions relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToBillVersions(object);
+        addToBillVersions(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
     }
   }
 
@@ -91,10 +91,10 @@ public abstract class _CodeSection extends  ERXGenericRecord {
       _CodeSection.LOG.debug("removing " + object + " from billVersions relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromBillVersions(object);
+        removeFromBillVersions(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _CodeSection.BILL_VERSIONS_KEY);
     }
   }
 
@@ -121,8 +121,8 @@ public abstract class _CodeSection extends  ERXGenericRecord {
 
   public static CodeSection createCodeSection(EOEditingContext editingContext, String name
 ) {
-    CodeSection eo = (CodeSection) EOUtilities.createAndInsertInstance(editingContext, _CodeSection.ENTITY_NAME);    
-		eo.setName(name);
+    CodeSection eo = (CodeSection) EOUtilities.createAndInsertInstance(editingContext, _CodeSection.ENTITY_NAME);
+        eo.setName(name);
     return eo;
   }
 

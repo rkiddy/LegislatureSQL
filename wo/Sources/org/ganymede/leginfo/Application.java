@@ -15,7 +15,7 @@ import er.extensions.eof.ERXEC;
 
 public class Application extends ERXApplication {
 
-	public static void main(String[] argv) {
+    public static void main(String[] argv) {
         ERXApplication.main(argv, Application.class);
     }
 
@@ -54,18 +54,18 @@ public class Application extends ERXApplication {
         }
 
         if (System.getProperty("ProcessThisBillWoulds") != null) {
-        	Fixer.processThisBillWoulds(ERXEC.newEditingContext());
-        	System.exit(0);
+            Fixer.processThisBillWoulds(ERXEC.newEditingContext());
+            System.exit(0);
         }
 
         if (System.getProperty("ProcessAuthors") != null) {
-        	Fixer.processAuthors(ERXEC.newEditingContext());
-        	System.exit(0);
+            Fixer.processAuthors(ERXEC.newEditingContext());
+            System.exit(0);
         }
 
         if (System.getProperty("RunFixesAndQuit") != null) {
-        	Fixer.fixAll();
-        	System.exit(0);
+            Fixer.fixAll();
+            System.exit(0);
         }
     }
 }

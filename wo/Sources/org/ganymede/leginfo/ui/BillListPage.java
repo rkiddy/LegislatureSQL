@@ -24,15 +24,15 @@ public class BillListPage extends GComponent {
 
     public String pageTitle;
     public String pageTitle() {
-    	return (pageTitle != null) ? pageTitle : "Bills";
+        return (pageTitle != null) ? pageTitle : "Bills";
     }
 
     public NSArray<Bill> bills;
     public NSArray<Bill> bills() {
-    	return (bills == null) ? null : Bill.sortedByMeasure(bills);
+        return (bills == null) ? null : Bill.sortedByMeasure(bills);
     }
 
     public WOActionResults updatePrefsToShow() {
-    	return context().page();
+        return context().page();
     }
 }

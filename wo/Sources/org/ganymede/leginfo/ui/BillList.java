@@ -16,16 +16,16 @@ import com.webobjects.foundation.NSMutableArray;
 
 public class BillList extends GComponent {
 
-	public BillList(WOContext context) {
-		super(context);
-	}
+    public BillList(WOContext context) {
+        super(context);
+    }
 
-	public Bill bill;
+    public Bill bill;
 
     public NSArray<Bill> bills;
 
     public NSArray<Bill> bills() {
-    	return (bills == null) ? null : Bill.sortedByMeasure(bills);
+        return (bills == null) ? null : Bill.sortedByMeasure(bills);
     }
 
     public Author author;
@@ -48,10 +48,10 @@ public class BillList extends GComponent {
     }
 
     public NSArray<BillAction> previousActions() {
-    	NSArray<BillAction> actions = bill.billActions();
-    	NSMutableArray<BillAction> sorted = EOSortOrdering.sortedArrayUsingKeyOrderArray(actions, BillAction.WHEN_ACT.descs()).mutableClone();
-    	sorted.remove(0);
-    	return sorted.immutableClone();
+        NSArray<BillAction> actions = bill.billActions();
+        NSMutableArray<BillAction> sorted = EOSortOrdering.sortedArrayUsingKeyOrderArray(actions, BillAction.WHEN_ACT.descs()).mutableClone();
+        sorted.remove(0);
+        return sorted.immutableClone();
     }
 
     public WOActionResults toggleOptions() {

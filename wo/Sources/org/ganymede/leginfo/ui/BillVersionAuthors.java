@@ -10,25 +10,25 @@ import er.extensions.components.ERXComponent;
 
 public class BillVersionAuthors extends ERXComponent {
 
-	public BillVersionAuthors(WOContext context) {
+    public BillVersionAuthors(WOContext context) {
         super(context);
     }
 
-	public Author author;
+    public Author author;
 
-	public BillVersion billVersion;
+    public BillVersion billVersion;
 
-	public void setBillVersion(Object value) {
-		billVersion = (BillVersion)value;
-	}
+    public void setBillVersion(Object value) {
+        billVersion = (BillVersion)value;
+    }
 
-	NSArray<Author> authorsSameHouse = null;
-	NSArray<Author> authorsOffHouse = null;
+    NSArray<Author> authorsSameHouse = null;
+    NSArray<Author> authorsOffHouse = null;
 
-	NSArray<Author> principalCoauthorsSameHouse = null;
-	NSArray<Author> principalCoauthorsOffHouse = null;
+    NSArray<Author> principalCoauthorsSameHouse = null;
+    NSArray<Author> principalCoauthorsOffHouse = null;
 
-	NSArray<Author> coauthorsSameHouse = null;
-	NSArray<Author> coauthorsOffHouse = null;
+    NSArray<Author> coauthorsSameHouse = null;
+    NSArray<Author> coauthorsOffHouse = null;
 
 }

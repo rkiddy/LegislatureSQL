@@ -13,7 +13,7 @@ import er.extensions.components.ERXComponent;
 
 public class AuthorPage extends ERXComponent {
 
-	public AuthorPage(WOContext context) {
+    public AuthorPage(WOContext context) {
         super(context);
     }
 
@@ -23,12 +23,12 @@ public class AuthorPage extends ERXComponent {
     public Bill bill;
 
     public WOActionResults save() {
-    	session().defaultEditingContext().saveChanges();
-    	return context().page();
+        session().defaultEditingContext().saveChanges();
+        return context().page();
     }
     public WOActionResults cancel() {
-    	session().defaultEditingContext().revert();
-    	return context().page();
+        session().defaultEditingContext().revert();
+        return context().page();
     }
 
     private static final NSArray<String> houses = new NSArray<String>(new String[] { "A", "S" } );

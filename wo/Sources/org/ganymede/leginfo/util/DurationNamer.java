@@ -6,7 +6,7 @@ import com.webobjects.foundation.NSTimestamp;
 
 public class DurationNamer {
   public static String timeFrom(NSTimestamp time, NSTimestamp baseTime) {
-	StringBuilder results = new StringBuilder();
+    StringBuilder results = new StringBuilder();
     StringHelper helper = new StringHelper();
 
     int years = DateUtils.difference(time, baseTime, Calendar.YEAR) - 1;
@@ -92,7 +92,7 @@ public class DurationNamer {
     else {
       results.append("now");
     }
-    
+
     return results.toString();
   }
 

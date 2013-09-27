@@ -41,7 +41,7 @@ public abstract class _BillActionType extends  ERXGenericRecord {
 
   public void setAction(String value) {
     if (_BillActionType.LOG.isDebugEnabled()) {
-    	_BillActionType.LOG.debug( "updating action from " + action() + " to " + value);
+        _BillActionType.LOG.debug( "updating action from " + action() + " to " + value);
     }
     takeStoredValueForKey(value, _BillActionType.ACTION_KEY);
   }
@@ -63,7 +63,7 @@ public abstract class _BillActionType extends  ERXGenericRecord {
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.BillAction.BILL_ACTION_TYPE_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -87,7 +87,7 @@ public abstract class _BillActionType extends  ERXGenericRecord {
     }
     return results;
   }
-  
+
   public void addToBillActions(org.ganymede.leginfo.eo.BillAction object) {
     includeObjectIntoPropertyWithKey(object, _BillActionType.BILL_ACTIONS_KEY);
   }
@@ -101,10 +101,10 @@ public abstract class _BillActionType extends  ERXGenericRecord {
       _BillActionType.LOG.debug("adding " + object + " to billActions relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToBillActions(object);
+        addToBillActions(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _BillActionType.BILL_ACTIONS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _BillActionType.BILL_ACTIONS_KEY);
     }
   }
 
@@ -113,10 +113,10 @@ public abstract class _BillActionType extends  ERXGenericRecord {
       _BillActionType.LOG.debug("removing " + object + " from billActions relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromBillActions(object);
+        removeFromBillActions(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillActionType.BILL_ACTIONS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _BillActionType.BILL_ACTIONS_KEY);
     }
   }
 
@@ -143,8 +143,8 @@ public abstract class _BillActionType extends  ERXGenericRecord {
 
   public static BillActionType createBillActionType(EOEditingContext editingContext, String action
 ) {
-    BillActionType eo = (BillActionType) EOUtilities.createAndInsertInstance(editingContext, _BillActionType.ENTITY_NAME);    
-		eo.setAction(action);
+    BillActionType eo = (BillActionType) EOUtilities.createAndInsertInstance(editingContext, _BillActionType.ENTITY_NAME);
+        eo.setAction(action);
     return eo;
   }
 

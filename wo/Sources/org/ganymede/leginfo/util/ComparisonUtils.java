@@ -8,7 +8,7 @@ public class ComparisonUtils {
   public static boolean notEquals(Object obj1, Object obj2) {
     return !ComparisonUtils.equals(obj1, obj2);
   }
-  
+
   public static boolean equals(Object obj1, Object obj2) {
     boolean equals;
     if (obj1 == obj2) {

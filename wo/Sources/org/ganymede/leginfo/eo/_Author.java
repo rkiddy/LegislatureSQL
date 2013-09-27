@@ -51,7 +51,7 @@ public abstract class _Author extends  ERXGenericRecord {
 
   public void setDistrict(Integer value) {
     if (_Author.LOG.isDebugEnabled()) {
-    	_Author.LOG.debug( "updating district from " + district() + " to " + value);
+        _Author.LOG.debug( "updating district from " + district() + " to " + value);
     }
     takeStoredValueForKey(value, _Author.DISTRICT_KEY);
   }
@@ -62,7 +62,7 @@ public abstract class _Author extends  ERXGenericRecord {
 
   public void setEnd(String value) {
     if (_Author.LOG.isDebugEnabled()) {
-    	_Author.LOG.debug( "updating end from " + end() + " to " + value);
+        _Author.LOG.debug( "updating end from " + end() + " to " + value);
     }
     takeStoredValueForKey(value, _Author.END_KEY);
   }
@@ -73,7 +73,7 @@ public abstract class _Author extends  ERXGenericRecord {
 
   public void setHouse(String value) {
     if (_Author.LOG.isDebugEnabled()) {
-    	_Author.LOG.debug( "updating house from " + house() + " to " + value);
+        _Author.LOG.debug( "updating house from " + house() + " to " + value);
     }
     takeStoredValueForKey(value, _Author.HOUSE_KEY);
   }
@@ -84,7 +84,7 @@ public abstract class _Author extends  ERXGenericRecord {
 
   public void setName(String value) {
     if (_Author.LOG.isDebugEnabled()) {
-    	_Author.LOG.debug( "updating name from " + name() + " to " + value);
+        _Author.LOG.debug( "updating name from " + name() + " to " + value);
     }
     takeStoredValueForKey(value, _Author.NAME_KEY);
   }
@@ -95,7 +95,7 @@ public abstract class _Author extends  ERXGenericRecord {
 
   public void setStart(String value) {
     if (_Author.LOG.isDebugEnabled()) {
-    	_Author.LOG.debug( "updating start from " + start() + " to " + value);
+        _Author.LOG.debug( "updating start from " + start() + " to " + value);
     }
     takeStoredValueForKey(value, _Author.START_KEY);
   }
@@ -103,7 +103,7 @@ public abstract class _Author extends  ERXGenericRecord {
   public org.ganymede.leginfo.eo.Person person() {
     return (org.ganymede.leginfo.eo.Person)storedValueForKey(_Author.PERSON_KEY);
   }
-  
+
   public void setPerson(org.ganymede.leginfo.eo.Person value) {
     takeStoredValueForKey(value, _Author.PERSON_KEY);
   }
@@ -113,18 +113,18 @@ public abstract class _Author extends  ERXGenericRecord {
       _Author.LOG.debug("updating person from " + person() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setPerson(value);
+        setPerson(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.Person oldValue = person();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _Author.PERSON_KEY);
+        org.ganymede.leginfo.eo.Person oldValue = person();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _Author.PERSON_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _Author.PERSON_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _Author.PERSON_KEY);
     }
   }
-  
+
   public NSArray<org.ganymede.leginfo.eo.BillAuthoring> authorings() {
     return (NSArray<org.ganymede.leginfo.eo.BillAuthoring>)storedValueForKey(_Author.AUTHORINGS_KEY);
   }
@@ -142,7 +142,7 @@ public abstract class _Author extends  ERXGenericRecord {
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.BillAuthoring.AUTHOR_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -166,7 +166,7 @@ public abstract class _Author extends  ERXGenericRecord {
     }
     return results;
   }
-  
+
   public void addToAuthorings(org.ganymede.leginfo.eo.BillAuthoring object) {
     includeObjectIntoPropertyWithKey(object, _Author.AUTHORINGS_KEY);
   }
@@ -180,10 +180,10 @@ public abstract class _Author extends  ERXGenericRecord {
       _Author.LOG.debug("adding " + object + " to authorings relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToAuthorings(object);
+        addToAuthorings(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _Author.AUTHORINGS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _Author.AUTHORINGS_KEY);
     }
   }
 
@@ -192,10 +192,10 @@ public abstract class _Author extends  ERXGenericRecord {
       _Author.LOG.debug("removing " + object + " from authorings relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromAuthorings(object);
+        removeFromAuthorings(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _Author.AUTHORINGS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _Author.AUTHORINGS_KEY);
     }
   }
 
@@ -222,8 +222,8 @@ public abstract class _Author extends  ERXGenericRecord {
 
   public static Author createAuthor(EOEditingContext editingContext, String name
 ) {
-    Author eo = (Author) EOUtilities.createAndInsertInstance(editingContext, _Author.ENTITY_NAME);    
-		eo.setName(name);
+    Author eo = (Author) EOUtilities.createAndInsertInstance(editingContext, _Author.ENTITY_NAME);
+        eo.setName(name);
     return eo;
   }
 

@@ -47,7 +47,7 @@ public abstract class _BillAction extends  ERXGenericRecord {
 
   public void setAction(String value) {
     if (_BillAction.LOG.isDebugEnabled()) {
-    	_BillAction.LOG.debug( "updating action from " + action() + " to " + value);
+        _BillAction.LOG.debug( "updating action from " + action() + " to " + value);
     }
     takeStoredValueForKey(value, _BillAction.ACTION_KEY);
   }
@@ -58,7 +58,7 @@ public abstract class _BillAction extends  ERXGenericRecord {
 
   public void setActionNum(Integer value) {
     if (_BillAction.LOG.isDebugEnabled()) {
-    	_BillAction.LOG.debug( "updating actionNum from " + actionNum() + " to " + value);
+        _BillAction.LOG.debug( "updating actionNum from " + actionNum() + " to " + value);
     }
     takeStoredValueForKey(value, _BillAction.ACTION_NUM_KEY);
   }
@@ -69,7 +69,7 @@ public abstract class _BillAction extends  ERXGenericRecord {
 
   public void setWhenAct(String value) {
     if (_BillAction.LOG.isDebugEnabled()) {
-    	_BillAction.LOG.debug( "updating whenAct from " + whenAct() + " to " + value);
+        _BillAction.LOG.debug( "updating whenAct from " + whenAct() + " to " + value);
     }
     takeStoredValueForKey(value, _BillAction.WHEN_ACT_KEY);
   }
@@ -77,7 +77,7 @@ public abstract class _BillAction extends  ERXGenericRecord {
   public org.ganymede.leginfo.eo.Bill bill() {
     return (org.ganymede.leginfo.eo.Bill)storedValueForKey(_BillAction.BILL_KEY);
   }
-  
+
   public void setBill(org.ganymede.leginfo.eo.Bill value) {
     takeStoredValueForKey(value, _BillAction.BILL_KEY);
   }
@@ -87,22 +87,22 @@ public abstract class _BillAction extends  ERXGenericRecord {
       _BillAction.LOG.debug("updating bill from " + bill() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setBill(value);
+        setBill(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.Bill oldValue = bill();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAction.BILL_KEY);
+        org.ganymede.leginfo.eo.Bill oldValue = bill();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAction.BILL_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _BillAction.BILL_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _BillAction.BILL_KEY);
     }
   }
-  
+
   public org.ganymede.leginfo.eo.BillActionType billActionType() {
     return (org.ganymede.leginfo.eo.BillActionType)storedValueForKey(_BillAction.BILL_ACTION_TYPE_KEY);
   }
-  
+
   public void setBillActionType(org.ganymede.leginfo.eo.BillActionType value) {
     takeStoredValueForKey(value, _BillAction.BILL_ACTION_TYPE_KEY);
   }
@@ -112,27 +112,27 @@ public abstract class _BillAction extends  ERXGenericRecord {
       _BillAction.LOG.debug("updating billActionType from " + billActionType() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setBillActionType(value);
+        setBillActionType(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.BillActionType oldValue = billActionType();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAction.BILL_ACTION_TYPE_KEY);
+        org.ganymede.leginfo.eo.BillActionType oldValue = billActionType();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillAction.BILL_ACTION_TYPE_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _BillAction.BILL_ACTION_TYPE_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _BillAction.BILL_ACTION_TYPE_KEY);
     }
   }
-  
+
 
   public static BillAction createBillAction(EOEditingContext editingContext, String action
 , Integer actionNum
 , String whenAct
 , org.ganymede.leginfo.eo.Bill bill) {
-    BillAction eo = (BillAction) EOUtilities.createAndInsertInstance(editingContext, _BillAction.ENTITY_NAME);    
-		eo.setAction(action);
-		eo.setActionNum(actionNum);
-		eo.setWhenAct(whenAct);
+    BillAction eo = (BillAction) EOUtilities.createAndInsertInstance(editingContext, _BillAction.ENTITY_NAME);
+        eo.setAction(action);
+        eo.setActionNum(actionNum);
+        eo.setWhenAct(whenAct);
     eo.setBillRelationship(bill);
     return eo;
   }

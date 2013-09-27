@@ -39,13 +39,13 @@ public class BillVersionPage extends GComponent {
                 line = null;
             }
             if (line != null) {
-            	if (line.indexOf("<body") >= 0) {
-            		int offset = line.indexOf(">", line.indexOf("<body")) + 1;
-            		line = line.substring(offset);
-            		appending = true;
-            	}
-            	if (appending)
-            		str.append(line+"\n");
+                if (line.indexOf("<body") >= 0) {
+                    int offset = line.indexOf(">", line.indexOf("<body")) + 1;
+                    line = line.substring(offset);
+                    appending = true;
+                }
+                if (appending)
+                    str.append(line+"\n");
             }
         }
 

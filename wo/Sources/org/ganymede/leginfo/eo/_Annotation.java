@@ -45,7 +45,7 @@ public abstract class _Annotation extends  ERXGenericRecord {
 
   public void setNote(String value) {
     if (_Annotation.LOG.isDebugEnabled()) {
-    	_Annotation.LOG.debug( "updating note from " + note() + " to " + value);
+        _Annotation.LOG.debug( "updating note from " + note() + " to " + value);
     }
     takeStoredValueForKey(value, _Annotation.NOTE_KEY);
   }
@@ -56,7 +56,7 @@ public abstract class _Annotation extends  ERXGenericRecord {
 
   public void setSrcEntity(String value) {
     if (_Annotation.LOG.isDebugEnabled()) {
-    	_Annotation.LOG.debug( "updating srcEntity from " + srcEntity() + " to " + value);
+        _Annotation.LOG.debug( "updating srcEntity from " + srcEntity() + " to " + value);
     }
     takeStoredValueForKey(value, _Annotation.SRC_ENTITY_KEY);
   }
@@ -67,7 +67,7 @@ public abstract class _Annotation extends  ERXGenericRecord {
 
   public void setSrcPk(Integer value) {
     if (_Annotation.LOG.isDebugEnabled()) {
-    	_Annotation.LOG.debug( "updating srcPk from " + srcPk() + " to " + value);
+        _Annotation.LOG.debug( "updating srcPk from " + srcPk() + " to " + value);
     }
     takeStoredValueForKey(value, _Annotation.SRC_PK_KEY);
   }
@@ -78,7 +78,7 @@ public abstract class _Annotation extends  ERXGenericRecord {
 
   public void setWhen(java.util.Date value) {
     if (_Annotation.LOG.isDebugEnabled()) {
-    	_Annotation.LOG.debug( "updating when from " + when() + " to " + value);
+        _Annotation.LOG.debug( "updating when from " + when() + " to " + value);
     }
     takeStoredValueForKey(value, _Annotation.WHEN_KEY);
   }
@@ -89,11 +89,11 @@ public abstract class _Annotation extends  ERXGenericRecord {
 , Integer srcPk
 , java.util.Date when
 ) {
-    Annotation eo = (Annotation) EOUtilities.createAndInsertInstance(editingContext, _Annotation.ENTITY_NAME);    
-		eo.setNote(note);
-		eo.setSrcEntity(srcEntity);
-		eo.setSrcPk(srcPk);
-		eo.setWhen(when);
+    Annotation eo = (Annotation) EOUtilities.createAndInsertInstance(editingContext, _Annotation.ENTITY_NAME);
+        eo.setNote(note);
+        eo.setSrcEntity(srcEntity);
+        eo.setSrcPk(srcPk);
+        eo.setWhen(when);
     return eo;
   }
 

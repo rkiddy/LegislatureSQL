@@ -43,7 +43,7 @@ public abstract class _Tag extends  ERXGenericRecord {
 
   public void setSrcEntity(String value) {
     if (_Tag.LOG.isDebugEnabled()) {
-    	_Tag.LOG.debug( "updating srcEntity from " + srcEntity() + " to " + value);
+        _Tag.LOG.debug( "updating srcEntity from " + srcEntity() + " to " + value);
     }
     takeStoredValueForKey(value, _Tag.SRC_ENTITY_KEY);
   }
@@ -54,7 +54,7 @@ public abstract class _Tag extends  ERXGenericRecord {
 
   public void setSrcPk(Integer value) {
     if (_Tag.LOG.isDebugEnabled()) {
-    	_Tag.LOG.debug( "updating srcPk from " + srcPk() + " to " + value);
+        _Tag.LOG.debug( "updating srcPk from " + srcPk() + " to " + value);
     }
     takeStoredValueForKey(value, _Tag.SRC_PK_KEY);
   }
@@ -65,7 +65,7 @@ public abstract class _Tag extends  ERXGenericRecord {
 
   public void setTag(String value) {
     if (_Tag.LOG.isDebugEnabled()) {
-    	_Tag.LOG.debug( "updating tag from " + tag() + " to " + value);
+        _Tag.LOG.debug( "updating tag from " + tag() + " to " + value);
     }
     takeStoredValueForKey(value, _Tag.TAG_KEY);
   }
@@ -75,10 +75,10 @@ public abstract class _Tag extends  ERXGenericRecord {
 , Integer srcPk
 , String tag
 ) {
-    Tag eo = (Tag) EOUtilities.createAndInsertInstance(editingContext, _Tag.ENTITY_NAME);    
-		eo.setSrcEntity(srcEntity);
-		eo.setSrcPk(srcPk);
-		eo.setTag(tag);
+    Tag eo = (Tag) EOUtilities.createAndInsertInstance(editingContext, _Tag.ENTITY_NAME);
+        eo.setSrcEntity(srcEntity);
+        eo.setSrcPk(srcPk);
+        eo.setTag(tag);
     return eo;
   }
 

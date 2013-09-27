@@ -27,11 +27,11 @@ public class Session extends ERXSession {
     public boolean alwaysShowThisBillWoulds = false;
 
     public boolean hideEverything() {
-    	return ! alwaysShowTopic && ! alwaysShowAuthors && ! alwaysShowLastActions && ! alwaysShowVersions &&
-    			! alwaysShowBillTypes && ! alwaysShowSections && ! alwaysShowThisBillWoulds;
+        return ! alwaysShowTopic && ! alwaysShowAuthors && ! alwaysShowLastActions && ! alwaysShowVersions &&
+                ! alwaysShowBillTypes && ! alwaysShowSections && ! alwaysShowThisBillWoulds;
     }
     public boolean showEverything() {
-    	return alwaysShowTopic && alwaysShowAuthors && alwaysShowLastActions && alwaysShowVersions &&
-    			alwaysShowBillTypes && alwaysShowSections && alwaysShowThisBillWoulds;
+        return alwaysShowTopic && alwaysShowAuthors && alwaysShowLastActions && alwaysShowVersions &&
+                alwaysShowBillTypes && alwaysShowSections && alwaysShowThisBillWoulds;
     }
 }

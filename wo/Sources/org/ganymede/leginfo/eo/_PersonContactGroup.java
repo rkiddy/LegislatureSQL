@@ -43,7 +43,7 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
 
   public void setName(String value) {
     if (_PersonContactGroup.LOG.isDebugEnabled()) {
-    	_PersonContactGroup.LOG.debug( "updating name from " + name() + " to " + value);
+        _PersonContactGroup.LOG.debug( "updating name from " + name() + " to " + value);
     }
     takeStoredValueForKey(value, _PersonContactGroup.NAME_KEY);
   }
@@ -51,7 +51,7 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
   public org.ganymede.leginfo.eo.Person person() {
     return (org.ganymede.leginfo.eo.Person)storedValueForKey(_PersonContactGroup.PERSON_KEY);
   }
-  
+
   public void setPerson(org.ganymede.leginfo.eo.Person value) {
     takeStoredValueForKey(value, _PersonContactGroup.PERSON_KEY);
   }
@@ -61,18 +61,18 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
       _PersonContactGroup.LOG.debug("updating person from " + person() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setPerson(value);
+        setPerson(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.Person oldValue = person();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _PersonContactGroup.PERSON_KEY);
+        org.ganymede.leginfo.eo.Person oldValue = person();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _PersonContactGroup.PERSON_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _PersonContactGroup.PERSON_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _PersonContactGroup.PERSON_KEY);
     }
   }
-  
+
   public NSArray<org.ganymede.leginfo.eo.PersonContact> contacts() {
     return (NSArray<org.ganymede.leginfo.eo.PersonContact>)storedValueForKey(_PersonContactGroup.CONTACTS_KEY);
   }
@@ -90,7 +90,7 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.PersonContact.CONTACT_GROUP_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -114,7 +114,7 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
     }
     return results;
   }
-  
+
   public void addToContacts(org.ganymede.leginfo.eo.PersonContact object) {
     includeObjectIntoPropertyWithKey(object, _PersonContactGroup.CONTACTS_KEY);
   }
@@ -128,10 +128,10 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
       _PersonContactGroup.LOG.debug("adding " + object + " to contacts relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToContacts(object);
+        addToContacts(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _PersonContactGroup.CONTACTS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _PersonContactGroup.CONTACTS_KEY);
     }
   }
 
@@ -140,10 +140,10 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
       _PersonContactGroup.LOG.debug("removing " + object + " from contacts relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromContacts(object);
+        removeFromContacts(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _PersonContactGroup.CONTACTS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _PersonContactGroup.CONTACTS_KEY);
     }
   }
 
@@ -170,8 +170,8 @@ public abstract class _PersonContactGroup extends  ERXGenericRecord {
 
   public static PersonContactGroup createPersonContactGroup(EOEditingContext editingContext, String name
 , org.ganymede.leginfo.eo.Person person) {
-    PersonContactGroup eo = (PersonContactGroup) EOUtilities.createAndInsertInstance(editingContext, _PersonContactGroup.ENTITY_NAME);    
-		eo.setName(name);
+    PersonContactGroup eo = (PersonContactGroup) EOUtilities.createAndInsertInstance(editingContext, _PersonContactGroup.ENTITY_NAME);
+        eo.setName(name);
     eo.setPersonRelationship(person);
     return eo;
   }

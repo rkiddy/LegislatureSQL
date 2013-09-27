@@ -44,113 +44,113 @@ public class Main extends GComponent {
     };
 
     public NSArray<String> recentDates() {
-    	Date now = new Date();
-    	GregorianCalendar cal = new GregorianCalendar();
-    	cal.setTime(now);
-    	NSMutableArray<String> dates = new NSMutableArray<String>();
-    	dates.add(dateOnlyFormatter.get().format(now));
+        Date now = new Date();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(now);
+        NSMutableArray<String> dates = new NSMutableArray<String>();
+        dates.add(dateOnlyFormatter.get().format(now));
 
-    	for (int idx = 0; idx < 13; idx++) {
-    		cal.add(Calendar.DATE, -1);
-    		dates.add(dateOnlyFormatter.get().format(cal.getTime()));
-    	}
+        for (int idx = 0; idx < 13; idx++) {
+            cal.add(Calendar.DATE, -1);
+            dates.add(dateOnlyFormatter.get().format(cal.getTime()));
+        }
 
-    	return dates.immutableClone();
+        return dates.immutableClone();
     }
 
     public NSArray<Bill> recentlyIntroduced() {
 
-    	EOQualifier recentlyIntroducedQualifier = null;
+        EOQualifier recentlyIntroducedQualifier = null;
 
-    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED));
+        recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED));
 
-    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
-    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+        NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
+        NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
 
-    	return bills;
+        return bills;
     }
 
     public NSArray<Bill> selectedIntroduced() {
 
-    	EOQualifier recentlyIntroducedQualifier = null;
+        EOQualifier recentlyIntroducedQualifier = null;
 
-    	recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED));
+        recentlyIntroducedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.is(BillVersion.KIND_INTRODUCED));
 
-    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
-    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+        NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyIntroducedQualifier, null);
+        NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
 
-    	return bills;
+        return bills;
     }
 
     public NSArray<Bill> recentlyAmended() {
 
-    	EOQualifier recentlyAmendedQualifier = null;
+        EOQualifier recentlyAmendedQualifier = null;
 
-    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED));
+        recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_repetitionDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED));
 
-    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
-    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+        NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
+        NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
 
-    	return bills;
+        return bills;
     }
 
     public NSArray<Bill> selectedAmended() {
 
-    	EOQualifier recentlyAmendedQualifier = null;
+        EOQualifier recentlyAmendedQualifier = null;
 
-    	recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED));
+        recentlyAmendedQualifier = BillVersion.FILE_DATE.is(_selectedDay.dateString()).and(BillVersion.KIND.startsWith(BillVersion.KIND_AMENDED));
 
-    	NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
-    	NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
+        NSArray<BillVersion> versions = BillVersion.fetchBillVersions(ec(), recentlyAmendedQualifier, null);
+        NSArray<Bill> bills = (NSArray<Bill>)versions.valueForKey(BillVersion.BILL_KEY);
 
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
 
-    	return bills;
+        return bills;
     }
 
     public NSArray<Bill> recentlyLastActions() {
-    	NSArray<Bill> bills = Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_repetitionDay.dateString()), null);
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
-    	return bills;
+        NSArray<Bill> bills = Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_repetitionDay.dateString()), null);
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        return bills;
     }
 
     public NSArray<Bill> selectedLastActions() {
-    	NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_selectedDay.dateString()), null);
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
-    	return bills;
+        NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.LAST_HIST_ACT_DATE.is(_selectedDay.dateString()), null);
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        return bills;
     }
 
     public NSArray<Bill> recentlyScheduledHearings() {
-    	NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_repetitionDay.dateString()), null);
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
-    	return bills;
+        NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_repetitionDay.dateString()), null);
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        return bills;
     }
 
     public NSArray<Bill> selectedScheduledHearings() {
-    	NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_selectedDay.dateString()), Bill.COMM_LOCATION.ascs());
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
-    	return bills;
+        NSArray<Bill> bills =  Bill.fetchBills(ec(), Bill.HEARING_DATE.is(_selectedDay.dateString()), Bill.COMM_LOCATION.ascs());
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        return bills;
     }
 
     public NSArray<String> selectedScheduledHearingCommittees() {
-    	NSArray<Bill> bills = this.selectedScheduledHearings();
-    	if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
-    	NSMutableSet<String> comms = new NSMutableSet<String>();
-    	comms.addAll((NSArray<String>)bills.valueForKey(Bill.COMM_LOCATION_KEY));
-    	return comms.allObjects();
+        NSArray<Bill> bills = this.selectedScheduledHearings();
+        if (! session().includeExtraBills) bills = EOQualifier.filteredArrayWithQualifier(bills, Bill.majorBillQualifier);
+        NSMutableSet<String> comms = new NSMutableSet<String>();
+        comms.addAll((NSArray<String>)bills.valueForKey(Bill.COMM_LOCATION_KEY));
+        return comms.allObjects();
     }
 
     public String selectedScheduledHearingCommittee;
 
     public NSArray<Bill> selectedScheduledHearingsForCommitteeBills() {
-    	if (selectedScheduledHearingCommittee == null) return NSArray.EmptyArray;
-    	return EOQualifier.filteredArrayWithQualifier(this.selectedScheduledHearings(), Bill.COMM_LOCATION.is(selectedScheduledHearingCommittee));
+        if (selectedScheduledHearingCommittee == null) return NSArray.EmptyArray;
+        return EOQualifier.filteredArrayWithQualifier(this.selectedScheduledHearings(), Bill.COMM_LOCATION.is(selectedScheduledHearingCommittee));
     }
 
     public Bill selectedScheduledHearingCommitteeBill;
@@ -175,69 +175,69 @@ public class Main extends GComponent {
 
     public WOActionResults find() {
 
-    	message = null;
+        message = null;
 
-    	NSMutableSet<EOQualifier> qualifiers = new NSMutableSet<EOQualifier>();
-    	if (findableBillNum != null) {
+        NSMutableSet<EOQualifier> qualifiers = new NSMutableSet<EOQualifier>();
+        if (findableBillNum != null) {
 
-    		System.out.println("findableBillNum: at start: \""+findableBillNum+"\"");
+            System.out.println("findableBillNum: at start: \""+findableBillNum+"\"");
 
-    		if (findableBillNum.matches("^[0-9][0-9]*$")) {
+            if (findableBillNum.matches("^[0-9][0-9]*$")) {
 
-    			System.out.println("findableBillNum: matching 09");
-    			qualifiers.add(Bill.BILL_NUM.like("*_"+findableBillNum));
-    		}
+                System.out.println("findableBillNum: matching 09");
+                qualifiers.add(Bill.BILL_NUM.like("*_"+findableBillNum));
+            }
 
-    		if (findableBillNum.matches("[A-Za-z].*[0-9]")) {
+            if (findableBillNum.matches("[A-Za-z].*[0-9]")) {
 
-    			System.out.println("findableBillNum: matching AZ_09");
-    			findableBillNum = findableBillNum.toLowerCase();
-    			findableBillNum = findableBillNum.replaceAll(" ", "*_");
-    			System.out.println("findableBillNum: checkable = \""+findableBillNum+"\"");
+                System.out.println("findableBillNum: matching AZ_09");
+                findableBillNum = findableBillNum.toLowerCase();
+                findableBillNum = findableBillNum.replaceAll(" ", "*_");
+                System.out.println("findableBillNum: checkable = \""+findableBillNum+"\"");
 
-    			qualifiers.add(Bill.BILL_NUM.ilike("*"+findableBillNum));
-    		}
-    	}
-    	if (findableAuthor != null) {
-    		qualifiers.add(Bill.AUTHORS.ilike("*"+findableAuthor+"*"));
-    	}
-    	if (findableTopic != null) {
-    		qualifiers.add(Bill.TOPIC.ilike("*"+findableTopic+"*"));
-    	}
-    	if (findableAction != null) {
-    		qualifiers.add(Bill.BILL_ACTIONS.dot(BillAction.ACTION.ilike("*"+findableAction+"*")));
-    	}
+                qualifiers.add(Bill.BILL_NUM.ilike("*"+findableBillNum));
+            }
+        }
+        if (findableAuthor != null) {
+            qualifiers.add(Bill.AUTHORS.ilike("*"+findableAuthor+"*"));
+        }
+        if (findableTopic != null) {
+            qualifiers.add(Bill.TOPIC.ilike("*"+findableTopic+"*"));
+        }
+        if (findableAction != null) {
+            qualifiers.add(Bill.BILL_ACTIONS.dot(BillAction.ACTION.ilike("*"+findableAction+"*")));
+        }
 
-    	if (qualifiers.size() > 0) {
+        if (qualifiers.size() > 0) {
 
-    		EOQualifier qualifier = (qualifiers.size() == 1) ? qualifiers.anyObject() : ((operator.equals("or")) ? new EOOrQualifier(qualifiers.allObjects()) : new EOAndQualifier(qualifiers.allObjects()));
+            EOQualifier qualifier = (qualifiers.size() == 1) ? qualifiers.anyObject() : ((operator.equals("or")) ? new EOOrQualifier(qualifiers.allObjects()) : new EOAndQualifier(qualifiers.allObjects()));
 
-    		if ( ! session().includeExtraBills) qualifier = new EOAndQualifier(new NSArray<EOQualifier>( new EOQualifier[] { qualifier, Bill.majorBillQualifier} ));
+            if ( ! session().includeExtraBills) qualifier = new EOAndQualifier(new NSArray<EOQualifier>( new EOQualifier[] { qualifier, Bill.majorBillQualifier} ));
 
-    		NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
+            NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
 
-    		if (rows.size() == 0) {
+            if (rows.size() == 0) {
 
-    			message = "Your search returned 0 results. Sorry.";
-        		return context().page();
+                message = "Your search returned 0 results. Sorry.";
+                return context().page();
 
-    		} else {
+            } else {
 
-    			WOComponent nextPage = pageWithName(BillListPage.class);
+                WOComponent nextPage = pageWithName(BillListPage.class);
 
-        		if (session().debug)
-        			nextPage.takeValueForKey("qualifier: "+qualifier, "message");
+                if (session().debug)
+                    nextPage.takeValueForKey("qualifier: "+qualifier, "message");
 
-        		nextPage.takeValueForKey(rows, "bills");
+                nextPage.takeValueForKey(rows, "bills");
 
-        		return nextPage;
-        	}
-    	} else {
-    		message = "Nothing to search for....";
-    		return context().page();
-    	}
+                return nextPage;
+            }
+        } else {
+            message = "Nothing to search for....";
+            return context().page();
+        }
     }
-    
+
     public Year _selectedYear = null;
     public Month _selectedMonth = null;
     public Week _repetitionWeek = null;
@@ -256,14 +256,14 @@ public class Main extends GComponent {
       super.appendToResponse(response, context);
       AjaxUtils.addScriptResourceInHead(context, response, "Ajax", "prototype.js");
     }
-    
+
     @Override
     public boolean synchronizesVariablesWithBindings() {
       return false;
     }
 
     public String dayClass() {
-  	StringBuilder dayClass = new StringBuilder();
+      StringBuilder dayClass = new StringBuilder();
       dayClass.append("day");
       if (_repetitionDay.weekend()) {
         dayClass.append(" weekend");
@@ -275,12 +275,12 @@ public class Main extends GComponent {
     }
 
     public boolean sameAsLastMonth() {
-    	if (_repetitionDay.month() == lastMonth)
-    		return true;
-    	else {
-    		lastMonth = _repetitionDay.month();
-    		return false;
-    	}
+        if (_repetitionDay.month() == lastMonth)
+            return true;
+        else {
+            lastMonth = _repetitionDay.month();
+            return false;
+        }
     }
 
     public WOActionResults selectDay() {
@@ -292,14 +292,14 @@ public class Main extends GComponent {
     }
 
     public WOActionResults previousMonth() {
-    	_selectedDay = null;
-    	_selectedMonth = _selectedMonth.previousMonth();
-    	return context().page();
+        _selectedDay = null;
+        _selectedMonth = _selectedMonth.previousMonth();
+        return context().page();
     }
 
     public WOActionResults nextMonth() {
-    	_selectedDay = null;
-    	_selectedMonth = _selectedMonth.nextMonth();
-    	return context().page();
+        _selectedDay = null;
+        _selectedMonth = _selectedMonth.nextMonth();
+        return context().page();
     }
 }

@@ -47,8 +47,8 @@ public class StringHelper {
   }
 
   /**
-   * Truncates a string to the given length then appends a character to the end three times.<br/>  
-   * If characters are not cut off the end, the origional string is returned.  
+   * Truncates a string to the given length then appends a character to the end three times.<br/>
+   * If characters are not cut off the end, the origional string is returned.
    * <p><b>Example:</b> truncate("123456", 3, '$') --> "123$$$"  |  truncate("123", 6, '$') --> "123" </p>
    * @param str - input string
    * @param length - number of characters from str to display including periods.
@@ -96,8 +96,8 @@ public class StringHelper {
   public String humanize(String str) {
     return humanize(str, true);
   }
-  
+
   public String capitalize(String str) {
-  	return ERXStringUtilities.capitalize(str);
+      return ERXStringUtilities.capitalize(str);
   }
 }

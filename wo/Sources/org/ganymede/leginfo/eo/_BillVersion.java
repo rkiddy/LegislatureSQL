@@ -59,7 +59,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   public void setAuthorsStr(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating authorsStr from " + authorsStr() + " to " + value);
+        _BillVersion.LOG.debug( "updating authorsStr from " + authorsStr() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.AUTHORS_STR_KEY);
   }
@@ -70,7 +70,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   public void setAuthsParsed(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating authsParsed from " + authsParsed() + " to " + value);
+        _BillVersion.LOG.debug( "updating authsParsed from " + authsParsed() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.AUTHS_PARSED_KEY);
   }
@@ -81,7 +81,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   public void setCoauthorsStr(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating coauthorsStr from " + coauthorsStr() + " to " + value);
+        _BillVersion.LOG.debug( "updating coauthorsStr from " + coauthorsStr() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.COAUTHORS_STR_KEY);
   }
@@ -92,7 +92,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   public void setFile(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating file from " + file() + " to " + value);
+        _BillVersion.LOG.debug( "updating file from " + file() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.FILE_KEY);
   }
@@ -103,7 +103,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   public void setFileDate(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating fileDate from " + fileDate() + " to " + value);
+        _BillVersion.LOG.debug( "updating fileDate from " + fileDate() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.FILE_DATE_KEY);
   }
@@ -114,7 +114,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   public void setKind(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating kind from " + kind() + " to " + value);
+        _BillVersion.LOG.debug( "updating kind from " + kind() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.KIND_KEY);
   }
@@ -125,7 +125,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 
   public void setTitle(String value) {
     if (_BillVersion.LOG.isDebugEnabled()) {
-    	_BillVersion.LOG.debug( "updating title from " + title() + " to " + value);
+        _BillVersion.LOG.debug( "updating title from " + title() + " to " + value);
     }
     takeStoredValueForKey(value, _BillVersion.TITLE_KEY);
   }
@@ -133,7 +133,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
   public org.ganymede.leginfo.eo.Bill bill() {
     return (org.ganymede.leginfo.eo.Bill)storedValueForKey(_BillVersion.BILL_KEY);
   }
-  
+
   public void setBill(org.ganymede.leginfo.eo.Bill value) {
     takeStoredValueForKey(value, _BillVersion.BILL_KEY);
   }
@@ -143,18 +143,18 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       _BillVersion.LOG.debug("updating bill from " + bill() + " to " + value);
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	setBill(value);
+        setBill(value);
     }
     else if (value == null) {
-    	org.ganymede.leginfo.eo.Bill oldValue = bill();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillVersion.BILL_KEY);
+        org.ganymede.leginfo.eo.Bill oldValue = bill();
+        if (oldValue != null) {
+            removeObjectFromBothSidesOfRelationshipWithKey(oldValue, _BillVersion.BILL_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, _BillVersion.BILL_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(value, _BillVersion.BILL_KEY);
     }
   }
-  
+
   public NSArray<org.ganymede.leginfo.eo.BillAuthoring> authorings() {
     return (NSArray<org.ganymede.leginfo.eo.BillAuthoring>)storedValueForKey(_BillVersion.AUTHORINGS_KEY);
   }
@@ -172,7 +172,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.BillAuthoring.BILL_VERSION_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -196,7 +196,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     }
     return results;
   }
-  
+
   public void addToAuthorings(org.ganymede.leginfo.eo.BillAuthoring object) {
     includeObjectIntoPropertyWithKey(object, _BillVersion.AUTHORINGS_KEY);
   }
@@ -210,10 +210,10 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       _BillVersion.LOG.debug("adding " + object + " to authorings relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToAuthorings(object);
+        addToAuthorings(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.AUTHORINGS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.AUTHORINGS_KEY);
     }
   }
 
@@ -222,10 +222,10 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       _BillVersion.LOG.debug("removing " + object + " from authorings relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromAuthorings(object);
+        removeFromAuthorings(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.AUTHORINGS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.AUTHORINGS_KEY);
     }
   }
 
@@ -268,7 +268,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       }
     return results;
   }
-  
+
   public void addToCodeSections(org.ganymede.leginfo.eo.CodeSection object) {
     includeObjectIntoPropertyWithKey(object, _BillVersion.CODE_SECTIONS_KEY);
   }
@@ -282,10 +282,10 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       _BillVersion.LOG.debug("adding " + object + " to codeSections relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToCodeSections(object);
+        addToCodeSections(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.CODE_SECTIONS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.CODE_SECTIONS_KEY);
     }
   }
 
@@ -294,10 +294,10 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       _BillVersion.LOG.debug("removing " + object + " from codeSections relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromCodeSections(object);
+        removeFromCodeSections(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.CODE_SECTIONS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.CODE_SECTIONS_KEY);
     }
   }
 
@@ -338,7 +338,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.BillWould.BILL_VERSION_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -362,7 +362,7 @@ public abstract class _BillVersion extends  ERXGenericRecord {
     }
     return results;
   }
-  
+
   public void addToWoulds(org.ganymede.leginfo.eo.BillWould object) {
     includeObjectIntoPropertyWithKey(object, _BillVersion.WOULDS_KEY);
   }
@@ -376,10 +376,10 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       _BillVersion.LOG.debug("adding " + object + " to woulds relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToWoulds(object);
+        addToWoulds(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.WOULDS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _BillVersion.WOULDS_KEY);
     }
   }
 
@@ -388,10 +388,10 @@ public abstract class _BillVersion extends  ERXGenericRecord {
       _BillVersion.LOG.debug("removing " + object + " from woulds relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromWoulds(object);
+        removeFromWoulds(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.WOULDS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _BillVersion.WOULDS_KEY);
     }
   }
 
@@ -421,11 +421,11 @@ public abstract class _BillVersion extends  ERXGenericRecord {
 , String kind
 , String title
 , org.ganymede.leginfo.eo.Bill bill) {
-    BillVersion eo = (BillVersion) EOUtilities.createAndInsertInstance(editingContext, _BillVersion.ENTITY_NAME);    
-		eo.setFile(file);
-		eo.setFileDate(fileDate);
-		eo.setKind(kind);
-		eo.setTitle(title);
+    BillVersion eo = (BillVersion) EOUtilities.createAndInsertInstance(editingContext, _BillVersion.ENTITY_NAME);
+        eo.setFile(file);
+        eo.setFileDate(fileDate);
+        eo.setKind(kind);
+        eo.setTitle(title);
     eo.setBillRelationship(bill);
     return eo;
   }

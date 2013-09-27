@@ -45,7 +45,7 @@ public abstract class _Person extends  ERXGenericRecord {
 
   public void setName(String value) {
     if (_Person.LOG.isDebugEnabled()) {
-    	_Person.LOG.debug( "updating name from " + name() + " to " + value);
+        _Person.LOG.debug( "updating name from " + name() + " to " + value);
     }
     takeStoredValueForKey(value, _Person.NAME_KEY);
   }
@@ -56,7 +56,7 @@ public abstract class _Person extends  ERXGenericRecord {
 
   public void setWpUrl(String value) {
     if (_Person.LOG.isDebugEnabled()) {
-    	_Person.LOG.debug( "updating wpUrl from " + wpUrl() + " to " + value);
+        _Person.LOG.debug( "updating wpUrl from " + wpUrl() + " to " + value);
     }
     takeStoredValueForKey(value, _Person.WP_URL_KEY);
   }
@@ -78,7 +78,7 @@ public abstract class _Person extends  ERXGenericRecord {
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.Author.PERSON_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -102,7 +102,7 @@ public abstract class _Person extends  ERXGenericRecord {
     }
     return results;
   }
-  
+
   public void addToAuthors(org.ganymede.leginfo.eo.Author object) {
     includeObjectIntoPropertyWithKey(object, _Person.AUTHORS_KEY);
   }
@@ -116,10 +116,10 @@ public abstract class _Person extends  ERXGenericRecord {
       _Person.LOG.debug("adding " + object + " to authors relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToAuthors(object);
+        addToAuthors(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _Person.AUTHORS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _Person.AUTHORS_KEY);
     }
   }
 
@@ -128,10 +128,10 @@ public abstract class _Person extends  ERXGenericRecord {
       _Person.LOG.debug("removing " + object + " from authors relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromAuthors(object);
+        removeFromAuthors(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _Person.AUTHORS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _Person.AUTHORS_KEY);
     }
   }
 
@@ -172,7 +172,7 @@ public abstract class _Person extends  ERXGenericRecord {
     if (fetch) {
       EOQualifier fullQualifier;
       EOQualifier inverseQualifier = new EOKeyValueQualifier(org.ganymede.leginfo.eo.PersonContactGroup.PERSON_KEY, EOQualifier.QualifierOperatorEqual, this);
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -196,7 +196,7 @@ public abstract class _Person extends  ERXGenericRecord {
     }
     return results;
   }
-  
+
   public void addToContactGroups(org.ganymede.leginfo.eo.PersonContactGroup object) {
     includeObjectIntoPropertyWithKey(object, _Person.CONTACT_GROUPS_KEY);
   }
@@ -210,10 +210,10 @@ public abstract class _Person extends  ERXGenericRecord {
       _Person.LOG.debug("adding " + object + " to contactGroups relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addToContactGroups(object);
+        addToContactGroups(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, _Person.CONTACT_GROUPS_KEY);
+        addObjectToBothSidesOfRelationshipWithKey(object, _Person.CONTACT_GROUPS_KEY);
     }
   }
 
@@ -222,10 +222,10 @@ public abstract class _Person extends  ERXGenericRecord {
       _Person.LOG.debug("removing " + object + " from contactGroups relationship");
     }
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFromContactGroups(object);
+        removeFromContactGroups(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, _Person.CONTACT_GROUPS_KEY);
+        removeObjectFromBothSidesOfRelationshipWithKey(object, _Person.CONTACT_GROUPS_KEY);
     }
   }
 
@@ -253,9 +253,9 @@ public abstract class _Person extends  ERXGenericRecord {
   public static Person createPerson(EOEditingContext editingContext, String name
 , String wpUrl
 ) {
-    Person eo = (Person) EOUtilities.createAndInsertInstance(editingContext, _Person.ENTITY_NAME);    
-		eo.setName(name);
-		eo.setWpUrl(wpUrl);
+    Person eo = (Person) EOUtilities.createAndInsertInstance(editingContext, _Person.ENTITY_NAME);
+        eo.setName(name);
+        eo.setWpUrl(wpUrl);
     return eo;
   }
 

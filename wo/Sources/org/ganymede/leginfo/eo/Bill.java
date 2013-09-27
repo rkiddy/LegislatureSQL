@@ -18,43 +18,43 @@ public class Bill extends _Bill {
 
     public static NSArray<Bill> sortedByMeasure(NSArray<Bill> bills) {
 
-    	NSMutableDictionary<String,Bill> sortable = new NSMutableDictionary<String,Bill>();
+        NSMutableDictionary<String,Bill> sortable = new NSMutableDictionary<String,Bill>();
 
-    	for (Bill bill : bills) {
+        for (Bill bill : bills) {
 
-    		NSArray<String> parts = NSArray.componentsSeparatedByString(bill.billNum(), "_");
-    		String head = parts.get(0);
-    		String number = parts.get(1);
+            NSArray<String> parts = NSArray.componentsSeparatedByString(bill.billNum(), "_");
+            String head = parts.get(0);
+            String number = parts.get(1);
 
-    		while (number.length() < 8) number = "0"+number;
+            while (number.length() < 8) number = "0"+number;
 
-    		sortable.setObjectForKey(bill, head+"_"+number);
-    	}
+            sortable.setObjectForKey(bill, head+"_"+number);
+        }
 
-    	NSMutableArray<Bill> sorted = new NSMutableArray<Bill>();
+        NSMutableArray<Bill> sorted = new NSMutableArray<Bill>();
 
-    	try {
-			for (String billNum : sortable.allKeys().sortedArrayUsingComparator(NSComparator.AscendingStringComparator)) {
-				sorted.add(sortable.objectForKey(billNum));
-			}
-		} catch (com.webobjects.foundation.NSComparator.ComparisonException e) { }
+        try {
+            for (String billNum : sortable.allKeys().sortedArrayUsingComparator(NSComparator.AscendingStringComparator)) {
+                sorted.add(sortable.objectForKey(billNum));
+            }
+        } catch (com.webobjects.foundation.NSComparator.ComparisonException e) { }
 
-		return sorted.immutableClone();
+        return sorted.immutableClone();
     }
 
     public String prefixlessHouse() {
-    	String num = this.billNum();
-    	if (num.indexOf("x") > 0) {
-    		num = num.substring(0, num.indexOf("x"));
-    	} else {
-    		num = num.substring(0, num.indexOf("_"));
-    	}
-    	return num;
+        String num = this.billNum();
+        if (num.indexOf("x") > 0) {
+            num = num.substring(0, num.indexOf("x"));
+        } else {
+            num = num.substring(0, num.indexOf("_"));
+        }
+        return num;
     }
 
     public String house() { return (this.billNum().startsWith("a") || this.billNum().startsWith("h")) ? "A" : "S"; }
 
     public NSArray<org.ganymede.leginfo.eo.BillAction> billActions() {
-    	return EOSortOrdering.sortedArrayUsingKeyOrderArray(super.billActions(), BillAction.ACTION_NUM.ascs());
+        return EOSortOrdering.sortedArrayUsingKeyOrderArray(super.billActions(), BillAction.ACTION_NUM.ascs());
     }
 }

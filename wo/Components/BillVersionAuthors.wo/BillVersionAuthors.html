@@ -1,8 +1,8 @@
 [
-	A:<wo:str value="$billVersion.authors.count" />,<wo:str value="$billVersion.authorsOff.count" />
-	PC:<wo:str value="$billVersion.pCoauthors.count" />,<wo:str value="$billVersion.pCoauthorsOff.count" />
-	C:<wo:str value="$billVersion.coauthors.count" />,<wo:str value="$billVersion.coauthorsOff.count" />
-	House: <wo:str value="$billVersion.bill.house" />
+    A:<wo:str value="$billVersion.authors.count" />,<wo:str value="$billVersion.authorsOff.count" />
+    PC:<wo:str value="$billVersion.pCoauthors.count" />,<wo:str value="$billVersion.pCoauthorsOff.count" />
+    C:<wo:str value="$billVersion.coauthors.count" />,<wo:str value="$billVersion.coauthorsOff.count" />
+    House: <wo:str value="$billVersion.bill.house" />
 ]
 <!-- 
 &lt;wo:str value="$authorsLabel" /&gt;:
@@ -10,7 +10,7 @@
 &lt;wo:loop list = "$billVersion.authors" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;
 
 &lt;wo:if condition="$billVersion.authorsOff.count"&gt;
-	(&lt;wo:loop list = "$billVersion.authorsOff" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;)
+    (&lt;wo:loop list = "$billVersion.authorsOff" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;)
 &lt;/wo:if&gt;
 
 &lt;wo:if condition="$pCoCount"&gt;
@@ -19,17 +19,17 @@
 &lt;wo:loop list = "$billVersion.principalCoauthors" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;
 
 &lt;wo:if condition="$billVersion.principalCoauthorsOff.count"&gt;
-	(&lt;wo:loop list = "$billVersion.principalCoauthorsOff" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;) 
+    (&lt;wo:loop list = "$billVersion.principalCoauthorsOff" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;) 
 &lt;/wo:if&gt;
 &lt;/wo:if&gt;
 
 &lt;wo:if condition="$coCount"&gt;
 &lt;wo:str value="$coauthorsLabel" /&gt;:
-	
+    
 &lt;wo:loop list = "$billVersion.coauthors" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;
 
 &lt;wo:if condition="$billVersion.coauthorsOff.count"&gt;
-	(&lt;wo:loop list = "$billVersion.coauthorsOff" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;)
+    (&lt;wo:loop list = "$billVersion.coauthorsOff" item = "$author"&gt; &nbsp;-&nbsp;&lt;wo:ERXDataHyperlink pageName="AuthorPage" author="$author"&gt;&lt;wo:str value = "$author.name" escapeHTML = "$false" /&gt;&lt;/wo:ERXDataHyperlink&gt;&lt;/wo:loop&gt;)
 &lt;/wo:if&gt;
 &lt;/wo:if&gt;
  -->
