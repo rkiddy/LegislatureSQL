@@ -143,7 +143,6 @@ CREATE TABLE `bills` (
   `hearing_date` char(10) DEFAULT NULL,
   `house_location` char(3) DEFAULT NULL,
   `item` varchar(128) DEFAULT NULL,
-  `last_amended_date` char(10) DEFAULT NULL,
   `last_hist_act_date` char(10) DEFAULT NULL,
   `last_hist_action` varchar(512) DEFAULT NULL,
   `status_date` char(10) DEFAULT NULL,
@@ -233,6 +232,31 @@ CREATE TABLE `persons` (
   `pk` int(11) NOT NULL,
   `name` varchar(64) DEFAULT NULL,
   `wp_url` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+
+$table{"votes"} = <<SQL
+
+CREATE TABLE `votes` (
+  `pk` int(11) NOT NULL,
+  `file` varchar(128) DEFAULT NULL,
+  `bill_pk` int(11) DEFAULT NULL,
+  `vote_date` char(10) DEFAULT NULL,
+  `location` varchar(128) DEFAULT NULL,
+  `motion` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`pk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL
+
+$table{"votings"} = <<SQL
+
+CREATE TABLE `votings` (
+  `pk` int(11) NOT NULL,
+  `vote_pk` int(11) DEFAULT NULL,
+  `author_pk` int(11) DEFAULT NULL,
+  `vote` enum('Y','N','NA') DEFAULT NULL,
   PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL

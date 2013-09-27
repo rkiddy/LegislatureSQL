@@ -1,15 +1,27 @@
 // DO NOT EDIT.  Make changes to Bill.java instead.
 package org.ganymede.leginfo.eo;
 
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
-import com.webobjects.foundation.*;
-import java.math.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
+
 import org.apache.log4j.Logger;
 
-import er.extensions.eof.*;
-import er.extensions.foundation.*;
+import com.webobjects.eoaccess.EOUtilities;
+import com.webobjects.eocontrol.EOAndQualifier;
+import com.webobjects.eocontrol.EOClassDescription;
+import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOEnterpriseObject;
+import com.webobjects.eocontrol.EOFetchSpecification;
+import com.webobjects.eocontrol.EOKeyValueQualifier;
+import com.webobjects.eocontrol.EOQualifier;
+import com.webobjects.eocontrol.EOSortOrdering;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSMutableArray;
+
+import er.extensions.eof.ERXEOControlUtilities;
+import er.extensions.eof.ERXFetchSpecification;
+import er.extensions.eof.ERXGenericRecord;
+import er.extensions.eof.ERXKey;
 
 @SuppressWarnings("all")
 public abstract class _Bill extends  ERXGenericRecord {
@@ -28,7 +40,6 @@ public abstract class _Bill extends  ERXGenericRecord {
   public static final ERXKey<String> HISTORY_FILE = new ERXKey<String>("historyFile");
   public static final ERXKey<String> HOUSE_LOCATION = new ERXKey<String>("houseLocation");
   public static final ERXKey<String> ITEM = new ERXKey<String>("item");
-  public static final ERXKey<String> LAST_AMENDED_DATE = new ERXKey<String>("lastAmendedDate");
   public static final ERXKey<String> LAST_HIST_ACT_DATE = new ERXKey<String>("lastHistActDate");
   public static final ERXKey<String> LAST_HIST_ACTION = new ERXKey<String>("lastHistAction");
   public static final ERXKey<String> MEASURE = new ERXKey<String>("measure");
@@ -42,6 +53,7 @@ public abstract class _Bill extends  ERXGenericRecord {
   public static final ERXKey<org.ganymede.leginfo.eo.BillType> BILL_TYPES = new ERXKey<org.ganymede.leginfo.eo.BillType>("billTypes");
   public static final ERXKey<org.ganymede.leginfo.eo.BillVersion> LAST_VERSION = new ERXKey<org.ganymede.leginfo.eo.BillVersion>("lastVersion");
   public static final ERXKey<org.ganymede.leginfo.eo.BillVersion> VERSIONS = new ERXKey<org.ganymede.leginfo.eo.BillVersion>("versions");
+  public static final ERXKey<com.webobjects.eocontrol.EOGenericRecord> VOTES = new ERXKey<com.webobjects.eocontrol.EOGenericRecord>("votes");
 
   // Attributes
   public static final String AUTHORS_KEY = AUTHORS.key();
@@ -56,7 +68,6 @@ public abstract class _Bill extends  ERXGenericRecord {
   public static final String HISTORY_FILE_KEY = HISTORY_FILE.key();
   public static final String HOUSE_LOCATION_KEY = HOUSE_LOCATION.key();
   public static final String ITEM_KEY = ITEM.key();
-  public static final String LAST_AMENDED_DATE_KEY = LAST_AMENDED_DATE.key();
   public static final String LAST_HIST_ACT_DATE_KEY = LAST_HIST_ACT_DATE.key();
   public static final String LAST_HIST_ACTION_KEY = LAST_HIST_ACTION.key();
   public static final String MEASURE_KEY = MEASURE.key();
@@ -70,6 +81,7 @@ public abstract class _Bill extends  ERXGenericRecord {
   public static final String BILL_TYPES_KEY = BILL_TYPES.key();
   public static final String LAST_VERSION_KEY = LAST_VERSION.key();
   public static final String VERSIONS_KEY = VERSIONS.key();
+  public static final String VOTES_KEY = VOTES.key();
 
   private static Logger LOG = Logger.getLogger(_Bill.class);
 
@@ -211,17 +223,6 @@ public abstract class _Bill extends  ERXGenericRecord {
     	_Bill.LOG.debug( "updating item from " + item() + " to " + value);
     }
     takeStoredValueForKey(value, _Bill.ITEM_KEY);
-  }
-
-  public String lastAmendedDate() {
-    return (String) storedValueForKey(_Bill.LAST_AMENDED_DATE_KEY);
-  }
-
-  public void setLastAmendedDate(String value) {
-    if (_Bill.LOG.isDebugEnabled()) {
-    	_Bill.LOG.debug( "updating lastAmendedDate from " + lastAmendedDate() + " to " + value);
-    }
-    takeStoredValueForKey(value, _Bill.LAST_AMENDED_DATE_KEY);
   }
 
   public String lastHistActDate() {
@@ -594,6 +595,102 @@ public abstract class _Bill extends  ERXGenericRecord {
     Enumeration<org.ganymede.leginfo.eo.BillVersion> objects = versions().immutableClone().objectEnumerator();
     while (objects.hasMoreElements()) {
       deleteVersionsRelationship(objects.nextElement());
+    }
+  }
+
+  public NSArray<com.webobjects.eocontrol.EOGenericRecord> votes() {
+    return (NSArray<com.webobjects.eocontrol.EOGenericRecord>)storedValueForKey(_Bill.VOTES_KEY);
+  }
+
+  public NSArray<com.webobjects.eocontrol.EOGenericRecord> votes(EOQualifier qualifier) {
+    return votes(qualifier, null, false);
+  }
+
+  public NSArray<com.webobjects.eocontrol.EOGenericRecord> votes(EOQualifier qualifier, boolean fetch) {
+    return votes(qualifier, null, fetch);
+  }
+
+  public NSArray<com.webobjects.eocontrol.EOGenericRecord> votes(EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings, boolean fetch) {
+    NSArray<com.webobjects.eocontrol.EOGenericRecord> results;
+    if (fetch) {
+      EOQualifier fullQualifier;
+      EOQualifier inverseQualifier = new EOKeyValueQualifier("bill", EOQualifier.QualifierOperatorEqual, this);
+    	
+      if (qualifier == null) {
+        fullQualifier = inverseQualifier;
+      }
+      else {
+        NSMutableArray<EOQualifier> qualifiers = new NSMutableArray<EOQualifier>();
+        qualifiers.addObject(qualifier);
+        qualifiers.addObject(inverseQualifier);
+        fullQualifier = new EOAndQualifier(qualifiers);
+      }
+
+      EOFetchSpecification fetchSpec = new EOFetchSpecification("Votes", qualifier, sortOrderings);
+      fetchSpec.setIsDeep(true);
+      results = (NSArray<com.webobjects.eocontrol.EOGenericRecord>)editingContext().objectsWithFetchSpecification(fetchSpec);
+    }
+    else {
+      results = votes();
+      if (qualifier != null) {
+        results = (NSArray<com.webobjects.eocontrol.EOGenericRecord>)EOQualifier.filteredArrayWithQualifier(results, qualifier);
+      }
+      if (sortOrderings != null) {
+        results = (NSArray<com.webobjects.eocontrol.EOGenericRecord>)EOSortOrdering.sortedArrayUsingKeyOrderArray(results, sortOrderings);
+      }
+    }
+    return results;
+  }
+  
+  public void addToVotes(com.webobjects.eocontrol.EOGenericRecord object) {
+    includeObjectIntoPropertyWithKey(object, _Bill.VOTES_KEY);
+  }
+
+  public void removeFromVotes(com.webobjects.eocontrol.EOGenericRecord object) {
+    excludeObjectFromPropertyWithKey(object, _Bill.VOTES_KEY);
+  }
+
+  public void addToVotesRelationship(com.webobjects.eocontrol.EOGenericRecord object) {
+    if (_Bill.LOG.isDebugEnabled()) {
+      _Bill.LOG.debug("adding " + object + " to votes relationship");
+    }
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	addToVotes(object);
+    }
+    else {
+    	addObjectToBothSidesOfRelationshipWithKey(object, _Bill.VOTES_KEY);
+    }
+  }
+
+  public void removeFromVotesRelationship(com.webobjects.eocontrol.EOGenericRecord object) {
+    if (_Bill.LOG.isDebugEnabled()) {
+      _Bill.LOG.debug("removing " + object + " from votes relationship");
+    }
+    if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
+    	removeFromVotes(object);
+    }
+    else {
+    	removeObjectFromBothSidesOfRelationshipWithKey(object, _Bill.VOTES_KEY);
+    }
+  }
+
+  public com.webobjects.eocontrol.EOGenericRecord createVotesRelationship() {
+    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName("Votes");
+    EOEnterpriseObject eo = eoClassDesc.createInstanceWithEditingContext(editingContext(), null);
+    editingContext().insertObject(eo);
+    addObjectToBothSidesOfRelationshipWithKey(eo, _Bill.VOTES_KEY);
+    return (com.webobjects.eocontrol.EOGenericRecord) eo;
+  }
+
+  public void deleteVotesRelationship(com.webobjects.eocontrol.EOGenericRecord object) {
+    removeObjectFromBothSidesOfRelationshipWithKey(object, _Bill.VOTES_KEY);
+    editingContext().deleteObject(object);
+  }
+
+  public void deleteAllVotesRelationships() {
+    Enumeration<com.webobjects.eocontrol.EOGenericRecord> objects = votes().immutableClone().objectEnumerator();
+    while (objects.hasMoreElements()) {
+      deleteVotesRelationship(objects.nextElement());
     }
   }
 
