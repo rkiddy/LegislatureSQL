@@ -84,7 +84,7 @@ if (! defined($billFile)) {
     close F;
     &dprint("/tmp/legBillRemotes_".$d.".txt\n");
 
-    $cmd = "find leginfo.public.ca.gov/pub/".$session."/bill -type f";
+    $cmd = "/usr/bin/find ".$billDir."/".$session."/bill -type f";
     @localFiles = `$cmd`;
     chomp(@localFiles);
     print "Local bills found # ".scalar(@localFiles)."\n";
@@ -160,7 +160,7 @@ exit(0);
 
 # Get the local directory list for this session.
 #
-$cmd = "/usr/bin/find leginfo.public.ca.gov/pub/".$session."/bill -type d";
+$cmd = "/usr/bin/find ".$billDir."/".$session."/bill -type d";
 @lines = `$cmd`;
 chomp(@lines);
 
