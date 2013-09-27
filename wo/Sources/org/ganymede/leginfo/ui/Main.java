@@ -164,33 +164,6 @@ public class Main extends GComponent {
     public boolean inTitle;
     public boolean inAuthors;
 
-    public WOActionResults search() {
-
-    	message = null;
-
-    	EOQualifier sessionQualifier = Bill.SESSION_YRS.is(session().valueForKey("sessionYrs").toString());
-
-    	NSMutableArray<EOQualifier> qualifiers = new NSMutableArray<EOQualifier>();
-
-    	if (inMeasure) qualifiers.add(Bill.BILL_NUM.is(searchTerm));
-    	if (inTopic) qualifiers.add(Bill.TOPIC.likeInsensitive("*"+searchTerm+"*"));
-
-    	EOQualifier qualifier = null;
-
-    	if (qualifiers.size() == 0) qualifier = sessionQualifier;
-    	if (qualifiers.size() == 1) qualifier = new EOAndQualifier(new NSArray<EOQualifier>(new EOQualifier[] { sessionQualifier, qualifiers.get(0) } ));
-    	if (qualifiers.size() > 1) qualifier = new EOAndQualifier(new NSArray<EOQualifier>(new EOQualifier[] { sessionQualifier, new EOOrQualifier(qualifiers) } ));
-
-    	System.out.println("qualifier: "+qualifier);
-
-    	WOComponent nextPage = pageWithName(BillListPage.class);
-    	NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
-    	System.out.println("rows # "+rows.size());
-    	nextPage.takeValueForKey(rows, "bills");
-
-    	return nextPage;
-    }
-
     public WOActionResults doIncludeExtraBills() { session().includeExtraBills = true; return context().page(); }
     public WOActionResults dontIncludeExtraBills() { session().includeExtraBills = false; return context().page(); }
 
@@ -201,17 +174,29 @@ public class Main extends GComponent {
     public String operator = "or";
 
     public WOActionResults find() {
+
     	message = null;
+
     	NSMutableSet<EOQualifier> qualifiers = new NSMutableSet<EOQualifier>();
     	if (findableBillNum != null) {
-    		findableBillNum = findableBillNum.replaceAll("\\.", "");
-    		findableBillNum = findableBillNum.replaceAll(" ", "_");
-    		findableBillNum = findableBillNum.replaceAll("__", "_");    		
-    		if (! findableBillNum.matches("^[A-Za-z0-9]*_[0-9][0-9]*")) {
-    			message = "Bill number should be lile \"ab 23\" or \"SB 110\" or \"ab_11\". Cannot interpret given bill number.";
-    			return context().page();
+
+    		System.out.println("findableBillNum: at start: \""+findableBillNum+"\"");
+
+    		if (findableBillNum.matches("^[0-9][0-9]*$")) {
+
+    			System.out.println("findableBillNum: matching 09");
+    			qualifiers.add(Bill.BILL_NUM.like("*_"+findableBillNum));
     		}
-    		qualifiers.add(Bill.BILL_NUM.is(findableBillNum));
+
+    		if (findableBillNum.matches("[A-Za-z].*[0-9]")) {
+
+    			System.out.println("findableBillNum: matching AZ_09");
+    			findableBillNum = findableBillNum.toLowerCase();
+    			findableBillNum = findableBillNum.replaceAll(" ", "*_");
+    			System.out.println("findableBillNum: checkable = \""+findableBillNum+"\"");
+
+    			qualifiers.add(Bill.BILL_NUM.ilike("*"+findableBillNum));
+    		}
     	}
     	if (findableAuthor != null) {
     		qualifiers.add(Bill.AUTHORS.ilike("*"+findableAuthor+"*"));
@@ -222,13 +207,31 @@ public class Main extends GComponent {
     	if (findableAction != null) {
     		qualifiers.add(Bill.BILL_ACTIONS.dot(BillAction.ACTION.ilike("*"+findableAction+"*")));
     	}
+
     	if (qualifiers.size() > 0) {
+
     		EOQualifier qualifier = (qualifiers.size() == 1) ? qualifiers.anyObject() : ((operator.equals("or")) ? new EOOrQualifier(qualifiers.allObjects()) : new EOAndQualifier(qualifiers.allObjects()));
-        	WOComponent nextPage = pageWithName(BillListPage.class);
-        	NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
-        	System.out.println("rows # "+rows.size());
-        	nextPage.takeValueForKey(rows, "bills");
-        	return nextPage;
+
+    		if ( ! session().includeExtraBills) qualifier = new EOAndQualifier(new NSArray<EOQualifier>( new EOQualifier[] { qualifier, Bill.majorBillQualifier} ));
+
+    		NSArray rows = Bill.fetchBills(session().defaultEditingContext(), qualifier, null);
+
+    		if (rows.size() == 0) {
+
+    			message = "Your search returned 0 results. Sorry.";
+        		return context().page();
+
+    		} else {
+
+    			WOComponent nextPage = pageWithName(BillListPage.class);
+
+        		if (session().debug)
+        			nextPage.takeValueForKey("qualifier: "+qualifier, "message");
+
+        		nextPage.takeValueForKey(rows, "bills");
+
+        		return nextPage;
+        	}
     	} else {
     		message = "Nothing to search for....";
     		return context().page();
