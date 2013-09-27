@@ -1,6 +1,30 @@
 {
     attributes = (
         {
+            allowsNull = Y; 
+            columnName = district; 
+            externalType = tinyint; 
+            name = district; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = end; 
+            externalType = varchar; 
+            name = end; 
+            valueClassName = NSString; 
+            width = 10; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = house; 
+            externalType = char; 
+            name = house; 
+            valueClassName = NSString; 
+            width = 1; 
+        }, 
+        {
             columnName = name; 
             externalType = varchar; 
             name = name; 
@@ -21,11 +45,19 @@
             name = pk; 
             valueClassName = NSNumber; 
             valueType = i; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = start; 
+            externalType = varchar; 
+            name = start; 
+            valueClassName = NSString; 
+            width = 10; 
         }
     ); 
     attributesUsedForLocking = (personPk, pk); 
     className = "org.ganymede.leginfo.eo.Author"; 
-    classProperties = (authorings, name, person); 
+    classProperties = (authorings, district, end, house, name, person, start); 
     externalName = authors; 
     fetchSpecificationDictionary = {}; 
     name = Author; 

@@ -16,13 +16,21 @@ public abstract class _Author extends  ERXGenericRecord {
   public static final String ENTITY_NAME = "Author";
 
   // Attribute Keys
+  public static final ERXKey<Integer> DISTRICT = new ERXKey<Integer>("district");
+  public static final ERXKey<String> END = new ERXKey<String>("end");
+  public static final ERXKey<String> HOUSE = new ERXKey<String>("house");
   public static final ERXKey<String> NAME = new ERXKey<String>("name");
+  public static final ERXKey<String> START = new ERXKey<String>("start");
   // Relationship Keys
   public static final ERXKey<org.ganymede.leginfo.eo.BillAuthoring> AUTHORINGS = new ERXKey<org.ganymede.leginfo.eo.BillAuthoring>("authorings");
   public static final ERXKey<org.ganymede.leginfo.eo.Person> PERSON = new ERXKey<org.ganymede.leginfo.eo.Person>("person");
 
   // Attributes
+  public static final String DISTRICT_KEY = DISTRICT.key();
+  public static final String END_KEY = END.key();
+  public static final String HOUSE_KEY = HOUSE.key();
   public static final String NAME_KEY = NAME.key();
+  public static final String START_KEY = START.key();
   // Relationships
   public static final String AUTHORINGS_KEY = AUTHORINGS.key();
   public static final String PERSON_KEY = PERSON.key();
@@ -37,6 +45,39 @@ public abstract class _Author extends  ERXGenericRecord {
     return localInstance;
   }
 
+  public Integer district() {
+    return (Integer) storedValueForKey(_Author.DISTRICT_KEY);
+  }
+
+  public void setDistrict(Integer value) {
+    if (_Author.LOG.isDebugEnabled()) {
+    	_Author.LOG.debug( "updating district from " + district() + " to " + value);
+    }
+    takeStoredValueForKey(value, _Author.DISTRICT_KEY);
+  }
+
+  public String end() {
+    return (String) storedValueForKey(_Author.END_KEY);
+  }
+
+  public void setEnd(String value) {
+    if (_Author.LOG.isDebugEnabled()) {
+    	_Author.LOG.debug( "updating end from " + end() + " to " + value);
+    }
+    takeStoredValueForKey(value, _Author.END_KEY);
+  }
+
+  public String house() {
+    return (String) storedValueForKey(_Author.HOUSE_KEY);
+  }
+
+  public void setHouse(String value) {
+    if (_Author.LOG.isDebugEnabled()) {
+    	_Author.LOG.debug( "updating house from " + house() + " to " + value);
+    }
+    takeStoredValueForKey(value, _Author.HOUSE_KEY);
+  }
+
   public String name() {
     return (String) storedValueForKey(_Author.NAME_KEY);
   }
@@ -46,6 +87,17 @@ public abstract class _Author extends  ERXGenericRecord {
     	_Author.LOG.debug( "updating name from " + name() + " to " + value);
     }
     takeStoredValueForKey(value, _Author.NAME_KEY);
+  }
+
+  public String start() {
+    return (String) storedValueForKey(_Author.START_KEY);
+  }
+
+  public void setStart(String value) {
+    if (_Author.LOG.isDebugEnabled()) {
+    	_Author.LOG.debug( "updating start from " + start() + " to " + value);
+    }
+    takeStoredValueForKey(value, _Author.START_KEY);
   }
 
   public org.ganymede.leginfo.eo.Person person() {

@@ -40,6 +40,7 @@ public class CatalogPage extends GComponent {
 		//System.out.println("category is \""+category+"\"");
 
 		if (CATEGORY_AUTHORS.equals(category)) {
+
 			if (! authorCache.containsKey(categoryObj)) {
 				NSArray<BillAuthoring> authorings = BillAuthoring.fetchBillAuthorings(ec(), BillAuthoring.SESSION_YRS.is((String)session().valueForKey("sessionYrs")).and(BillAuthoring.AUTHOR_TYPE.is("A").and(BillAuthoring.AUTHOR.dot(Author.NAME.is(categoryObj))), null), null);
 				NSArray<BillVersion> versions = (NSArray<BillVersion>)authorings.valueForKey(BillAuthoring.BILL_VERSION.key());

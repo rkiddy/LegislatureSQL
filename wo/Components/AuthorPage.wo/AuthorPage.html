@@ -9,7 +9,37 @@
 <div class="AuthorPage" />
 
 <p>
-Person: <wo:str value="$author.person.name" escapeHTML="$false" /> - <wo:link href="$author.person.wpUrl"><wo:str value="$author.person.wpUrl" /></wo:link>
+<wo:AjaxInPlace saveAction="$save" cancelAction = "$cancel" button = "false" submitOnSave = "true">
+    <wo:ERXWOTemplate templateName="view">person: <wo:str value="$author.person.name" escapeHTML="$false" /></wo:ERXWOTemplate>
+    <wo:ERXWOTemplate templateName="edit">person: <wo:textfield value="$author.person.name" /></wo:ERXWOTemplate>
+</wo:AjaxInPlace>
+
+
+<wo:AjaxInPlace saveAction="$save" cancelAction = "$cancel" button = "false" submitOnSave = "true" canEdit="false">
+    <wo:ERXWOTemplate templateName="view">wiki: <wo:link href="$author.person.wpUrl"><wo:str value="$author.person.wpUrl" /></wo:link></wo:ERXWOTemplate>
+    <wo:ERXWOTemplate templateName="edit">wiki: <wo:textfield value = "$author.person.wpUrl" size="50"/></wo:ERXWOTemplate>
+</wo:AjaxInPlace>
+
+<wo:AjaxInPlace saveAction="$save" cancelAction = "$cancel" button = "false" submitOnSave = "true" >
+    <wo:ERXWOTemplate templateName="view">house: <wo:str value="$author.house" /></wo:ERXWOTemplate>
+    <wo:ERXWOTemplate templateName="edit">house: <wo:select list="$houses" item="$house" selection="$author.house" /></wo:ERXWOTemplate>
+</wo:AjaxInPlace>
+
+<wo:AjaxInPlace saveAction="$save" cancelAction = "$cancel" button = "false" submitOnSave = "true">
+    <wo:ERXWOTemplate templateName="view">district: <wo:str value="$author.district" /></wo:ERXWOTemplate>
+    <wo:ERXWOTemplate templateName="edit">district: <wo:textfield value = "$author.district" size="10" numberformat="0" /></wo:ERXWOTemplate>
+</wo:AjaxInPlace>
+
+<wo:AjaxInPlace saveAction="$save" cancelAction = "$cancel" button = "false" submitOnSave = "true">
+    <wo:ERXWOTemplate templateName="view">start: <wo:str value="$author.start" /></wo:ERXWOTemplate>
+    <wo:ERXWOTemplate templateName="edit">start: <wo:textfield value = "$author.start" size="10" /></wo:ERXWOTemplate>
+</wo:AjaxInPlace>
+
+<wo:AjaxInPlace saveAction="$save" cancelAction = "$cancel" button = "false" submitOnSave = "true">
+    <wo:ERXWOTemplate templateName="view">end: <wo:str value="$author.end" /></wo:ERXWOTemplate>
+    <wo:ERXWOTemplate templateName="edit">end: <wo:textfield value = "$author.end" size="10" /></wo:ERXWOTemplate>
+</wo:AjaxInPlace>
+
 <ul>
   <wo:loop list="$author.person.contactGroups" item="$contactGroup">
     <li>
@@ -28,7 +58,7 @@ Person: <wo:str value="$author.person.name" escapeHTML="$false" /> - <wo:link hr
 Bills Authored:
 <ul>
 <wo:loop list="$author.billVersionsAuthored.bill//VALID" item="$bill">
-<li><wo:str value="$bill.measure" />&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
+<li><wo:ERXDataHyperlink pageName="BillPage" bill="$bill"><wo:str value="$bill.measure" /></wo:ERXDataHyperlink>&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
 </wo:loop>
 </ul>
 </p>
@@ -37,7 +67,7 @@ Bills Authored:
 Bills Principal Coauthored:
 <ul>
 <wo:loop list="$author.billVersionsPrincipalCoauthored.bill//VALID" item="$bill">
-<li><wo:str value="$bill.measure" />&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
+<li><wo:ERXDataHyperlink pageName="BillPage" bill="$bill"><wo:str value="$bill.measure" /></wo:ERXDataHyperlink>&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
 </wo:loop>
 </ul>
 </p>
@@ -46,7 +76,7 @@ Bills Principal Coauthored:
 Bills Coauthored:
 <ul>
 <wo:loop list="$author.billVersionsCoauthored.bill//VALID" item="$bill">
-<li><wo:str value="$bill.measure" />&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
+<li><wo:ERXDataHyperlink pageName="BillPage" bill="$bill"><wo:str value="$bill.measure" /></wo:ERXDataHyperlink>&nbsp;-&nbsp;<wo:str value="$bill.topic" /></li>
 </wo:loop>
 </ul>
 </p>
