@@ -96,14 +96,6 @@
         }, 
         {
             allowsNull = Y; 
-            columnName = "last_amended_date"; 
-            externalType = CHAR; 
-            name = lastAmendedDate; 
-            valueClassName = NSString; 
-            width = 10; 
-        }, 
-        {
-            allowsNull = Y; 
             columnName = "last_hist_act_date"; 
             externalType = CHAR; 
             name = lastHistActDate; 
@@ -193,7 +185,6 @@
         historyFile, 
         houseLocation, 
         item, 
-        lastAmendedDate, 
         lastHistActDate, 
         lastHistAction, 
         lastVersion, 
@@ -203,7 +194,8 @@
         statusFile, 
         topic, 
         typeOfBill, 
-        versions
+        versions, 
+        votes
     ); 
     externalName = bills; 
     fetchSpecificationDictionary = {}; 
@@ -240,6 +232,13 @@
             joinSemantic = EOInnerJoin; 
             joins = ({destinationAttribute = billPk; sourceAttribute = pk; }); 
             name = versions; 
+        }, 
+        {
+            destination = Votes; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = billPk; sourceAttribute = pk; }); 
+            name = votes; 
         }
     ); 
     restrictingQualifier = "sessionYrs = \"13-14\""; 

@@ -140,7 +140,7 @@ if (scalar(@versionsInFiles) > scalar(@versionsInDB)) {
                 push @sql, "insert into bill_versions (pk, bill_pk, file, file_date, kind, title, authors, coauthors, auths_parsed) ". 
                            "values (".$maxPk.", ".$billPk.", '".$file."', '".$dateStr."', '".$versionType."', ".
                                   "'".$title."', '".$authors."', '".$coauthors."', '".$otherAuthors."');\n";
-                push @sql, "update bills set last_version_pk = ".$maxPk.", last_amended_date = '".$dateStr."' where pk = ".$billPk.";\n";
+                push @sql, "update bills set last_version_pk = ".$maxPk." where pk = ".$billPk.";\n";
             }
         }
     }

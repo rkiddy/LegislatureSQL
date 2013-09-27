@@ -116,7 +116,6 @@ foreach (keys %nextStatus) {
                "hearing_date = NULL, ".
                "house_location = NULL, ".
                "item = NULL, ".
-               "last_amended_date = NULL, ".
                "last_hist_act_date = NULL, ".
                "last_hist_action = NULL, ".
                "status_date = NULL, ".
