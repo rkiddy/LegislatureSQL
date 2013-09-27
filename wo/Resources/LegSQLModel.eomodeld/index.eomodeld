@@ -21,7 +21,9 @@
             className = "org.ganymede.leginfo.eo.PersonContactGroup"; 
             name = PersonContactGroup; 
         }, 
-        {className = "org.ganymede.leginfo.eo.Tag"; name = Tag; }
+        {className = "org.ganymede.leginfo.eo.Tag"; name = Tag; }, 
+        {className = "com.webobjects.eocontrol.EOGenericRecord"; name = Votes; }, 
+        {className = "com.webobjects.eocontrol.EOGenericRecord"; name = Votings; }
     ); 
     userInfo = {"_EntityModeler" = {reverseEngineered = Y; }; }; 
 }

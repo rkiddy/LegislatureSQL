@@ -7,7 +7,6 @@
   </head>
   <body>
     <div class = "BillPage"></div>
-    <p>(<wo:link pageName = "Main">Home</wo:link>)</p>
     <h2><wo:str value = "$bill.measure" /></h2>
     <ul>
       <li>Topic: <wo:str value = "$bill.topic" /></li>
@@ -42,6 +41,13 @@
               <li><wo:str value = "$would.sentence" escapeHTML = "$false" /></li>
             </wo:loop>
           </ul>
+        </li>
+        <li>Votes:
+        <ul>
+        	<wo:loop list="$bill.votes//VALID" item="$vote">
+        	<li><wo:str value="$vote.motion//VALID" /> - <wo:str value="$vote.voteDate//VALID" /></li>
+   			</wo:loop>
+        </ul>
         </li>
       </li>
     </ul>

@@ -11,6 +11,7 @@ import org.ganymede.leginfo.eo.CodeSection;
 import org.ganymede.leginfo.eo.Tag;
 
 import com.webobjects.appserver.WOContext;
+import com.webobjects.eocontrol.EOEnterpriseObject;
 
 public class BillPage extends GComponent {
 
@@ -27,4 +28,5 @@ public class BillPage extends GComponent {
     public CodeSection section;
     public Tag tag;
     public Annotation annotation;
+    public EOEnterpriseObject vote;
 }

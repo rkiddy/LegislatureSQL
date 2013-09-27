@@ -18,6 +18,8 @@ fi
 
 ./08_addHistoryItems $*
 
+./09_addVotes $*
+
 ./97_fixInWO
 
 ./99_testData $*
