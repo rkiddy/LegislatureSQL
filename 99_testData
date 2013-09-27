@@ -53,6 +53,12 @@ if (scalar(keys %versions) > 0) {
   foreach (keys %billRecords) { print "    ".$_."\n"; }
 }
 
+print "Bad files?\n\n";
+
+$cmd = "find leginfo.public.ca.gov/pub/13-14 -name \\*html -print -exec tail \\-1 {} \\; -exec echo \\; -exec echo \\; | ".
+           "awk 'BEGIN{FS=\"\\n\";RS=\"\"}{if ((NF > 2) || (\$2 !~ /<\\/html>/)) print \$0\"\\n\"}'";
+print `$cmd`;
+
 print "Versions:\n\n";
 
 undef %files;
@@ -99,15 +105,15 @@ $sql = "select v1.pk from bill_versions v1, bills b1 where b1.session_yrs = '".$
 
 $missing = 0;
 
-foreach (@versionPks) {
-     $versionPk = $_;
-     $sentences = &doSqlResult("select count(*) from bill_woulds where bill_version_pk = ".$versionPk.";");
-     if ($sentences == 0) {
-         $file = &doSqlResult("select file from bill_versions where pk = ".$versionPk.";");
-         print "Sentences # 0 from bill version: \"".$file."\"\n";
-         $missing++;
-     }
-}
+#foreach (@versionPks) {
+#     $versionPk = $_;
+#     $sentences = &doSqlResult("select count(*) from bill_woulds where bill_version_pk = ".$versionPk.";");
+#     if ($sentences == 0) {
+#         $file = &doSqlResult("select file from bill_versions where pk = ".$versionPk.";");
+#         print "Sentences # 0 from bill version: \"".$file."\"\n";
+#         $missing++;
+#     }
+#}
 
 if ($missing == 0) { print "Missing sentences # 0.\n"; }
 
@@ -135,6 +141,165 @@ print "Check authors:\n\n";
 $sql = "select * from authors where person_pk is NULL;";
 
 foreach (&doSqlResults($sql)) { print $_."\n"; }
+
+print "Check random bill:\n";
+
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130207_introduced.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130312_amended_asm_v98.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130429_amended_asm_v97.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130610_amended_sen_v96.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130701_enrolled.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130812_chaptered.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130812_history.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_bill_20130812_status.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_cfa_20130401_111350_asm_comm.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_cfa_20130507_143658_asm_comm.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_cfa_20130517_113706_asm_floor.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_cfa_20130617_134712_sen_comm.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_cfa_20130619_131634_sen_floor.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_cfa_20130624_170105_asm_floor.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_vote_20130402_000002_asm_comm.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_vote_20130508_000002_asm_comm.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_vote_20130520_0200PM_asm_floor.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_vote_20130618_000003_sen_comm.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_vote_20130624_0227PM_sen_floor.html
+# 13-14/bill/asm/ab_0251-0300/ab_265_vote_20130627_1026AM_asm_floor.html
+
+@files = &doCmdResults("/bin/ls leginfo.public.ca.gov/pub/13-14/bill/asm/ab_0251-0300/ab_265_*");
+chomp(@files);
+
+if (scalar(@files) == 20) { print "."; } else { print "x"; }
+
+$billPk = &doSqlResult("select pk from bills where bill_num = 'ab_265' and session_yrs = '13-14';");
+
+$billVersionsCount = &doSqlResult("select count(*) from bill_versions where bill_pk = ".$billPk.";");
+
+if ($billVersionsCount == 6) { print "."; } else { print "x"; }
+
+# Aug. 12       Chaptered by Secretary of State - Chapter 74, Statutes of 2013.
+# Aug. 12       Approved by the Governor.
+# Aug. 1        Enrolled and presented to the Governor at  2:45 p.m.
+# June 27       Senate amendments concurred in. To Engrossing and Enrolling. (Ayes 78. Noes  0. Page 2193.).
+# June 24       In Assembly.  Concurrence in Senate amendments pending.  May be considered on or after June  26 pursuant to Assembly Rule 77.
+# June 24       Read third time. Passed. Ordered to the Assembly. (Ayes 39. Noes  0. Page 1489.).
+# June 19       Read second time. Ordered to consent calendar.
+# June 18       From committee: Do pass. To consent calendar. (Ayes  6. Noes  0.) (June  18).
+# June 10       From committee chair, with author's amendments:  Amend, and re-refer to committee.  Read second time, amended, and re-referred to Com. on JUD.
+# June 5        In committee:  Set, first hearing.  Hearing canceled at the request of author.
+
+# May 29        Referred to Com. on  JUD.
+# May 20        In Senate.  Read first time.  To Com. on RLS. for assignment.
+# May 20        Read third time. Passed. Ordered to the Senate. (Ayes 75. Noes  0. Page 1519.)
+# May 16        From consent calendar.  Ordered to third reading.
+# May 13        Read second time. Ordered to consent calendar.
+# May 9         From committee: Do pass. To consent calendar. (Ayes  8. Noes  0.) (May  8).
+# Apr. 30       Re-referred to Com. on  L. GOV.
+# Apr. 29       From committee chair, with author's amendments:  Amend, and re-refer to Com. on  L. GOV. Read second time and amended.
+# Apr. 2        From committee: Do pass and re-refer to Com. on  L. GOV. (Ayes  9. Noes  0.) (April  2). Re-referred to Com. on  L. GOV.
+# Mar. 13       Re-referred to Com. on  JUD.
+
+# Mar. 12       From committee chair, with author's amendments:  Amend, and re-refer to Com. on  JUD. Read second time and amended.
+# Feb. 21       Referred to Com. on  JUD.
+# Feb. 8        From printer.  May be heard in committee  March  10.
+# Feb. 7        Read first time.  To print.
+
+$actionsCount = &doSqlResult("select count(*) from bill_actions where bill_pk = ".$billPk." order by action;");
+
+if ($actionsCount == 24) { print "."; } else { print "x"; }
+
+%actionsFromFile = (
+    "Chaptered by Secretary of State - Chapter 74, Statutes of 2013. => 2013-08-12" => 1,
+    "Approved by the Governor. => 2013-08-12" => 1,
+    "Enrolled and presented to the Governor at  2:45 p.m. => 2013-08-01" => 1,
+    "Senate amendments concurred in. To Engrossing and Enrolling. (Ayes 78. Noes  0. Page 2193.). => 2013-06-27" => 1,
+    "In Assembly.  Concurrence in Senate amendments pending.  May be considered on or after June  26 pursuant to Assembly Rule 77. => 2013-06-24" => 1,
+    "Read third time. Passed. Ordered to the Assembly. (Ayes 39. Noes  0. Page 1489.). => 2013-06-24" => 1,
+    "Read second time. Ordered to consent calendar. => 2013-06-19" => 1,
+    "From committee: Do pass. To consent calendar. (Ayes  6. Noes  0.) (June  18). => 2013-06-18" => 1,
+    "From committee chair, with author's amendments:  Amend, and re-refer to committee.  Read second time, amended, and re-referred to Com. on JUD. => 2013-06-10" => 1,
+    "In committee:  Set, first hearing.  Hearing canceled at the request of author. => 2013-06-05" => 1,
+    "Referred to Com. on  JUD. => 2013-05-29" => 1,
+    "In Senate.  Read first time.  To Com. on RLS. for assignment. => 2013-05-20" => 1,
+    "Read third time. Passed. Ordered to the Senate. (Ayes 75. Noes  0. Page 1519.) => 2013-05-20" => 1,
+    "From consent calendar.  Ordered to third reading. => 2013-05-16" => 1,
+    "Read second time. Ordered to consent calendar. => 2013-05-13" => 1,
+    "From committee: Do pass. To consent calendar. (Ayes  8. Noes  0.) (May  8). => 2013-05-09" => 1,
+    "Re-referred to Com. on  L. GOV. => 2013-04-30" => 1,
+    "From committee chair, with author's amendments:  Amend, and re-refer to Com. on  L. GOV. Read second time and amended. => 2013-04-29" => 1,
+    "From committee: Do pass and re-refer to Com. on  L. GOV. (Ayes  9. Noes  0.) (April  2). Re-referred to Com. on  L. GOV. => 2013-04-02" => 1,
+    "Re-referred to Com. on  JUD. => 2013-03-13" => 1,
+    "From committee chair, with author's amendments:  Amend, and re-refer to Com. on  JUD. Read second time and amended. => 2013-03-12" => 1,
+    "Referred to Com. on  JUD. => 2013-02-21" => 1,
+    "From printer.  May be heard in committee  March  10. => 2013-02-08" => 1,
+    "Read first time.  To print. => 2013-02-07" => 1,
+);
+
+@actionsFromDB = &doSqlResults("select when_act, action from bill_actions where bill_pk = ".$billPk.";");
+
+foreach (@actionsFromDB) {
+
+    ($when, $action) = split '\t', $_;
+
+    $actionsFromDB{$action." => ".$when} = 1;
+
+    if (defined($actionsFromFile{$action." => ".$when})) { print "."; } else { print "x"; }
+}
+
+foreach (keys %actionsFromFile) {
+
+    if (defined($actionsFromDB{$_})) { print "."; } else { print "x"; }
+}
+
+$voteCount = &doSqlResult("select count(*) from votes where bill_pk = ".$billPk.";");
+
+if ($voteCount == 6) { print "."; } else { print "x"; }
+
+@voteLines = &doCmdResults("cat leginfo.public.ca.gov/pub/13-14/bill/asm/ab_0251-0300/ab_265_vote_*");
+
+foreach (@voteLines) {
+    $line = $_;
+
+    if ($line =~ /<br>/) { $inVotes = 0; }
+
+    if ($inVotes == 1 &&
+        $line ne "" &&
+        $line !~ /\*\*\*\*/ &&
+        $line !~ /AYES/ &&
+        $line !~ /NOES/ &&
+        $line !~ /NO VOTE/ &&
+        $line !~ /ABSTAINING/) {
+
+        @names = split '\t', $line;
+        foreach (@names) {
+            if ($_ ne "Vacancy") {
+            push @allNames, $_;
+            }
+        }
+    }
+
+    if ($line =~ /AYES/) { $inVotes = 1; }
+}
+
+$votingFoundInFiles = scalar(@allNames);
+
+$votingsFoundInDB = &doSqlResult("select count(*) from votes v1, votings v2 where v1.bill_pk = ".$billPk." and v2.vote_pk = v1.pk;");
+
+@votersFoundInDB = &doSqlResults("select a1.name from votes v1, votings v2, authors a1 where v1.bill_pk = ".$billPk." and v2.vote_pk = v1.pk and v2.author_pk = a1.pk;");
+
+if ($votingFoundInFiles == $votingsFoundInDB) { print "."; } else { print "x"; }
+
+print "\nvotingFoundInFiles: ".$votingFoundInFiles.", votingsFoundInDB: ".$votingsFoundInDB."\n";
+
+foreach (@allNames) { $voter = $_; if (defined($allNamesInFiles{$voter})) { $allNamesInFiles{$voter}++; } else { $allNamesInFiles{$voter} = 1; } }
+
+foreach (@votersFoundInDB) { $voter = $_; if (defined($allNamesInDB{$voter})) { $allNamesInDB{$voter}++; } else { $allNamesInDB{$voter} = 1; } }
+
+print "\n";
+foreach (keys %allNamesInFiles) { if ( ! defined($allNamesInDB{$_})) { print "In Files, Not In DB: \"".$_."\"\n"; } }
+print "\n";
+foreach (keys %allNamesInDB) { if ( ! defined($allNamesInFiles{$_})) { print "In DB, Not In Files: \"".$_."\"\n"; } }
+
+print "\n";
 
 print "\n\nOk!\n\n";
 
