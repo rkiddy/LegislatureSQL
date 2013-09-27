@@ -1,0 +1,65 @@
+{
+    attributes = (
+        {
+            columnName = "bill_pk"; 
+            externalType = INT; 
+            name = billPk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            columnName = file; 
+            externalType = varchar; 
+            name = file; 
+            valueClassName = NSString; 
+            width = 128; 
+        }, 
+        {
+            columnName = location; 
+            externalType = varchar; 
+            name = location; 
+            valueClassName = NSString; 
+            width = 64; 
+        }, 
+        {
+            columnName = motion; 
+            externalType = varchar; 
+            name = motion; 
+            valueClassName = NSString; 
+            width = 128; 
+        }, 
+        {
+            columnName = pk; 
+            externalType = INT; 
+            name = pk; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = "vote_date"; 
+            externalType = CHAR; 
+            name = voteDate; 
+            valueClassName = NSString; 
+            valueType = c; 
+            width = 10; 
+        }
+    ); 
+    attributesUsedForLocking = (billPk, file, location, motion, pk, voteDate); 
+    className = "com.webobjects.eocontrol.EOGenericRecord"; 
+    classProperties = (bill, file, location, motion, voteDate); 
+    externalName = votes; 
+    fetchSpecificationDictionary = {}; 
+    name = Votes; 
+    primaryKeyAttributes = (pk); 
+    relationships = (
+        {
+            destination = Bill; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = pk; sourceAttribute = billPk; }); 
+            name = bill; 
+        }
+    ); 
+}

@@ -1,0 +1,280 @@
+#!/usr/bin/perl
+
+require "cmds.pl";
+
+%options = &readOptions;
+
+$session = $options{"session"};
+
+for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
+    if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+    if ($ARGV[$idx] eq "-v") { $verbose = 1; }
+}
+
+sub fixAuthor {
+    $name = $_[0];
+
+    if ($name =~ /V. Manuel P.rez/) { return "V. Manuel P%rez"; }
+
+    if ($name =~ /De Le.n/) { return "De Le%n"; }
+
+    if ($name =~ /Ch.vez/) { return "Ch%vez"; }
+
+    if ($name =~ /Roger Hern.ndez/) { return "Roger Hern%ndez"; }
+
+    if ($name =~ /John A. P.rez/) { return "John A. P%rez"; }
+
+    return $name;
+}
+
+$cmd = "/usr/bin/find ".$billDir."/".$session."/bill -type f -name \*_vote\*";
+@files = `$cmd`;
+chomp(@files);
+foreach (@files) {
+    $file = $_;
+    $file = substr($file, length($billDir)+1);
+    # need to filter out wsp files if I am looking at one of the vote files in vi....
+    if ($file !~ /\.swp/) {
+       $found{$file} = 1;
+    }
+}
+print "\nFound vote files # ".scalar(@files)."\n\n";
+
+@filesInDB = &doSqlResults("select file from votes where file like '".$session."/%';");
+print "Found vote files in db # ".scalar(@filesInDB)."\n\n";
+
+foreach (@filesInDB) { delete($found{$_}); }
+
+@files = keys %found;
+
+print "Removed existing vote files, needed # ".scalar(@files)."\n\n";
+
+$maxVotePk = &doSqlResult("select max(pk) from votes;");
+
+$nextVotePk = $maxVotePk + 1;
+
+$maxVotingPk = &doSqlResult("select max(pk) from votings;");
+
+$nextVotingPk = $maxVotingPk + 1;
+
+foreach (@files) {
+
+    $file = $_;
+
+    undef $measure;
+    undef $date;
+    undef $location;
+    undef $motion;
+    undef $billPk;
+
+    open F, $billDir."/".$file;
+    @lines = <F>;
+    chomp(@lines);
+    close F;
+
+    undef $inAyes;
+    undef $inNoes;
+    undef $inAbstain;
+
+    undef $ayes;
+    undef $noes;
+    undef $abstains;
+
+    for ($idx = 0; $idx < scalar(@lines); $idx++) {
+        $line = $lines[$idx];
+
+        # $line = s/é/&eacute/g;
+
+        if ( ! defined($inAyes) && ! defined($inNoes) && ! defined($inAbstain)) {
+            $line =~ s/\t/ /g;
+        }
+
+        if ($line =~ /^MEASURE: */) {
+            $measure = $';
+            $measure = lc($measure);
+            $measure =~ s/ /_/;
+            $billPk = &doSqlResult("select pk from bills where bill_num = '".$measure."' and session_yrs = '".$session."';");
+        }
+        if ($line =~ /^DATE: */) {
+            $date = $';
+            if ($date =~ /^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/) {
+                $month = substr($date, 0, 2);
+                $day = substr($date, 3, 2);
+                $year = substr($date, 6);
+                $date = $year."-".$month."-".$day;
+            } else {
+                $date = "INVALID";
+            }
+        }
+        if ($line =~ /^LOCATION: */) {
+            $location = $';
+        }
+        if ($line =~ /^MOTION: */) {
+            $motion = $';
+            for ($offset = 1; $lines[$offset+$idx] ne "" && ($idx + $offset) < scalar(@lines); $offset++) {
+                $motion .= " ".$lines[$offset+$idx];
+            }
+            $idx = $idx + $offset;
+            $motion =~ s/\t/ /g;
+            $motion =~ s/  */ /g;
+        }
+
+        if (($line =~ /AYES/) && ($lines[$idx+1] =~ /\*\*\*\*/)) {
+            $inAyes = 1; undef $inNoes; undef $inAbstain;
+        }
+
+        if (($line =~ /NOES/) && ($lines[$idx+1] =~ /\*\*\*\*/)) {
+            undef $inAyes; $inNoes = 1; undef $inAbstain;
+        }
+
+        if (($line =~ /ABSTAINING/) && ($lines[$idx+1] =~ /\*\*\*\*\*\*\*\*/)) {
+            undef $inAyes; undef $inNoes; $inAbstain = 1;
+        }
+
+        if (defined($inAyes) && $line =~ /^\S/) {
+            $ayes = $ayes."\t".$line;
+        }
+
+        if (defined($inNoes) && $line =~ /^\S/) {
+            $noes = $noes."\t".$line;
+        }
+
+        if (defined($inAyes) && $line =~ /^</) { undef $inAyes; }
+        if (defined($inNoes) && $line =~ /^</) { undef $inNoes; }
+        if (defined($inAbstain) && $line =~ /^</) { undef $inAbstain; }
+
+        if (defined($inAbstain) && $line =~ /^\S/) {
+            $abstains = $abstains."\t".$line;
+        }
+    }
+
+    if (defined($verbose)) {
+        print "\n";
+        print "file: \"".$file."\"\n";
+        print "measure: \"".$measure."\"\n";
+        print "date: \"".$date."\"\n";
+        print "location: \"".$location."\"\n";
+        print "motion: \"".$motion."\"\n";
+        print "\n";
+    }
+
+    $sql = "insert into votes (pk, file, bill_pk, vote_date, location, motion) values ".
+           " (".$nextVotePk.",'".$file."',".$billPk.",'".$date."','".$location."','".$motion."');";
+
+    @fileParts = split '_', $file;
+    pop @fileParts;
+    $housePart = pop @fileParts;
+    $voteHouse = uc(substr($housePart, 0, 1));
+
+    push @sql, $sql;
+
+    if ( ! defined($verbose)) { print "."; }
+
+    $nextPk++;
+
+    $ayes =~ s/^\t*//; $ayes =~ s/\t*$//;
+    $noes =~ s/^\t*//; $noes =~ s/\t*$//;
+    $abstains =~ s/^\t*//; $abstains =~ s/\t*$//;
+
+    if (defined($verbose)) {
+        print "ayes: ".$ayes."\n";
+        print "noes: ".$noes."\n";
+        print "abstains: ".$abstains."\n";
+    }
+
+    @ayes = split '\t', $ayes;
+    @noes = split '\t', $noes;
+    @abstains = split '\t', $abstains;
+
+    if (defined($verbose)) { print "\nayes # ".scalar(@ayes).", noes # ".scalar(@noes).", abstains # ".scalar(@abstains)."\n\n"; }
+
+    foreach (@ayes) {
+        $voter = $_;
+        if ($voter ne "" && $voter ne "Vacancy" && $voter ne "<br>") {
+            $sql = "select pk from authors where name like '".&fixAuthor($voter)."' and house = '".$voteHouse."' and ".
+                                                "start <= '".$date."' and (end is NULL or end >= '".$date."');";
+            @authorPks = &doSqlResults($sql);
+            if (scalar(@authorPks) == 0) {
+                print "\nERROR: No pk for name: \"".$voter."\" in vote ".$nextVotePk."\n".$sql."\n";
+                $badVotes{$nextVotePk} = 1;
+            }
+            if (scalar(@authorPks) == 1) {
+                $authorPk = $authorPks[0];
+                push @sql, "insert into votings (pk, vote_pk, author_pk, vote) values (".$nextVotingPk.",".$nextVotePk.",".$authorPk.",'Y');";
+                $nextVotingPk++;
+            }
+            if (scalar(@authorPks) > 1) {
+                print "\nERROR: in vote pk = ".$nextVotePk.", found multiple authors # ".scalar(@authorPks)."\n".$sql."\n";
+                $badVotes{$nextVotePk} = 1;
+            }
+        }
+    }
+
+    foreach (@noes) {
+        $voter = $_;
+        if ($voter ne "" && $voter ne "Vacancy" && $voter ne "<br>") {
+            $sql = "select pk from authors where name like '".&fixAuthor($voter)."' and house = '".$voteHouse."' and ".
+                                                "start <= '".$date."' and (end is NULL or end >= '".$date."');";
+            @authorPks = &doSqlResults($sql);
+            if (scalar(@authorPks) == 0) {
+                print "\nERROR: No pk for name: \"".$voter."\" in vote ".$nextVotePk."\n".$sql."\n";
+                $badVotes{$nextVotePk} = 1;
+            }
+            if (scalar(@authorPks) == 1) {
+                $authorPk = $authorPks[0];
+                push @sql, "insert into votings (pk, vote_pk, author_pk, vote) values (".$nextVotingPk.",".$nextVotePk.",".$authorPk.",'N');";
+                $nextVotingPk++;
+            }
+            if (scalar(@authorPks) > 1) {
+                print "\nERROR: in vote pk = ".$nextVotePk.", found multiple authors # ".scalar(@authorPks)."\n".$sql."\n";
+                $badVotes{$nextVotePk} = 1;
+            }
+        }
+    }
+
+    foreach (@abstains) {
+        $voter = $_;
+        if ($voter ne "" && $voter ne "Vacancy" && $voter ne "<br>") {
+            $sql = "select pk from authors where name like '".&fixAuthor($voter)."' and house = '".$voteHouse."' and ".
+                                                "start <= '".$date."' and (end is NULL or end >= '".$date."');";
+            @authorPks = &doSqlResult($sql);
+            if (scalar(@authorPks) == 0) {
+                print "\nERROR: No pk for name: \"".$voter."\" in vote ".$nextVotePk."\n".$sql."\n";
+                $badVotes{$nextVotePk} = 1;
+            }
+            if (scalar(@authorPks) == 1) {
+                $authorPk = $authorPks[0];
+                push @sql, "insert into votings (pk, vote_pk, author_pk, vote) values (".$nextVotingPk.",".$nextVotePk.",".$authorPk.",'NA');";
+                $nextVotingPk++;
+            }
+            if (scalar(@authorPks) > 1) {
+                print "\nERROR: in vote pk = ".$nextVotePk.", found multiple authors # ".scalar(@authorPks)."\n".$sql."\n";
+                $badVotes{$nextVotePk} = 1;
+            }
+        }
+    }
+
+    $nextVotePk++;
+
+    # print "\n";
+
+    open M, "| ".&mysql;
+
+    foreach (@sql) {
+        $sql = $_;
+        if (defined($verbose)) { print "sql: \"".$sql."\"\n"; }
+        print M $sql."\n";
+    }
+
+    close M;
+
+    undef @sql;
+}
+
+print "\n\n";
+
+if (scalar(keys %badVotes) > 0) {
+    print "bad votes: (".(join ', ', (sort keys %badVotes)).")\n\n\n";
+}
+
+exit(0);

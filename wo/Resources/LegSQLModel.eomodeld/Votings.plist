@@ -1,0 +1,44 @@
+{
+    attributes = (
+        {
+            allowsNull = Y; 
+            className = "java.lang.Number"; 
+            columnName = "author_pk"; 
+            externalType = INT; 
+            name = authorPk; 
+            precision = 10; 
+            valueType = l; 
+        }, 
+        {
+            className = "java.lang.Number"; 
+            columnName = pk; 
+            externalType = INT; 
+            name = pk; 
+            precision = 10; 
+            valueType = l; 
+        }, 
+        {
+            columnName = vote; 
+            externalType = ENUM; 
+            name = vote; 
+            valueClassName = NSString; 
+            valueType = c; 
+            width = 2; 
+        }, 
+        {
+            className = "java.lang.Number"; 
+            columnName = "vote_pk"; 
+            externalType = INT; 
+            name = votePk; 
+            precision = 10; 
+            valueType = l; 
+        }
+    ); 
+    attributesUsedForLocking = (authorPk, pk, votePk); 
+    className = "com.webobjects.eocontrol.EOGenericRecord"; 
+    classProperties = (vote); 
+    externalName = votings; 
+    fetchSpecificationDictionary = {}; 
+    name = Votings; 
+    primaryKeyAttributes = (pk); 
+}
