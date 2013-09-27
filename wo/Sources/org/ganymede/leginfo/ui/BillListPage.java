@@ -12,6 +12,8 @@ public class BillListPage extends GComponent {
         super(context);
     }
 
+    public String message;
+
     public String type;
 
     public boolean isTypeIntro() { return "intro".equals(type); }

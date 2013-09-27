@@ -14,6 +14,7 @@ $session = $options{"session"};
 
 for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     if ($ARGV[$idx] eq "-s") { $session = $ARGV[$idx+1]; }
+    if ($ARGV[$idx] eq "-b") { $bill_num = $ARGV[$idx+1]; }
 }
 
 %month = (
@@ -26,6 +27,7 @@ for ($idx = 0; $idx < scalar(@ARGV); $idx++) {
     "July" => "07",
     "Aug." => "08",
     "Sep." => "09",
+    "Sept." => "09",
     "Oct." => "10",
     "Nov." => "11",
     "Dec." => "12"
@@ -53,7 +55,22 @@ if ($pk eq "NULL") { $pk = 0; }
 $pk++;
 #print "next pk: ".$pk."\n";
 
-@bills = &doSqlResults("select pk, history_file from bills where session_yrs = '".$session."';");
+if ( ! defined($bill_num)) {
+
+    @bills = &doSqlResults("select pk, history_file from bills where session_yrs = '".$session."';");
+
+} else {
+
+    @bills = &doSqlResults("select pk, history_file from bills where session_yrs = '".$session."' and bill_num = '".$bill_num."';");
+
+    if (scalar(@bills) == 1) {
+
+        ($billPk, $history) = split '\t', $bills[0];
+
+        &doSqlResult("delete from bill_actions where bill_pk = ".$billPk.";");
+    }
+}
+
 #print "bills # ".(scalar(@bills))."\n";
 
 @actionCounts = &doSqlResults("select a1.bill_pk, count(*) from bill_actions a1, bills b1 ".

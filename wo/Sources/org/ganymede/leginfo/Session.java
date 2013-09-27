@@ -8,6 +8,8 @@ public class Session extends ERXSession {
     public Session() {
     }
 
+    public boolean debug = false;
+
     public String sessionYrs = "13-14";
 
     public boolean displayMeasure = true;
